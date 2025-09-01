@@ -1,0 +1,13 @@
+*__pycache__
+*.vscode
+*.egg-info/
+*.egg
+dist/
+build/
+env/
+venv/
+storage/*
+src/executables/list/*/Custom/*
+src/executables/list/*/Secret/*
+*node_modules*
+src/web/static/js/package-lock.json

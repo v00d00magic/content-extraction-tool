@@ -1,0 +1,25 @@
+from pathlib import Path
+import platform, os
+
+consts = {}
+
+# Context
+consts["context"] = "cli"
+
+# OS
+consts["os_name"] = platform.system()
+consts["pc_name"] = os.getenv("COMPUTERNAME", "NoName-PC")
+consts["pc_user"] = os.getlogin()
+consts["pc_fullname"] = consts["pc_name"] + ", " + consts["pc_user"]
+
+# Runtime
+consts["cwd"] = Path(os.getcwd())
+consts["executables"] = Path(os.path.join(consts.get('cwd'), "executables"))
+consts["arguments"] = Path(os.path.join(consts.get('cwd'), "declarable", "Arguments"))
+
+# Config
+consts["config.hidden"] = 1
+consts["config.hidden_values_spaces"] = ["db.", "web."]
+
+# Args
+consts["forbidden_argument_names"] = ["i", "name", "confirm"]
