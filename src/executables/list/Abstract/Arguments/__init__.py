@@ -1,15 +1,15 @@
 from executables.templates.representations import Representation
 
 keys = {
-    "scratch.name": {
-        "en_US": "No content",
-        "ru_RU": "Без содержимого"
+    "arguments.name": {
+        "en_US": "Passed data",
+        "ru_RU": "Переданные данные"
     }
 }
 
 class Implementation(Representation):
     docs = {
-        "name": keys.get("scratch.name"),
+        "name": keys.get("arguments.name"),
     }
     executable_cfg =  {
         'free_args': True

@@ -1,8 +1,4 @@
 from executables.templates.Executable import Executable
-from executables.templates.Documentable import Documentable
-from executables.templates.Runnable import Runnable
-from executables.templates.Saveable import Saveable
-from executables.templates.RecursiveDeclarable import RecursiveDeclarable
 
 class Extractor(Executable):
     self_name = "Extractor"
@@ -15,6 +11,3 @@ class Extractor(Executable):
 
     def link_after_add(self, item):
         self.link_after.append(item)
-
-class BaseExtractor(Runnable, Documentable, Saveable, RecursiveDeclarable):
-    self_name = "Extractor"

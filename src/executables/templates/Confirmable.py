@@ -1,6 +1,9 @@
 from typing import Dict
 
 class Confirmable():
+    '''
+    Class that implies that there will be confirmation before real execute
+    '''
     class PreExecute():
         args_list = []
 
@@ -9,9 +12,6 @@ class Confirmable():
             self.outer_args = outer.declare_recursive()
 
         async def execute(self, i: dict = {}) -> Dict["list", "dict"]:
-            '''
-            Should return list with argument classes
-            '''
             return {
                 "args": [],
                 "data": {},

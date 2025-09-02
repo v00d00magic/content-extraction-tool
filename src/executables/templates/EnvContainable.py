@@ -1,7 +1,9 @@
 from utils.ClassProperty import classproperty
 
 class EnvContainable:
-
+    '''
+    Class that contains env variables
+    '''
     @classproperty
     def env_vars(cls):
         res = {}

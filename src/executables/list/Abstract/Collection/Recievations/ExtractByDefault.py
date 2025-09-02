@@ -1,7 +1,7 @@
 from .. import Implementation as Collection
 from declarable.Arguments import StringArgument
 
-class Method(Collection.AbstractExtractor):
+class Method(Collection.AbstractRecievation):
     @classmethod
     def declare(cls):
         params = {}

@@ -90,7 +90,7 @@ class Logger(Hookable):
         if __path.is_dir() == False:
             __path.mkdir()
 
-        self.add_hook("log", self.__console_hook)
+        # self.add_hook("log", self.__console_hook)
         self.add_hook("log", self.__write_to_file_hook)
 
     def __console_hook(self, **kwargs):
@@ -206,15 +206,17 @@ class Logger(Hookable):
             category = LoggerCategory(item)
             should = category.check(section, kind)
 
-        self.__log_file_check()
-
-        self.trigger("log", components={
+        _components = {
             "time": (datetime.now()).timestamp(),
             "section": section,
             "message": message,
             "kind": kind,
             "should": should,
-        })
+        }
+        self.__log_file_check()
+        self.__console_hook(components=_components)
+
+        self.trigger("log", components=_components)
 
     def logException(self, input_exception, section: str = "App", silent: bool = False, prefix = ""):
         __exp = traceback.format_exc()

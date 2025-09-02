@@ -1,14 +1,9 @@
 from resources.Exceptions import AbstractClassException, SuitableExtractMethodNotFound
-from executables.templates.Documentable import Documentable
-from executables.templates.Runnable import Runnable
-from executables.templates.Saveable import Saveable
-from executables.templates.RecursiveDeclarable import RecursiveDeclarable
-from executables.templates.EnvContainable import EnvContainable
-from executables.templates.Submodulable import Submodulable
 from thumbnails import ThumbnailMethod
 from declarable.ArgsComparer import ArgsComparer
-from executables.templates.extractors import BaseExtractor
-from executables.templates.acts import BaseAct
+from executables.templates.extractors import Extractor
+from executables.templates.acts import Act
+from executables.templates.Executable import Executable
 
 class RepresentationMeta(type):
     def __init__(cls, name, bases, attrs):
@@ -16,7 +11,7 @@ class RepresentationMeta(type):
             cls._build_submodules()
         super().__init__(name, bases, attrs)
 
-class Representation(Runnable, Documentable, RecursiveDeclarable, Submodulable, EnvContainable, Saveable, metaclass=RepresentationMeta):
+class Representation(Executable, metaclass=RepresentationMeta):
     self_name = "Representation"
 
     @classmethod
@@ -66,7 +61,7 @@ class Representation(Runnable, Documentable, RecursiveDeclarable, Submodulable, 
         extract_strategy = self.find_suitable_extractor(i)
         assert extract_strategy != None, "cant find correct extractor"
 
-        extract_strategy_instance = extract_strategy(self)
+        extract_strategy_instance = extract_strategy()
 
         _dict = ArgsComparer(self.declare_recursive(), i, "assert")
         if getattr(self, "before_execute", None) != None:
@@ -96,18 +91,18 @@ class Representation(Runnable, Documentable, RecursiveDeclarable, Submodulable, 
     def _build_submodules(cls):
         # assert cls.full_name() != "templates.representations", "submodule of abstract class is used"
 
-        class AbstractAct(BaseAct):
+        class AbstractAct(Act):
             self_name = "Act"
             outer = cls
 
-        class AbstractExtractor(BaseExtractor):
+        class AbstractRecievation(Extractor):
             self_name = "Extractor"
             outer = cls
 
             def self_insert(self, item):
                 item.mark_representation(self)
 
-        class AbstractExternalExtractor(BaseExtractor):
+        class AbstractExternalExtractor(Extractor):
             self_name = "ExternalExtractor"
             outer = cls
 
@@ -115,7 +110,7 @@ class Representation(Runnable, Documentable, RecursiveDeclarable, Submodulable, 
                 item.mark_representation(self)
 
         cls.AbstractAct = AbstractAct
-        cls.AbstractExtractor = AbstractExtractor
+        cls.AbstractRecievation = AbstractRecievation
         cls.AbstractExternalExtractor = AbstractExternalExtractor
 
     #class ContentUnit(ContentUnit):

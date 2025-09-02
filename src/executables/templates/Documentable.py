@@ -1,4 +1,8 @@
 class Documentable:
+    '''
+    Class that contains api description methods
+    '''
+
     docs = {
         "definition": "no_description_defined",
     }
