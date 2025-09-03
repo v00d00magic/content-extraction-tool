@@ -10,8 +10,16 @@ class Submodulable():
         return super().__init_subclass__(**kwargs)
 
     @classproperty
-    def extractors(cls):
-        return cls.get_submodules_by_type("Extractor")
+    def receivations(cls):
+        return cls.get_submodules_by_type("Receivations")
+
+    @classproperty
+    def external_extractors(cls):
+        return cls.get_submodules_by_type("ExternalExtractor")
+
+    @classproperty
+    def acts(cls):
+        return cls.get_submodules_by_type("Act")
 
     @classmethod
     def get_submodules_by_type(cls, type):

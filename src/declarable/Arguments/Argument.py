@@ -10,11 +10,11 @@ class Argument:
 
         self.configuration = configuration
 
-    # Вообще тут какое-то нарушение логической связи, значение должно быть передано через аргумент функции, а так ничего непонятно. Возможно, придётся переписать в будущем.
+    # logic violation
     def input_value(self, val):
         self.passed_value = val
 
-    # must be changed in inherited
+    # This method must be changed in inherited!
     def value(self):
         return self.passed_value
 

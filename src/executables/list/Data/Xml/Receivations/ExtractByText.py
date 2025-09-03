@@ -2,7 +2,7 @@ from .. import Implementation as Text
 from declarable.Arguments import StringArgument
 from utils.MainUtils import parse_json
 
-class Method(Text.AbstractExtractor):
+class Method(Text.AbstractReceivation):
     @classmethod
     def declare(cls):
         params = {}

@@ -1,11 +1,9 @@
 from declarable.Arguments import StringArgument
 from .. import Implementation as RSS
 from executables.list.Data.Json import Implementation as JsonRepresentation
-from utils.MediaUtils import rss_date_parse
 from app.App import logger
-import aiohttp, xmltodict
 
-class Method(RSS.AbstractExtractor):
+class Method(RSS.AbstractReceivation):
     @classmethod
     def declare(cls):
         params = {}
@@ -18,6 +16,9 @@ class Method(RSS.AbstractExtractor):
         return params
 
     async def execute(self, i = {}):
+        import aiohttp, xmltodict
+        from utils.MediaUtils import rss_date_parse
+
         url = i.get("url")
         response_xml = None
 

@@ -7,7 +7,7 @@ keys = {
     }
 }
 
-class Method(File.AbstractExtractor):
+class Method(File.AbstractReceivation):
     @classmethod
     def declare(cls):
         params = {}

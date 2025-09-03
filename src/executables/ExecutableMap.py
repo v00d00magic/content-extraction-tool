@@ -6,12 +6,15 @@ import time
 
 class ExecutableMap:
     items = {}
+    RESULT_MODULE = 1
+    RESULT_SUBMODULE = 2
 
     def __init__(self):
         logger.log("Getting executables list...", section="ExecutableMap!Initialization")
 
         total = 0
         successes = 0
+        successes_submodules = 0
         errors = 0
 
         _lists = self.get_list()
@@ -30,16 +33,19 @@ class ExecutableMap:
 
                 logger.log(f"Imported module {module.full_name()} in {round(end_time - start_time, 2)}s", section="ExecutableMap!Initialization")
 
-                self.register(module)
+                _item = self.register(module)
 
                 successes +=1
+
+                if _item == ExecutableMap.RESULT_SUBMODULE:
+                    successes_submodules += 1
             except AssertionError as e:
                 logger.log(f"AssertionError when importing {".".join(parts.get("parts"))}: {str(e) }, probaly not an executable", section="ExecutableMap!Initialization")
             except Exception as e:
                 errors += 1
                 logger.logException(e, section="ExecutableMap!Initialization", prefix=f"Did not imported module: ")
 
-        logger.log(f"Found total {total} scripts, {successes} successfully, {errors} errors", section="ExecutableMap!Initialization")
+        logger.log(f"Found total {total} scripts, {successes} successfully, {successes_submodules} submodules, {errors} errors", section="ExecutableMap!Initialization")
 
     def split(self, path):
         parts = str(path).split("\\")
@@ -57,7 +63,7 @@ class ExecutableMap:
                 continue
 
             # we got to the additional modules
-            if part in ["Recievations", "Acts", "Extractors", "ExternalExtractors"]:
+            if part in ["Receivations", "Acts", "Extractors", "ExternalExtractors"]:
                 submodule = part
             else:
                 common_parts.append(part)
@@ -93,10 +99,14 @@ class ExecutableMap:
 
         if main_module == None:
             self.items[module.full_name()] = module
+
+            return ExecutableMap.RESULT_MODULE
         else:
-            logger.log(f"Including {module.full_name()} to {main_module.full_name()}", section="ExecutableMap!Initialization")
+            logger.log(f"Imported module {module.full_name()} to {main_module.full_name()}", section="ExecutableMap!Initialization")
 
             self.items[main_module.full_name()].add_submodule(module)
+
+            return ExecutableMap.RESULT_SUBMODULE
 
     def get_list(self):
         list = []
@@ -112,6 +122,17 @@ class ExecutableMap:
             list.append(path)
 
         return list
+
+    def items_by_class(self, class_name = None):
+        output = []
+        for item_name, item in self.items.items():
+            if class_name != None:
+                if class_name != item.self_name:
+                    return None
+
+            output.append(item)
+
+        return output
 
     def find(self, key, class_name = None):
         _item = self.items.get(key)

@@ -2,7 +2,7 @@ from .. import Implementation as Json
 from declarable.Arguments import ObjectArgument
 from utils.MainUtils import list_conversation
 
-class Method(Json.AbstractExtractor):
+class Method(Json.AbstractReceivation):
     @classmethod
     def declare(cls):
         params = {}

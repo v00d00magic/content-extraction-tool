@@ -10,3 +10,6 @@ class ExecutableArgument(Argument):
 
     def assertion_can_be_executed(self, item):
         assert self.recieved_value.canBeExecuted() == True, "item cannot be executed"
+
+    def assertion_not_null(self, item):
+        assert self.recieved_value != None, f"not found executable with name {self.passed_value}"

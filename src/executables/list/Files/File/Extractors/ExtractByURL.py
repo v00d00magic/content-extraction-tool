@@ -1,10 +1,8 @@
 from declarable.Arguments import CsvArgument, StringArgument
-from submodules.Web.DownloadManager import download_manager
 from .. import Implementation as File
 from utils.WebUtils import is_generated_ext
 from utils.MainUtils import name_from_url
 from pathlib import Path
-import mimetypes, os
 
 keys = {
     "url.name": {
@@ -12,7 +10,7 @@ keys = {
     }
 }
 
-class Method(File.AbstractExtractor):
+class Method(File.AbstractReceivation):
     @classmethod
     def declare(cls):
         params = {}
@@ -27,6 +25,9 @@ class Method(File.AbstractExtractor):
         return params
     
     async def execute(self, i = {}):
+        from submodules.Web.DownloadManager import download_manager
+        import mimetypes, os
+
         urls = i.get('url')
         outs = []
 

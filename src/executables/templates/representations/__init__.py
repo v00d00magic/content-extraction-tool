@@ -16,7 +16,7 @@ class Representation(Executable, metaclass=RepresentationMeta):
 
     @classmethod
     def declare_recursive(cls):
-        _extractors_args = cls.sum_arguments(cls.extractors)
+        _extractors_args = cls.sum_arguments(cls.receivations)
 
         _fnl = _extractors_args
         _fnl.update(super().declare_recursive())
@@ -72,18 +72,18 @@ class Representation(Executable, metaclass=RepresentationMeta):
     @classmethod
     def describe(cls):
         ps = super().describe()
-        ps["variants"] = {}
-        ps["external_extractors"] = {}
-        ps["acts"] = {}
+        ps["variants"] = []
+        ps["external_extractors"] = []
+        ps["acts"] = []
 
-        for signature, item in cls.extractors.items():
-            ps["variants"][signature] = item.describe()
+        for item in cls.receivations:
+            ps.get("variants").append(item.describe())
 
-        for signature, item in cls.external_extractors.items():
-            ps["external_extractors"][signature] = item.describe()
+        for item in cls.external_extractors:
+            ps.get("external_extractors").append(item.describe())
 
-        for signature, item in cls.acts.items():
-            ps["acts"][signature] = item.describe()
+        for item in cls.acts:
+            ps.get("acts").append(item.describe())
 
         return ps
 
@@ -95,7 +95,7 @@ class Representation(Executable, metaclass=RepresentationMeta):
             self_name = "Act"
             outer = cls
 
-        class AbstractRecievation(Extractor):
+        class AbstractReceivation(Extractor):
             self_name = "Extractor"
             outer = cls
 
@@ -110,7 +110,7 @@ class Representation(Executable, metaclass=RepresentationMeta):
                 item.mark_representation(self)
 
         cls.AbstractAct = AbstractAct
-        cls.AbstractRecievation = AbstractRecievation
+        cls.AbstractReceivation = AbstractReceivation
         cls.AbstractExternalExtractor = AbstractExternalExtractor
 
     #class ContentUnit(ContentUnit):

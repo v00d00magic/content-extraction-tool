@@ -16,7 +16,7 @@ class Implementation(Act):
     async def execute(self, args = {}):
         return {
             "input": {
-                "validated_args": args,
+                "validated_args": args.__dict__(),
                 "argv": app.argv,
             }
         }
