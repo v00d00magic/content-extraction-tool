@@ -1,6 +1,5 @@
 from executables.list.Files.File import Implementation as FileImplementation
 from thumbnails.ImageMethod import ImageMethod
-from PIL import Image as PILImage
 
 keys = {
     "image.name": {
@@ -17,6 +16,8 @@ class Implementation(FileImplementation):
 
     @staticmethod
     async def process_item(item):
+        from PIL import Image as PILImage
+
         new_data = {}
         common_link = item.common_link
 
@@ -26,7 +27,7 @@ class Implementation(FileImplementation):
                 "height": img.size[1],
             }
 
-        item.update_data(new_data)
+        item.updateData(new_data)
 
         return item
 

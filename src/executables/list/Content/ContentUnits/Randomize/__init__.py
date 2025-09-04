@@ -36,7 +36,7 @@ class Implementation(Act):
             if i.get("raw_models") == True:
                 fnl.append(item)
             else:
-                fnl.append(item.api_structure())
+                fnl.append(item.getStructure())
 
         return fnl
 

@@ -59,14 +59,14 @@ class Method(File.AbstractReceivation):
             result_path = Path(os.path.join(tmp_dir, result_name))
             tmp_path.rename(os.path.join(tmp_dir, result_path))
 
-            su.write_data({
+            su.writeData({
                 "extension": ext,
                 "upload_name": result_name,
                 "filesize": result_path.stat().st_size,
             })
 
-            out.add_link(su)
-            out.set_common_link(su)
+            out.addLink(su)
+            out.setCommonLink(su)
             out.display_name = result_name
             out.source = {
                 'type': 'url',

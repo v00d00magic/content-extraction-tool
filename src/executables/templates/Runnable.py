@@ -79,7 +79,7 @@ class Runnable:
 
         logger.log(message=f"Executed {self.full_name()}",section=logger.SECTION_EXECUTABLES,kind=logger.KIND_MESSAGE)
 
-        if getattr(self, "before_execute", None) != None:
-            self.before_execute(_args)
+        if getattr(self, "beforeExecute", None) != None:
+            self.beforeExecute(_args)
 
         return await self.execute(_args)

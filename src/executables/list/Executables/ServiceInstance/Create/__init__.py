@@ -45,4 +45,4 @@ class Implementation(Act):
 
         new_service.save()
 
-        return new_service.api_structure()
+        return new_service.getStructure()

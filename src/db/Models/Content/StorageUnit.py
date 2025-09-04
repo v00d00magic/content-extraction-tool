@@ -49,24 +49,24 @@ class StorageUnit(BaseModel):
         if self.is_saved() == False:
             self.temp_dir = storage.sub('tmp_files').allocateTemp()
 
-    def remove_temp(self):
+    def removeTemp(self):
         # get cursed
         if self.temp_dir != None:
             file_manager.rmdir(self.temp_dir)
 
-    def generate_hash(self):
+    def generateHash(self):
         self.hash = get_random_hash(32)
 
     def flush(self):
-        self.walk()
+        self.generateFilesList()
         self.save(force_insert=True)
-        self.move_temp_dir()
+        self.moveTempDir()
 
-    def set_mime(self):
+    def setMime(self):
         _mime = mimetypes.guess_type(self.path())
         self.mime = _mime[0]
 
-    def walk(self):
+    def generateFilesList(self):
         _p = Path(self.temp_dir)
         _files = _p.rglob('*')
         _map = []
@@ -81,7 +81,7 @@ class StorageUnit(BaseModel):
 
         self.lists = dump_json(_map)
 
-    def set_about(self):
+    def setAbout(self):
         path = self.path_link
 
         file_stat = path.stat()
@@ -89,21 +89,21 @@ class StorageUnit(BaseModel):
         self.extension = str(path.suffix[1:])
         self.upload_name = str(path.name)
 
-    def set_main_file(self, path: Path):
+    def setMainFile(self, path: Path):
         self.path_link = Path(path)
-        self.generate_hash()
-        self.set_about()
-        self.set_mime()
+        self.generateHash()
+        self.setAbout()
+        self.setMime()
         self.flush()
 
-    def set_link(self, link):
+    def setLink(self, link):
         self.path_link = Path(link)
         self.link = str(link)
 
-    def mark_as_preview(self):
+    def markAsPreview(self):
         self.is_thumbnail = 1
 
-    def write_data(self, json_data):
+    def writeData(self, json_data):
         self.extension = json_data.get("extension")
 
         if json_data.get("hash") == None:
@@ -113,7 +113,7 @@ class StorageUnit(BaseModel):
 
         self.upload_name = json_data.get("upload_name")
         self.filesize = json_data.get("filesize")
-        self.set_mime()
+        self.setMime()
 
         # broken function
         if json_data.get("link") != None:
@@ -125,7 +125,7 @@ class StorageUnit(BaseModel):
 
         self.flush()
 
-    def move_temp_dir(self):
+    def moveTempDir(self):
         '''
         Renames temp directory to new hash dir and changes main file name to hash
         '''
@@ -144,27 +144,7 @@ class StorageUnit(BaseModel):
         
         self.temp_dir = None
 
-    def save_to_dir(self, save_dir, prefix = ""):
-        current_dir_path = self.dir_path()
-        to_move_path = save_dir
-
-        file_name = (str(prefix) + str(self.upload_name))
-
-        __list = os.listdir(current_dir_path)
-        __count = len(__list)
-        try:
-            if __count > 0:
-                shutil.copytree(str(current_dir_path), str(to_move_path), dirs_exist_ok = True)
-
-                # renaming hashed filename to original
-                Path(os.path.join(to_move_path, self.hash_filename())).rename(os.path.join(to_move_path, file_name))
-        except Exception as __e__:
-            logger.logException(__e__, "File", silent=False)
-
-    async def export(self, dir_path, file_prefix = ""):
-        self.save_to_dir(save_dir=dir_path, prefix=file_prefix)
-
-    def api_structure(self):
+    def getStructure(self):
         ret = {}
         ret['class_name'] = "StorageUnit"
         ret["id"] = str(self.uuid)

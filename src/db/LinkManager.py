@@ -13,14 +13,10 @@ class LinkManager:
 
     def __check_if_already_linked_somewhere(self, child):
         for linked_id in self.ever_linked:
-            print(self.ever_linked)
             if f"{child.short_name}_{child.uuid}" == linked_id:
                 raise AlreadyLinkedException(f"{child.short_name}_{child.uuid} already linked somewhere")
 
     def link(self, child, revision: bool = False)->bool:
-        for frame in traceback.extract_stack():
-            print(f"{frame.filename}, {frame.lineno}, {frame.name}, {frame.line}")
-
         assert self.parent != None and child != None, 'Not found item to link'
         assert self.parent.uuid != None and child.uuid != None, "Can't link: Items probaly not saved"
         assert self.parent.uuid != child.uuid, "Can't link to themselves"
@@ -124,7 +120,7 @@ class LinkManager:
                     got_id = int(got_id)
                     for linked in linked_list:
                         if linked.uuid == got_id and linked.self_name == "StorageUnit":
-                            return linked.api_structure()
+                            return linked.getStructure()
 
                     return to_check
                 else:

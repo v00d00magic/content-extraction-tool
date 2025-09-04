@@ -21,11 +21,11 @@ class ThumbnailState():
     def state(self):
         return self.data
 
-    def api_structure(self):
+    def getStructure(self):
         data = self.state()
         su = StorageUnit.ids(data.get("storage_unit_id"))
 
         if su:
-            data["storage_unit"] = su.api_structure()
+            data["storage_unit"] = su.getStructure()
 
         return data

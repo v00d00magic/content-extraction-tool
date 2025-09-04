@@ -145,7 +145,7 @@ class Implementation(Act):
         fnl = []
 
         for item in select_query:
-            fnl.append(item.api_structure())
+            fnl.append(item.getStructure())
 
         return {
             'total_count': items_count,

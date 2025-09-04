@@ -9,14 +9,13 @@ class Documentable:
 
     @classmethod
     def describe(cls):
-        module_name = cls.__module__.split('.')
-        category = module_name[-2]
-        name = module_name[-1]
+        module_name = cls.__module__.split('.')[2:]
 
         ts = {
-            'script_name': cls.self_name,
-            'category': category,
-            'name': name,
+            'type': cls.self_name,
+            'category': module_name[0],
+            'class.name': cls.full_name(),
+            'name': module_name[-1],
             'docs': cls.docs,
             'args': [],
         }

@@ -1,6 +1,5 @@
 from executables.templates.representations import Representation
 from declarable.Arguments import StringArgument, ObjectArgument
-import xmltodict
 
 keys = {
     "xml.name": {

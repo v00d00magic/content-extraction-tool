@@ -81,16 +81,16 @@ class Method(File.AbstractReceivation):
             match(move_type):
                 case "copy":
                     file_manager.copyFile(path, move_to)
-                    su.set_main_file(move_to)
+                    su.setMainFile(move_to)
                 case "move":
                     file_manager.moveFile(path, move_to)
-                    su.set_main_file(move_to)
+                    su.setMainFile(move_to)
                 case "link":
-                    su.set_link(link)
+                    su.setLink(link)
                     #file_manager.symlinkFile(INPUT_PATH, MOVE_TO)
 
-            out.add_link(su)
-            out.set_common_link(su)
+            out.addLink(su)
+            out.setCommonLink(su)
             out.display_name = file_name
             out.content = {
                 "export_as": str(move_type),

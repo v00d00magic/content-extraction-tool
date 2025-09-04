@@ -31,8 +31,8 @@ class ImageMethod(ThumbnailMethod):
             new_prev = Path(os.path.join(new_su.temp_dir, f"{su.uuid}.jpg"))
             new_img.save(new_prev)
 
-            new_su.mark_as_preview()
-            new_su.set_main_file(new_prev)
+            new_su.markAsPreview()
+            new_su.setMainFile(new_prev)
 
             state = ThumbnailState({
                 "type": "photo",

@@ -1,8 +1,7 @@
 from resources.Exceptions import AbstractClassException, SuitableExtractMethodNotFound
 from thumbnails import ThumbnailMethod
 from declarable.ArgsComparer import ArgsComparer
-from executables.templates.extractors import Extractor
-from executables.templates.acts import Act
+from executables.templates.Linkable import Linkable
 from executables.templates.Executable import Executable
 
 class RepresentationMeta(type):
@@ -11,7 +10,7 @@ class RepresentationMeta(type):
             cls._build_submodules()
         super().__init__(name, bases, attrs)
 
-class Representation(Executable, metaclass=RepresentationMeta):
+class Representation(Executable, Linkable, metaclass=RepresentationMeta):
     self_name = "Representation"
 
     @classmethod
@@ -50,24 +49,27 @@ class Representation(Executable, metaclass=RepresentationMeta):
             return cls.extractor_wheel(args)
 
         # dumb way
-        for extractor_item in cls.extractors:
+        for extractor_item in cls.receivations:
             decls = extractor_item.declare_recursive()
             decl = ArgsComparer(decls, args)
 
             if decl.diff():
                 return extractor_item
 
-    async def extract(self, i: dict = {})->dict:
+    async def extract(self, i: dict = {}):
         extract_strategy = self.find_suitable_extractor(i)
         assert extract_strategy != None, "cant find correct extractor"
 
         extract_strategy_instance = extract_strategy()
 
         _dict = ArgsComparer(self.declare_recursive(), i, "assert")
-        if getattr(self, "before_execute", None) != None:
-            self.before_execute(_dict.dict())
+        if getattr(self, "beforeExecute", None) != None:
+            self.beforeExecute(_dict.dict())
 
         return await extract_strategy_instance.execute(_dict.dict())
+
+    async def execute(self, i: dict = {}):
+        return await self.extract(i)
 
     @classmethod
     def describe(cls):
@@ -86,32 +88,6 @@ class Representation(Executable, metaclass=RepresentationMeta):
             ps.get("acts").append(item.describe())
 
         return ps
-
-    @classmethod
-    def _build_submodules(cls):
-        # assert cls.full_name() != "templates.representations", "submodule of abstract class is used"
-
-        class AbstractAct(Act):
-            self_name = "Act"
-            outer = cls
-
-        class AbstractReceivation(Extractor):
-            self_name = "Extractor"
-            outer = cls
-
-            def self_insert(self, item):
-                item.mark_representation(self)
-
-        class AbstractExternalExtractor(Extractor):
-            self_name = "ExternalExtractor"
-            outer = cls
-
-            def self_insert(self, item):
-                item.mark_representation(self)
-
-        cls.AbstractAct = AbstractAct
-        cls.AbstractReceivation = AbstractReceivation
-        cls.AbstractExternalExtractor = AbstractExternalExtractor
 
     #class ContentUnit(ContentUnit):
     #   pass

@@ -1,5 +1,5 @@
 from app.App import logger
-import asyncio
+import asyncio, datetime
 from db.Models.Content.ContentUnit import ContentUnit
 from db.Models.Content.StorageUnit import StorageUnit
 
@@ -29,6 +29,7 @@ class Saveable:
 
     def ContentUnit(self):
         out = ContentUnit()
+        out.created_at = float(datetime.datetime.now().timestamp())
         self.self_insert(out)
 
         return out

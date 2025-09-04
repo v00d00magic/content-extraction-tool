@@ -20,8 +20,5 @@ class Implementation(Act):
                 fnl.append(item.describe())
             except ModuleNotFoundError:
                 pass
-            except Exception as e:
-                print(e)
-                raise e
 
         return fnl

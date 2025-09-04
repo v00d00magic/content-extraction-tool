@@ -29,7 +29,7 @@ class ServiceInstance(Model):
 
         return parse_json(__data) 
 
-    def api_structure(self):
+    def getStructure(self):
         obj = {}
 
         obj['id'] = self.id

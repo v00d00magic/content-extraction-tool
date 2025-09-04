@@ -75,7 +75,7 @@ class ContentUnit(BaseModel):
 
         return parse_json(self.saved)
 
-    def update_data(self, new_data: dict):
+    def updateData(self, new_data: dict):
         cnt = self.content_json
         cnt.update(new_data)
 
@@ -104,22 +104,6 @@ class ContentUnit(BaseModel):
 
         return _list
 
-    def set_thumbnail(self, thumbs):
-        thumbs_out = []
-
-        if thumbs:
-            for __ in thumbs:
-                thumbs_out.append(__.state())
-
-        write_this = {}
-        if len(thumbs_out) > 0:
-            write_this["thumbnail"] = thumbs_out
-
-        self.outer = json.dumps(write_this, ensure_ascii=False)
-
-    def set_source(self, source_json: dict):
-        self.source = dump_json(source_json)
-
     @cached_property
     def common_link(self):
         if self.storage_unit != None:
@@ -138,46 +122,7 @@ class ContentUnit(BaseModel):
 
         return list
 
-    # it will be saved later
-    def add_link(self, item):
-        if self.link_queue is None:
-            self.link_queue = []
-        self.link_queue.append(item)
-
-    def write_link_queue(self):
-        from db.LinkManager import LinkManager
-
-        link_manager = LinkManager(self)
-
-        for item in self.link_queue:
-            if item == None:
-                continue
-
-            try:
-                link_manager.link(item)
-            except AssertionError as _e:
-                logger.log(message=f"Failed to link: {str(_e)}", section=logger.SECTION_LINKAGE, kind = logger.KIND_ERROR)
-            except AlreadyLinkedException as _e:
-                logger.log(message=f"Failed to link: {str(_e)}", section=logger.SECTION_LINKAGE, kind = logger.KIND_ERROR)
-
-        self.link_queue = None
-
-    def set_common_link(self, item):
-        self.storage_unit = item.uuid
-
-    def set_saved(self, save_json: dict):
-        self.saved = dump_json(save_json)
-
-    def mark_representation(self, method):
-        saved_json = {
-            "method": method.full_name(),
-            "representation": method.outer.full_name()
-        }
-
-        self.via_method = method
-        self.set_saved(saved_json)
-
-    def api_structure(self, return_content = True, sensitive=False):
+    def getStructure(self, return_content = True, sensitive=False):
         payload = {}
         payload['class_name'] = "ContentUnit"
         payload['id'] = str(self.uuid) # Converting to str cuz JSON.parse cannot convert it
@@ -199,12 +144,11 @@ class ContentUnit(BaseModel):
                 thumbnail_api_response_list = []
 
                 for iterated_thumbnail in thumbnail_internal_classes_from_db_list:
-                    thumbnail_api_response_list.append(iterated_thumbnail.api_structure())
+                    thumbnail_api_response_list.append(iterated_thumbnail.getStructure())
 
                 payload['outer']['thumbnail'] = thumbnail_api_response_list
             except Exception as e:
-                print(e)
-                pass
+                logger.logException(e,section="ContentUnit")
 
         try:
             # it does not converts to datetime after saving so we need to use this workaround
@@ -224,13 +168,70 @@ class ContentUnit(BaseModel):
             else:
                 payload["declared_created"] = float(self.declared_created_at)
         except Exception as _e:
-            print(_e)
+            logger.logException(_e,section="ContentUnit")
 
         return payload
 
-    def save_info_to_json(self, dir_path):
-        with open(os.path.join(dir_path, f"data_{self.uuid}.json"), "w", encoding='utf8') as json_file:
-            json_file.write(json.dumps(self.api_structure(sensitive=True), indent=2, ensure_ascii=False))
+    # it will be saved later
+    def addLink(self, item):
+        if self.link_queue is None:
+            self.link_queue = []
+        self.link_queue.append(item)
+
+    def writeLinkQueue(self):
+        from db.LinkManager import LinkManager
+
+        link_manager = LinkManager(self)
+
+        for item in self.link_queue:
+            if item == None:
+                continue
+
+            try:
+                link_manager.link(item)
+            except AssertionError as _e:
+                logger.log(message=f"Failed to link: {str(_e)}", section=logger.SECTION_LINKAGE, kind = logger.KIND_ERROR)
+            except AlreadyLinkedException as _e:
+                logger.log(message=f"Failed to link: {str(_e)}", section=logger.SECTION_LINKAGE, kind = logger.KIND_ERROR)
+
+        self.link_queue = None
+
+    def markSavedJson(self, method):
+        saved_json = {
+            "method": method.full_name(),
+            "representation": method.outer.full_name()
+        }
+
+        self.via_method = method
+        self.setSaved(saved_json)
+
+    def setCommonLink(self, item):
+        self.storage_unit = item.uuid
+
+    def setSaved(self, save_json: dict):
+        self.saved = dump_json(save_json)
+
+    def saveThumbnail(self, method):
+        thumb_class = method.outer.Thumbnail(method)
+        thumb_out = thumb_class.create(self, {})
+
+        return thumb_out
+
+    def setThumbnail(self, thumbs):
+        thumbs_out = []
+
+        if thumbs:
+            for __ in thumbs:
+                thumbs_out.append(__.state())
+
+        write_this = {}
+        if len(thumbs_out) > 0:
+            write_this["thumbnail"] = thumbs_out
+
+        self.outer = json.dumps(write_this, ensure_ascii=False)
+
+    def setSource(self, source_json: dict):
+        self.source = dump_json(source_json)
 
     def save(self, **kwargs):
         kwargs["force_insert"] = True
@@ -245,12 +246,8 @@ class ContentUnit(BaseModel):
         if getattr(self, "source", None) != None and type(self.source) != str:
             self.source = dump_json(self.source)
 
-        if self.via_method != None:
-            if make_thumbnail == True:
-                thumb_class = self.via_method.outer.Thumbnail(self.via_method)
-                thumb_out = thumb_class.create(self, {})
-
-                self.set_thumbnail(thumb_out)
+        if self.via_method != None and make_thumbnail == True:
+            self.setThumbnail(self.saveThumbnail(self.via_method))
 
         if getattr(self, "declared_created_at", None) == None:
             self.declared_created_at = float(datetime.datetime.now().timestamp())
@@ -258,4 +255,4 @@ class ContentUnit(BaseModel):
         super().save(**kwargs)
 
         if self.link_queue != None:
-            self.write_link_queue()
+            self.writeLinkQueue()
