@@ -15,6 +15,6 @@ class Executable(Documentable, EnvContainable, RecursiveDeclarable, Runnable, Sa
         super().__init__()
 
         def __onerror(exception):
-            logger.logException(exception, section=logger.SECTION_EXECUTABLES)
+            logger.log(exception, section=logger.SECTION_EXECUTABLES)
 
         self.add_hook("error", __onerror)

@@ -27,7 +27,7 @@ class BaseIterable(BaseTimeoutable):
             try:
                 await self._iterableAction(i, iterator)
             except Exception as ____e:
-                logger.logException(____e, "Iterable", silent=False)
+                logger.log(____e, "Iterable", silent=False)
 
             await asyncio.sleep(i.get("timeout"))
 

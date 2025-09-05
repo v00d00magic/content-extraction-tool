@@ -1,10 +1,142 @@
 from colorama import init as ColoramaInit
-from resources.Consts import consts
 from utils.MainUtils import parse_json, dump_json
 from pathlib import Path
 from datetime import datetime
 from utils.Hookable import Hookable
 import traceback
+
+class Logger(Hookable):
+    '''
+    Module for logging of messages and printing them to terminal
+    '''
+
+    events = ["log"]
+    file_checked = False
+    current_json = None
+
+    # CONSTS
+
+    KIND_SUCCESS = 'success'
+    KIND_ERROR = 'error'
+    KIND_DEPRECATED = 'deprecated'
+    KIND_MESSAGE = 'message'
+
+    MODE_PER_DAY = 0
+    MODE_PER_STARTUP = 1
+
+    SECTION_SERVICES = 'Services'
+    SECTION_DB = 'DB'
+    SECTION_LINKAGE = 'Linkage'
+    SECTION_EXECUTABLES = 'Executables'
+    SECTION_SAVEABLE = 'Saveable'
+    SECTION_EXTRACTORS = 'Extractors'
+    SECTION_ACTS = 'Acts'
+    SECTION_WEB = 'Web'
+
+    def log(self, message, section: str = "App", kind: str = "message", silent: bool = False, prefix: str = ""):
+        write_message = message
+        if isinstance(message, BaseException):
+            __exp = traceback.format_exc()
+            write_message = prefix + type(message).__name__ + " " + __exp
+
+        self.log_({
+            "message": write_message,
+            "section": section,
+            "kind": kind,
+            "silent": silent
+        })
+
+    def log_(self, data):
+        should = {
+            "web": True,
+            "cli": data.get("silent") == False,
+            "file": self.skip_file == False
+        }
+
+        for item in self.skip_categories:
+            category = LoggerCategory(item)
+            should = category.check(data.get("section"), data.get("kind"))
+
+        message = LogMessage({
+            "time": (datetime.now()).timestamp(),
+            "section": data.get("section"),
+            "message": data.get("message"),
+            "kind": data.get("kind"),
+            "should": should,
+        })
+        self.__log_file_check()
+        self.__console_hook(message=message) # not a hook cuz its uses async and prints wrong
+
+        self.trigger("log", message=message)
+
+    def __init__(self, config, storage):
+        super().__init__() # for hookable
+
+        ColoramaInit()
+
+        self.write_mode = self.MODE_PER_STARTUP
+        self.logs_storage = storage.sub('logs')
+        self.skip_categories = config.get("logger.skip_categories")
+        self.skip_file = config.get("logger.skip_file") == 1
+
+        self.add_hook("log", self.__write_to_file_hook)
+
+    def __console_hook(self, **kwargs):
+        message = kwargs.get("message")
+        if message.should("cli") == True:
+            message.print_self()
+
+    def __write_to_file_hook(self, **kwargs):
+        if self.skip_file == True:
+            return False
+
+        message = kwargs.get("message")
+        if message.should("file") == True:
+            return
+
+        if self.current_json == None:
+            try:
+                self.current_json = parse_json(self.log_stream.read())
+            except:
+                self.current_json = []
+
+        self.current_json.append(message.data)
+
+        self.log_stream.truncate(0)
+        self.log_stream.seek(0)
+        self.log_stream.write(dump_json(self.current_json, indent=4))
+
+    def __del__(self):
+        try:
+            self.save()
+            self.log_stream.close()
+        except AttributeError:
+            pass
+
+    def __log_file_check(self):
+        if self.skip_file == True:
+            return True
+        if self.file_checked == True:
+            return True
+
+        now = datetime.now()
+        match(self.write_mode):
+            case self.MODE_PER_STARTUP:
+                self.path = Path(f"{self.logs_storage.dir}/{now.strftime('%Y-%m-%d_%H-%M-%S')}.json")
+            case self.MODE_PER_DAY:
+                self.path = Path(f"{self.logs_storage.dir}/{now.strftime('%Y-%m-%d')}.json")
+
+        if self.path.exists() == False:
+            _not_exists = open(self.path, 'w', encoding='utf-8')
+            _not_exists.close()
+
+        self.log_stream = open(str(self.path), 'r+', encoding='utf-8')
+        self.file_checked = True
+
+        return True
+
+    def save(self):
+        self.log_stream.flush()
 
 class LoggerCategory():
     def __init__(self, data):
@@ -46,179 +178,30 @@ class LoggerCategory():
 
         return should
 
-class Logger(Hookable):
-    '''
-    Module for logging of messages and printing them to terminal
-    '''
+class LogMessage():
+    def __init__(self, data):
+        self.data = data
 
-    events = ["log"]
-
-    KIND_SUCCESS = 'success'
-    KIND_ERROR = 'error'
-    KIND_DEPRECATED = 'deprecated'
-    KIND_MESSAGE = 'message'
-
-    SECTION_SERVICES = 'Services'
-    SECTION_DB = 'DB'
-    SECTION_LINKAGE = 'Linkage'
-    SECTION_EXECUTABLES = 'Executables'
-    SECTION_SAVEABLE = 'Saveable'
-    SECTION_EXTRACTORS = 'Extractors'
-    SECTION_ACTS = 'Acts'
-    SECTION_WEB = 'Web'
-
-    current_json = None
-
-    def __init__(self, config, storage, keep: bool = True):
-        '''
-        Params:
-
-        keep: On True creates log file for app startup, on False create log file for current day.
-        '''
-        super().__init__() # i forgot why
-        # ok its for hookable
-
-        ColoramaInit()
-
-        self.per_startup_mode = keep
-        self.logs_storage = storage.sub('logs')
-        self.config_link = config
-        self.skip_categories = self.config_link.get("logger.skip_categories")
-        self.is_out_to_file = self.config_link.get("logger.skip_file") == 0
-
-        __path = self.logs_storage.dir
-        if __path.is_dir() == False:
-            __path.mkdir()
-
-        # self.add_hook("log", self.__console_hook)
-        self.add_hook("log", self.__write_to_file_hook)
-
-    def __console_hook(self, **kwargs):
-        components = kwargs.get("components")
-
-        section = components.get("section")
-        message = components.get("message")
-        kind = components.get("kind")
-        if components.get("should").get("cli") == False:
-            return
-
-        date = datetime.fromtimestamp(components.get("time"))
+    def print_self(self):
+        section = self.data.get("section")
+        message = self.data.get("message")
+        kind = self.data.get("kind")
+        date = datetime.fromtimestamp(self.data.get("time"))
 
         write_message = f"{date.strftime("%Y-%m-%d %H:%M:%S")} [{section}] {message}\n"
         write_message = write_message.replace("\\n", "\n")
         write_colored_message = ""
 
-        if kind == self.KIND_ERROR:
+        if kind == Logger.KIND_ERROR:
             write_colored_message = "\033[91m" + write_message + "\033[0m"
-        elif kind == self.KIND_SUCCESS:
+        elif kind == Logger.KIND_SUCCESS:
             write_colored_message = "\033[92m" + write_message + "\033[0m"
-        elif kind == self.KIND_DEPRECATED:
+        elif kind == Logger.KIND_DEPRECATED:
             write_colored_message = "\033[93m" + write_message + "\033[0m"
         else:
             write_colored_message = write_message
 
         print(write_colored_message, end='')
 
-    def __write_to_file_hook(self, **kwargs):
-        if self.is_out_to_file == False:
-            return False
-
-        components = kwargs.get("components")
-        if components.get("should").get("file") == False:
-            return
-
-        if getattr(self, "current_json", None) == None:
-            _json_text = self.log_stream.read()
-
-            try:
-                self.current_json = parse_json(_json_text)
-            except:
-                self.current_json = []
-
-        self.current_json.append(components)
-
-        self.log_stream.truncate(0)
-        self.log_stream.seek(0)
-        self.log_stream.write(dump_json(self.current_json, indent=4))
-
-    def __del__(self):
-        try:
-            self.save()
-            self.log_stream.close()
-        except AttributeError:
-            pass
-
-    def __log_file_check(self):
-        if self.is_out_to_file == False:
-            return True
-
-        if getattr(self, "file", None) != None:
-            return True
-
-        now = datetime.now()
-        log_path = ""
-
-        # appends current time to file name
-        if self.per_startup_mode:
-            log_path = f"{self.logs_storage.dir}/{now.strftime('%Y-%m-%d_%H-%M-%S')}.json"
-        # creates log files per day
-        else:
-            log_path = f"{self.logs_storage.dir}/{now.strftime('%Y-%m-%d')}.json"
-
-        self.path = Path(log_path)
-
-        # Checking if file exists, If no creating it
-        if self.path.exists() == False:
-            __temp_logger_stream = open(self.path, 'w', encoding='utf-8')
-            __temp_logger_stream.close()
-
-        self.log_stream = open(str(self.path), 'r+', encoding='utf-8')
-        self.file = True
-
-        return True
-
-    def save(self):
-        self.log_stream.flush()
-
-    # todo: split to logObject and Log
-    def log(self, message: str = "Undefined", section: str = "App", kind: str = "message", silent: bool = False):
-        '''
-        Logs message.
-
-        Params:
-
-        message: Message that will printed to console and log file
-
-        section: Section from place that message was printed
-
-        kind: Type of message ("success", "message", "deprecated" or "error")
-
-        silent: If True, message will not be displayed at the console
-        '''
-
-        should = {
-            "web": True,
-            "cli": silent == False,
-            "file": True
-        }
-
-        for item in self.skip_categories:
-            category = LoggerCategory(item)
-            should = category.check(section, kind)
-
-        _components = {
-            "time": (datetime.now()).timestamp(),
-            "section": section,
-            "message": message,
-            "kind": kind,
-            "should": should,
-        }
-        self.__log_file_check()
-        self.__console_hook(components=_components)
-
-        self.trigger("log", components=_components)
-
-    def logException(self, input_exception, section: str = "App", silent: bool = False, prefix = ""):
-        __exp = traceback.format_exc()
-
-        self.log(section=section, message=prefix + type(input_exception).__name__ + " " + __exp, kind=self.KIND_ERROR, silent=silent)
+    def should(self, where):
+        return self.data.get("should").get(where) == True

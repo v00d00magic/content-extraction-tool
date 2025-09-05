@@ -18,4 +18,4 @@ class Linkable:
             try:
                 link_manager.link(item, link_item)
             except AssertionError as _e:
-                logger.logException(_e, section=logger.SECTION_LINKAGE)
+                logger.log(_e, section=logger.SECTION_LINKAGE)

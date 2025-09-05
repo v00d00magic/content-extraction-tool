@@ -1,9 +1,49 @@
-from db.Models.Content.StorageUnit import StorageUnit
+from resources.Exceptions import AlreadyLinkedException
 from db.Models.Content.ContentUnit import ContentUnit
+from db.Models.Content.StorageUnit import StorageUnit
 from db.Models.Relations.ContentUnitRelation import ContentUnitRelation
 from app.App import logger
-from resources.Exceptions import AlreadyLinkedException
-import traceback
+
+class LinkItems:
+    def __init__(self, parent):
+        self.parent = parent
+
+    def items(self, by_class, revision = False):
+        _links = ContentUnitRelation().select().where(ContentUnitRelation.parent == self.parent.uuid)
+        if by_class != None:
+            _links = _links.where(ContentUnitRelation.child_type == by_class.self_name)
+
+        _links = _links.where(ContentUnitRelation.is_revision == int(revision))
+
+        return _links
+
+    def items_ids(self, items):
+        ids = []
+        for unit in items:
+            ids.append(unit.child)
+
+        return ids
+
+    def units(self, items):
+        c_s = []
+        s_s = []
+
+        for sel in items:
+            if sel.child_type == 'ContentUnit':
+                c_s.append(sel.child)
+            else:
+                s_s.append(sel.child)
+
+        c_s_units = ContentUnit.select().where(ContentUnit.uuid << c_s)
+        s_s_units = StorageUnit.select().where(StorageUnit.uuid << s_s)
+
+        ret = []
+        for unit in c_s_units:
+            ret.append(unit)
+        for unit in s_s_units:
+            ret.append(unit)
+
+        return ret
 
 class LinkManager:
     ever_linked = []
@@ -33,8 +73,7 @@ class LinkManager:
 
         _link.save()
 
-        # We could to append the actual entity,
-        # but i think it will take up a lot of memory so just appending ids
+        # just appending ids
 
         self.ever_linked.append(f"{child.short_name}_{child.uuid}")
 
@@ -57,50 +96,15 @@ class LinkManager:
         logger.log(message=f"Unlinked {self.parent.short_name}_{self.parent.uuid}<->{child.short_name}_{child.uuid}", section=logger.SECTION_LINKAGE, kind = logger.KIND_SUCCESS)
 
     def linksListId(self, by_class = None, revision: bool = False):
-        selection = self._linksSelection(by_class, revision)
-        ids = []
-        for unit in selection:
-            ids.append(unit.child)
-
-        return ids
+        _l = LinkItems(self.parent)
+        return _l.items_ids(_l.items(by_class, revision))
 
     def linksList(self, by_class = None, revision: bool = False):
         if self.parent.link_queue != None:
             return self.parent.link_queue
 
-        selection = self._linksSelection(by_class, revision)
-
-        c_s = []
-        s_s = []
-
-        for sel in selection:
-            if sel.child_type == 'ContentUnit':
-                c_s.append(sel.child)
-            else:
-                s_s.append(sel.child)
-
-        c_s_units = ContentUnit.select().where(ContentUnit.uuid << c_s)
-        s_s_units = StorageUnit.select().where(StorageUnit.uuid << s_s)
-
-        ret = []
-        for unit in c_s_units:
-            ret.append(unit)
-        for unit in s_s_units:
-            ret.append(unit)
-
-        return ret
-
-    def _linksSelection(self, by_class = None, revision: bool = False):
-        _links = ContentUnitRelation().select().where(ContentUnitRelation.parent == self.parent.uuid)
-        if by_class != None:
-            _links = _links.where(ContentUnitRelation.child_type == by_class.self_name)
-
-        if revision == True:
-            _links = _links.where(ContentUnitRelation.is_revision == 1)
-        elif revision == False:
-            _links = _links.where(ContentUnitRelation.is_revision == 0)
-
-        return _links
+        _l = LinkItems(self.parent)
+        return _l.units(_l.items(by_class, revision))
 
     def injectLinksToJson(self, to_check, linked_list, recurse_level = 0):
         if isinstance(to_check, dict):
@@ -129,7 +133,7 @@ class LinkManager:
                 else:
                     return to_check
             except Exception as __e:
-                logger.logException(__e, section="Linkage")
+                logger.log(__e, section="Linkage")
                 return to_check
         else:
             return to_check

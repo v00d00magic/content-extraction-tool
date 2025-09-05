@@ -21,7 +21,7 @@ class Saveable:
                 for item in items:
                     await method_name(item, __list)
             except Exception as _exc:
-                logger.logException(_exc, section=logger.SECTION_EXECUTABLES)
+                logger.log(_exc, section=logger.SECTION_EXECUTABLES)
 
         return __list
 

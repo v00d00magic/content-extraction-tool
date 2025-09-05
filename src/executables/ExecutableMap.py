@@ -43,7 +43,7 @@ class ExecutableMap:
                 logger.log(f"AssertionError when importing {".".join(parts.get("parts"))}: {str(e) }, probaly not an executable", section="ExecutableMap!Initialization")
             except Exception as e:
                 errors += 1
-                logger.logException(e, section="ExecutableMap!Initialization", prefix=f"Did not imported module: ")
+                logger.log(e, section="ExecutableMap!Initialization", prefix=f"Did not imported module: ")
 
         logger.log(f"Found total {total} scripts, {successes} successfully, {successes_submodules} submodules, {errors} errors", section="ExecutableMap!Initialization")
 

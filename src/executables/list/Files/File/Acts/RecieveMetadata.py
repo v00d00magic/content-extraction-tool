@@ -57,6 +57,6 @@ class Method(File.AbstractAct):
                 else:
                     return _metadata.exportPlaintext()
             except Exception as err:
-                logger.logException(err,section="Acts!Metadata")
+                logger.log(err,section="Acts!Metadata")
 
                 return []

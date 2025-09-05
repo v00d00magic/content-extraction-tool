@@ -148,7 +148,7 @@ class ContentUnit(BaseModel):
 
                 payload['outer']['thumbnail'] = thumbnail_api_response_list
             except Exception as e:
-                logger.logException(e,section="ContentUnit")
+                logger.log(e,section="ContentUnit")
 
         try:
             # it does not converts to datetime after saving so we need to use this workaround
@@ -168,7 +168,7 @@ class ContentUnit(BaseModel):
             else:
                 payload["declared_created"] = float(self.declared_created_at)
         except Exception as _e:
-            logger.logException(_e,section="ContentUnit")
+            logger.log(_e,section="ContentUnit")
 
         return payload
 
