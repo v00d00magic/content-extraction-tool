@@ -52,12 +52,12 @@ class Implementation(Act):
             element_flags = item.get("flags")
 
             element_item = export_manager.getByTypeAndId(element_type, int(element_id))
-
             if element_item == None:
                 continue
 
-            args = {}
+            print(element_item)
+            #args = {}
 
-            await export_manager.export(element_item, args)
+            #await export_manager.export(element_item, args)
 
             to_export.append(element_item)

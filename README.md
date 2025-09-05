@@ -6,7 +6,6 @@ Todo:
 
 - [x] Упрощение встраивания (?)
 - [ ] Переписать confirmable
-- [ ] Executables.Run не находит
 
 #### Логирование
 
@@ -26,7 +25,6 @@ Todo:
 
 - [ ] Генерируемая колонка indexation_content_string (колонка `content` без ключей и пробелов)
 - [ ] Подключение альтернативной базы данных по аргументу
-- [ ] Теги (?)
 - [ ] Unsaved и последующее save
 - [ ] Объявить типы `source`
 
@@ -52,16 +50,14 @@ Todo:
 - [ ] .
 - [ ] Определённые декларируемые функции для определённого сайта
 
-#### Acts.Content.ContentUnits.
+#### Content.ContentUnits.
 
 - [x] Remove
 - [x] Edit
 
-#### Acts.Links
+#### Content.ContentUnits.Links
 
-- [ ] Link
-- [ ] Unlink
-- [ ] GetList
+- [x] Link
 - [ ] GetListByItem
 - [ ] ReoderLink
 
