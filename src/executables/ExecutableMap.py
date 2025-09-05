@@ -105,6 +105,7 @@ class ExecutableMap:
             logger.log(f"Imported module {module.full_name()} to {main_module.full_name()}", section="ExecutableMap!Initialization")
 
             self.items[main_module.full_name()].add_submodule(module)
+            self.items[module.full_name()] = module
 
             return ExecutableMap.RESULT_SUBMODULE
 

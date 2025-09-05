@@ -52,10 +52,10 @@ Todo:
 - [ ] .
 - [ ] Определённые декларируемые функции для определённого сайта
 
-#### Acts.ContentUnits.
+#### Acts.Content.ContentUnits.
 
-- [ ] Remove
-- [ ] Edit
+- [x] Remove
+- [x] Edit
 
 #### Acts.Links
 

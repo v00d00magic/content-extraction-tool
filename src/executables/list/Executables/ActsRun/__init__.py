@@ -27,7 +27,6 @@ class Implementation(Act):
     async def execute(self, i = {}):
         act_class = i.get("i")()
         ignore_requirements = i.get("ignore_requirements")
-
         if consts.get("context") != "cli":
             assert act_class.canBeUsedAt(consts.get("context"))
 

@@ -65,6 +65,9 @@ class LinkManager:
         return ids
 
     def linksList(self, by_class = None, revision: bool = False):
+        if self.parent.link_queue != None:
+            return self.parent.link_queue
+
         selection = self._linksSelection(by_class, revision)
 
         c_s = []
