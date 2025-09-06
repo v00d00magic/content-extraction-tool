@@ -129,7 +129,7 @@ class ExecutableMap:
         for item_name, item in self.items.items():
             if class_name != None:
                 if class_name != item.self_name:
-                    return None
+                    continue
 
             output.append(item)
 

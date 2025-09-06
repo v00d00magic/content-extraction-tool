@@ -45,7 +45,6 @@ class Implementation(Act):
         links = i.get('link')
         is_confirmed = int(i.get("confirm")) == 1
         link_to = []
-        output = []
 
         # REWRITE
         if executable.isConfirmable() != None:
@@ -79,15 +78,20 @@ class Implementation(Act):
         if getattr(executable, "beforeExecute", None) != None:
             executable.beforeExecute(i)
 
-        items = await executable.execute(i)
+        result = await executable.execute(i)
 
-        for item in items:
-            if is_save == True:
-                item.save()
-                executable.doLink(item)
+        if executable.self_name in ["Extractor", "Receivation", "Representation"]:
+            output = []
 
-            output.append(item.getStructure())
+            for item in result:
+                if is_save == True:
+                    item.save()
+                    executable.doLink(item)
 
-        return {
-            "items": output
-        }
+                output.append(item.getStructure())
+
+            return {
+                "items": output
+            }
+
+        return result

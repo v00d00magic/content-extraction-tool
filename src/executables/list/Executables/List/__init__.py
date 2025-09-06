@@ -7,15 +7,14 @@ class Implementation(Act):
     def declare(cls):
         params = {}
         params["type"] = LimitedArgument({
-            "values": ['representation', 'act', 'service'],
+            "values": ['Representation', 'Act', 'Service', 'Extractor'],
         })
 
         return params
 
     async def execute(self, i = {}):
-        lists = app.indexated_scripts.items_by_class(i.get("type"))
         fnl = []
-        for item in lists:
+        for item in app.indexated_scripts.items_by_class(i.get("type")):
             try:
                 fnl.append(item.describe())
             except ModuleNotFoundError:
