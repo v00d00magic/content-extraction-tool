@@ -4,7 +4,9 @@ class Documentable:
     '''
 
     docs = {
-        "definition": "no_description_defined",
+        "definition": {
+            "en_US": "No description"
+        },
     }
 
     @classmethod

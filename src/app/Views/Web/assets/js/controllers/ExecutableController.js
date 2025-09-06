@@ -1,6 +1,7 @@
 import Controller from "./Controller.js"
 import router from "../router.js"
 import api from "../api/api.js"
+import app from "../app.js"
 import Executable from "../models/Executables/Executable.js"
 
 class ExecutableController extends Controller {
@@ -72,8 +73,7 @@ class ExecutableController extends Controller {
             </div>
         `)
 
-        const items = await Executable.all()
-        items.forEach(item => {
+        app.executables.forEach(item => {
             container.node.find("#executables_list").append(`
                 <a href="#executable?title=${item.extended_name}">${item.extended_name}</a>    
             `)

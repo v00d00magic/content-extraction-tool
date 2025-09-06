@@ -2,6 +2,7 @@ import Config from "./models/App/Config.js"
 import router from "./router.js"
 import CommonNavigation from "./ui/CommonNavigation.js"
 import Container from "./ui/Container.js"
+import Executable from "./models/Executables/Executable.js"
 
 export const app = new class {
     floats = []
@@ -27,6 +28,7 @@ export const app = new class {
         u('#app').html(this.template())
 
         this.config = new Config()
+        this.executables = await Executable.all()
         await this.config.get_items()
 
         const navigation = new CommonNavigation()
