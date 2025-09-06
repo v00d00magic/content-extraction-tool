@@ -21,8 +21,15 @@ class Hookable:
         except Exception:
             pass
 
-    def trigger(self, *args, **kwargs):
-        asyncio.create_task(self.trigger_hooks(*args, **kwargs))
+    def trigger(self, category, *args, **kwargs):
+        if self._hooks.get(category) == None:
+            self._hooks[category] = []
+
+        for hook in self._hooks.get(category):
+            try:
+                hook(*args, **kwargs)
+            except:
+                pass
 
     async def trigger_hooks(self, category, *args, **kwargs):
         if self._hooks.get(category) == None:

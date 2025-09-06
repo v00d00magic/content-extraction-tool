@@ -1,5 +1,5 @@
 from declarable.Arguments.Argument import Argument
-from utils.MainUtils import is_valid_json
+from utils.MainUtils import is_valid_json, list_conversation
 import json
 
 class CsvArgument(Argument):
@@ -30,7 +30,7 @@ class CsvArgument(Argument):
             else:
                 end_vals.append(val)
 
-        return end_vals
+        return list_conversation(end_vals)
 
     def describe(self):
         orig_out = super().describe()

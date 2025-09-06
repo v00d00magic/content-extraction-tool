@@ -10,4 +10,4 @@ storage/*
 src/executables/list/*/Custom/*
 src/executables/list/*/Secret/*
 *node_modules*
-src/web/static/js/package-lock.json
+*package-lock.json

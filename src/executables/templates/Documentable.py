@@ -14,7 +14,7 @@ class Documentable:
         ts = {
             'type': cls.self_name,
             'category': module_name[0],
-            'class.name': cls.full_name(),
+            'class': cls.full_name(),
             'name': module_name[-1],
             'docs': cls.docs,
             'args': [],

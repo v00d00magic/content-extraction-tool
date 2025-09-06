@@ -1,7 +1,6 @@
 from resources.Exceptions import AbstractClassException, SuitableExtractMethodNotFound
 from thumbnails import ThumbnailMethod
 from declarable.ArgsComparer import ArgsComparer
-from executables.templates.Linkable import Linkable
 from executables.templates.Executable import Executable
 
 class RepresentationMeta(type):
@@ -10,7 +9,7 @@ class RepresentationMeta(type):
             cls._build_submodules()
         super().__init__(name, bases, attrs)
 
-class Representation(Executable, Linkable, metaclass=RepresentationMeta):
+class Representation(Executable, metaclass=RepresentationMeta):
     self_name = "Representation"
 
     @classmethod

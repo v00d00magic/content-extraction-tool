@@ -3,11 +3,12 @@ from executables.templates.EnvContainable import EnvContainable
 from executables.templates.RecursiveDeclarable import RecursiveDeclarable
 from executables.templates.Runnable import Runnable
 from executables.templates.Saveable import Saveable
+from executables.templates.Linkable import Linkable
 from executables.templates.Submodulable import Submodulable
 from utils.Hookable import Hookable
 from app.App import logger
 
-class Executable(Documentable, EnvContainable, RecursiveDeclarable, Runnable, Saveable, Submodulable, Hookable):
+class Executable(Documentable, EnvContainable, RecursiveDeclarable, Linkable, Runnable, Saveable, Submodulable, Hookable):
     '''
     Class that contains all other abstract classes
     '''

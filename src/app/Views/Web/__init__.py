@@ -7,7 +7,9 @@ from executables.list.Executables.ActsRun import Implementation as RunAct
 from db.Models.Content.StorageUnit import StorageUnit
 from utils.MainUtils import dump_json, parse_json
 from pathlib import Path
+from app.App import app as orig_app
 
+orig_app.setup()
 consts["context"] = "web"
 
 def check_node_modules():
@@ -38,7 +40,6 @@ async def index(request):
             <script type="text/javascript" src="/static/js/node_modules/dompurify/dist/purify.min.js"></script>
             <script src="/static/js/node_modules/interactjs/dist/interact.js"></script>
 
-            <link rel="shortcut icon" href="/static/images/favicon.png" type="image/x-icon">
         </head>
         <body>
             <div id="app"></div>
@@ -125,7 +126,7 @@ async def websocket_connection(request):
             await ws.send_str(dump_json({
                 "type": "log",
                 "event_index": 0,
-                "payload": kwargs.get("components")
+                "payload": {"result": kwargs.get("message").data}
             }))
         except Exception:
             pass
@@ -141,10 +142,24 @@ async def websocket_connection(request):
         data = parse_json(msg.data)
         match (data.get("type")):
             case "act":
+                results = None
+                payload = {}
+
+                try:
+                    results = await _act(data.get("payload"))
+                    payload["result"] = results
+                except Exception as e:
+                    logger.log(e)
+                    payload["error"] = {
+                        "status_code": 500,
+                        "exception_name": e.__class__.__name__,
+                        "message": str(e),
+                    }
+
                 await ws.send_str(dump_json({
                     "type": data.get("type"),
                     "event_index": data.get("event_index"),
-                    "payload": await _act(data.get("payload"))
+                    "payload": payload
                 }))
 
     return ws

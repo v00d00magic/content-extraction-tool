@@ -1,9 +1,9 @@
 from app.App import logger
-from executables.templates.extractors.BaseTimeoutable import BaseTimeoutable
+from executables.templates.extractors.Timeoutable import Timeoutable
 from declarable.Arguments import IntArgument
 import asyncio
 
-class BaseIterable(BaseTimeoutable):
+class BaseIterable(Timeoutable):
     @classmethod
     def declare(cls):
         params = {}
@@ -25,11 +25,11 @@ class BaseIterable(BaseTimeoutable):
     async def execute(self, i):
         for iterator in range(i.get("start"), i.get("end")):
             try:
-                await self._iterableAction(i, iterator)
-            except Exception as ____e:
-                logger.log(____e, "Iterable", silent=False)
+                await self.iterate(i, iterator)
+            except Exception as _e:
+                logger.log(_e, "Iterable", silent=False)
 
             await asyncio.sleep(i.get("timeout"))
 
-    async def _iterableAction(self, i):
+    async def iterate(self, i = {})->list:
         pass
