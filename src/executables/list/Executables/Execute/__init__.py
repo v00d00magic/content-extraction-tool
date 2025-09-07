@@ -52,6 +52,11 @@ class Implementation(Act):
         _pass = i.__dict__()
         _pass.pop("i")
 
+        def __progress_hook(message):
+            self.trigger("progress", message=message)
+
+        executable.add_hook("progress", __progress_hook)
+
         if ignore_requirements == False:
             assert executable.isModulesInstalled(), f"requirements not installed. run 'Executables.InstallRequirements'"
 

@@ -1,9 +1,10 @@
-from app.App import logger
 from executables.templates.extractors.Timeoutable import Timeoutable
+from executables.templates.extractors import Extractor
 from declarable.Arguments import IntArgument
+from app.App import logger
 import asyncio
 
-class BaseIterable(Timeoutable):
+class Implementation(Extractor, Timeoutable):
     @classmethod
     def declare(cls):
         params = {}

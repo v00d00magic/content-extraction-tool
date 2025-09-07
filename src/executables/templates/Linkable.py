@@ -13,6 +13,9 @@ class Linkable:
             self.linking_queue = []
 
         for item in self.linking_queue:
+            if item.is_saved() == False:
+                item.save()
+
             link_manager = LinkManager(item)
 
             try:

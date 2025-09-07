@@ -1,11 +1,16 @@
 Todo:
 
+#### Cli
+
+- [ ] Прогресс-бары
+
 #### Скрипты
 
 - [x] Упрощение встраивания
 - [x] Сonfirmable
 - [ ] Js классы для уникального отображения каждого скрипта (?)
-- [ ] Write_progress_bar
+- [x] notifyAboutProgress
+- [ ] Extend contentunit from representation
 
 #### Логи
 

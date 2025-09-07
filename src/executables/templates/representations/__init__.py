@@ -1,6 +1,7 @@
 from resources.Exceptions import AbstractClassException, SuitableExtractMethodNotFound
 from thumbnails import ThumbnailMethod
 from declarable.ArgsComparer import ArgsComparer
+from declarable.Arguments import BooleanArgument
 from executables.templates.Executable import Executable
 
 class RepresentationMeta(type):
@@ -11,6 +12,15 @@ class RepresentationMeta(type):
 
 class Representation(Executable, metaclass=RepresentationMeta):
     self_name = "Representation"
+
+    @classmethod
+    def declare(cls):
+        params = {}
+        params["do_collections"] = BooleanArgument({
+            "default": False
+        })
+
+        return params
 
     @classmethod
     def declare_recursive(cls):

@@ -53,14 +53,11 @@ async def index(request):
         text=template,
         content_type='text/html')
 
-async def _act(args):
+async def act(request):
     act = Execute()
 
-    return await act.execute_with_validation(args)
-
-async def act(request):
     return web.json_response(text=dump_json({
-        "payload": await _act(await request.post())
+        "payload": await act.execute_with_validation(await request.post())
     }))
 
 async def static(request):
@@ -119,13 +116,23 @@ async def upload(request):
 async def websocket_connection(request):
     ws = web.WebSocketResponse()
 
-    logger.log(message=f"Started WebSocket connection", kind=logger.KIND_MESSAGE, section=logger.SECTION_WEB)
+    # logger.log(message=f"Started WebSocket connection", kind=logger.KIND_MESSAGE, section=logger.SECTION_WEB)
 
     async def __logger_hook(**kwargs):
         try:
             await ws.send_str(dump_json({
                 "type": "log",
                 "event_index": 0,
+                "payload": {"result": kwargs.get("message").data}
+            }))
+        except Exception:
+            pass
+
+    async def __progress_hook(**kwargs):
+        try:
+            await ws.send_str(dump_json({
+                "type": "progress",
+                "event_index": data.get("event_index"),
                 "payload": {"result": kwargs.get("message").data}
             }))
         except Exception:
@@ -144,9 +151,24 @@ async def websocket_connection(request):
             case "act":
                 results = None
                 payload = {}
+                act = Execute()
+
+                async def __progress_hook_outer(message):
+                    try:
+                        await ws.send_str(dump_json({
+                            "type": "progress",
+                            "event_index": data.get("event_index"),
+                            "payload": {"message": message.message.out(), "percentage": message.percentage}
+                        }))
+                    except Exception as e:
+                        print(e)
+                        pass
+
+                act.add_hook("progress", __progress_hook_outer)
 
                 try:
-                    results = await _act(data.get("payload"))
+
+                    results = await act.execute_with_validation(data.get("payload"))
                     payload["result"] = results
                 except Exception as e:
                     logger.log(e)

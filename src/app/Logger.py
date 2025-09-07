@@ -39,7 +39,7 @@ class Logger(Hookable):
             __exp = traceback.format_exc()
             write_message = prefix + type(message).__name__ + " " + __exp
 
-        self.log_({
+        return self.log_({
             "message": write_message,
             "section": section,
             "kind": kind,
@@ -68,6 +68,8 @@ class Logger(Hookable):
         self.__console_hook(message=message) # not a hook cuz its uses async and prints wrong
 
         self.trigger("log", message=message)
+
+        return message
 
     def __init__(self, config, storage):
         super().__init__() # for hookable
@@ -181,6 +183,9 @@ class LoggerCategory():
 class LogMessage():
     def __init__(self, data):
         self.data = data
+
+    def out(self):
+        return self.data
 
     def print_self(self):
         section = self.data.get("section")

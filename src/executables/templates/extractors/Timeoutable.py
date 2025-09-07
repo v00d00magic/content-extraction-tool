@@ -1,6 +1,6 @@
 from declarable.Arguments import FloatArgument
 
-class BaseTimeoutable:
+class Timeoutable:
     @classmethod
     def declare(cls):
         params = {}

@@ -15,6 +15,9 @@ class Hookable:
 
         self._hooks.get(category).append(hook)
 
+    def dump_hooks(self, hooks):
+        self._hooks.update(hooks)
+
     def remove_hook(self, category, hook):
         try:
             self._hooks.get(category).remove(hook)

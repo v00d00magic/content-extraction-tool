@@ -1,6 +1,6 @@
 from declarable.Arguments import StringArgument
 from .. import Implementation as RSS
-from executables.list.Data.Json import Implementation as JsonRepresentation
+from executables.list.RSS.Item import Implementation as RSSItem
 from app.App import logger
 
 class Implementation(RSS.AbstractReceivation):
@@ -28,18 +28,18 @@ class Implementation(RSS.AbstractReceivation):
 
         logger.log(f"Called passed URL", section="RSS")
 
-        rss_response = xmltodict.parse(response_xml)
-        rss_object = rss_response.get('rss')
-        rss_channel = rss_object.get('channel')
+        xmltojson = xmltodict.parse(response_xml)
+        rss = xmltojson.get('rss')
+        channel = rss.get('channel')
 
-        items = rss_channel.get('item')
-        if rss_channel != None:
+        items = channel.get('item')
+        if channel != None:
             try:
-                del rss_channel['item']
+                del channel['item']
             except:
                 pass
 
-        if False:
+        if i.get("do_collections") == True:
             collection = self.ContentUnit()
             collection.display_name = channel.get('title', 'Untitled')
             collection.description = channel.get('description')
@@ -50,15 +50,20 @@ class Implementation(RSS.AbstractReceivation):
                 'content': channel.get('link')
             }
             collection.is_collection = True
-            self.add_after.append(collection)
+            self.addLink(collection)
 
-        out_items = []
+        total = len(items)
+        got = 0
+        out_items = await RSSItem().execute({
+            "object": items
+        })
 
-        for i in items:
-            out = self.ContentUnit()
-            out.display_name = i.get("title", "Untitled")
-            out.declared_created_at =  rss_date_parse(i.get("pubDate")).timestamp()
+        for out in out_items:
+            out.display_name = out.content_json.get("title", "Untitled")
+            out.declared_created_at = rss_date_parse(out.content_json.get("pubDate")).timestamp()
 
-            out_items.append(i)
+            self.notifyAboutProgress(logger.log(f"Got item with name {out.display_name}", section=self.outer.section), got / total)
+
+            got += 1
 
         return out_items

@@ -48,8 +48,7 @@ class ExecutableController extends Controller {
         container.node.find("#execute #execute_button").on("click", async (e) => {
             const values = args.values()
 
-            values["i"] = "Executables.Execute"
-            values["executable"] = executable.extended_name
+            values["i"] = executable.extended_name
             const res = await api.act(values)
 
             const jsonViewer = document.createElement("andypf-json-viewer")
@@ -61,6 +60,7 @@ class ExecutableController extends Controller {
             jsonViewer.showDataTypes = false
             jsonViewer.showSize = false
 
+            container.node.find("#json").html("")
             container.node.find("#json").append(jsonViewer)
         })
     }
