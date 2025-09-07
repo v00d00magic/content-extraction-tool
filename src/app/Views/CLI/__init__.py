@@ -1,7 +1,7 @@
 from app.App import app, logger
 from resources.Consts import consts
 from utils.MainUtils import dump_json, parse_json
-from executables.list.Executables.ActsRun import Implementation as RunAct
+from executables.list.Executables.Execute import Implementation as Execute
 from db.Models.Instances.ServiceInstance import ServiceInstance
 from executables.templates.services import Service
 from resources.Exceptions import FatalError, EndOfCycleException
@@ -17,7 +17,7 @@ class CLI:
         assert "i" in app.argv, "pass the name of act as --i"
         is_silent = 'silent' in app.argv
 
-        act = RunAct()
+        act = Execute()
 
         output = await act.execute_with_validation(app.argv)
 

@@ -6,7 +6,7 @@ class Implementation(Act):
     @classmethod
     def declare(cls):
         params = {}
-        params["class"] = ExecutableArgument({
+        params["executable"] = ExecutableArgument({
             "assertion": {
                 "not_null": True
             }

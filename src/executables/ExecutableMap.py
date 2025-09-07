@@ -9,6 +9,8 @@ class ExecutableMap:
     Dictionary with every found executable or related things
     '''
     items = {}
+    js_modules = {}
+
     RESULT_MODULE = 1
     RESULT_SUBMODULE = 2
 
@@ -26,6 +28,7 @@ class ExecutableMap:
         }
 
         list = self.scanDirectory(Path(f"{consts.get('executables')}\\list"))
+        # for some reason it goes backwards LOOOL
         for item in list: # iterating
             start_time = time.time()
 
@@ -35,18 +38,21 @@ class ExecutableMap:
 
             try:
                 parts = self.parseFile(item)
-                module = self.doImport(parts)
+                match(parts.get("verdict")):
+                    case "module":
+                        module = self.doImport(parts)
+                        end_time = time.time()
 
-                end_time = time.time()
+                        logger.log(f"Imported module {module.full_name()} in {round(end_time - start_time, 3)}s", section="ExecutableMap!Initialization")
 
-                logger.log(f"Imported module {module.full_name()} in {round(end_time - start_time, 2)}s", section="ExecutableMap!Initialization")
+                        _item = self.register(module)
 
-                _item = self.register(module)
+                        counters["success"] +=1
+                        if _item == ExecutableMap.RESULT_SUBMODULE:
+                            counters["submodules"] += 1
+                    case "js":
+                        self.js_modules[".".join(parts.get("parts"))] = parts.get("name")
 
-                counters["success"] +=1
-
-                if _item == ExecutableMap.RESULT_SUBMODULE:
-                    counters["submodules"] += 1
             except AssertionError as e:
                 logger.log(f"AssertionError when importing {".".join(parts.get("parts"))}: {str(e) }, probaly not an executable", section="ExecutableMap!Initialization")
             except Exception as e:
@@ -134,7 +140,7 @@ class ExecutableMap:
 
             return ExecutableMap.RESULT_MODULE
         else:
-            logger.log(f"Imported module {module.full_name()} to {main_module.full_name()}", section="ExecutableMap!Initialization")
+            logger.log(f"Injected module {module.full_name()} to {main_module.full_name()}", section="ExecutableMap!Initialization")
 
             self.items[main_module.full_name()].add_submodule(module) # registering to main module
             self.items[module.full_name()] = module

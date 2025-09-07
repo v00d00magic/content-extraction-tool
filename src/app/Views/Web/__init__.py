@@ -3,7 +3,7 @@ from app.App import config, logger
 from aiohttp import web
 import os
 
-from executables.list.Executables.ActsRun import Implementation as RunAct
+from executables.list.Executables.Execute import Implementation as Execute
 from db.Models.Content.StorageUnit import StorageUnit
 from utils.MainUtils import dump_json, parse_json
 from pathlib import Path
@@ -54,7 +54,7 @@ async def index(request):
         content_type='text/html')
 
 async def _act(args):
-    act = RunAct()
+    act = Execute()
 
     return await act.execute_with_validation(args)
 

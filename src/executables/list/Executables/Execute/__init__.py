@@ -17,7 +17,7 @@ class Implementation(Act):
     @classmethod
     def declare(cls):
         params = {}
-        params["executable"] = ExecutableArgument({
+        params["i"] = ExecutableArgument({
             "assertion": {
                 "not_null": True,
                 "can_be_executed": True
@@ -36,37 +36,38 @@ class Implementation(Act):
         params["confirm"] = BooleanArgument({
             "default": True
         })
+        params["ignore_requirements"] = BooleanArgument({
+            'default': False,
+        })
 
         return params
 
     async def execute(self, i = {}):
-        executable = i.get('executable')()
+        executable = i.get('i')()
         is_save = i.get('is_save')
         links = i.get('link')
-        is_confirmed = int(i.get("confirm")) == 1
+        is_skip_confirmation = int(i.get("confirm")) == 1
         link_to = []
+        ignore_requirements = i.get("ignore_requirements")
+        _pass = i.__dict__()
+        _pass.pop("i")
 
-        if executable.isConfirmable() != None:
-            args = executable.validate(executable.declare_recursive(), i.copy())
+        if ignore_requirements == False:
+            assert executable.isModulesInstalled(), f"requirements not installed. run 'Executables.InstallRequirements'"
 
-            if is_confirmed == False:
-                pre_execute = executable.PreExecute(executable)
-                new = await pre_execute.execute(args)
-                pre_output = {
-                    "tab": []
+        if len(executable.confirmations) > 0:
+            if is_skip_confirmation == False:
+                res = await executable.confirmations[0]().execute_with_validation(i)
+                _out = {
+                    "preferred_receivation": None,
+                    "args": {},
+                    "data": {},
                 }
+                _out["data"] = res.get("data")
+                for item_name, item in res.get("args").items():
+                    _out["args"][item_name] = item.describe()
 
-                for arg_name, arg_item in new.get("args").items():
-                    arg = new.get("args").get(arg_name)
-                    if arg_name in pre_execute.args_list:
-                        continue
-
-                    new_object = arg.out()
-                    new_object["name"] = arg_name
-
-                    pre_output.get("tab").append(new_object)
-
-                return pre_output
+                return _out
 
         if links != None and len(links) > 0:
             link_to = ContentUnit.ids(links)
@@ -77,7 +78,7 @@ class Implementation(Act):
         if getattr(executable, "beforeExecute", None) != None:
             executable.beforeExecute(i)
 
-        result = await executable.execute(i)
+        result = await executable.execute_with_validation(_pass)
 
         if executable.self_name in ["Extractor", "Receivation", "Representation"]:
             output = []
