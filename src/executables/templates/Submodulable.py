@@ -21,6 +21,10 @@ class Submodulable():
     def acts(cls):
         return cls.get_submodules_by_type("Act")
 
+    @classproperty
+    def confirmations(cls):
+        return cls.get_submodules_by_type("Confirmation")
+
     @classmethod
     def get_submodules_by_type(cls, type=None):
         _items = []
@@ -62,6 +66,11 @@ class Submodulable():
             def self_insert(self, item):
                 item.markSavedJson(self)
 
+        class AbstractConfirmation(Extractor):
+            self_name = "Confirmation"
+            outer = cls
+
         cls.AbstractAct = AbstractAct
         cls.AbstractReceivation = AbstractReceivation
         cls.AbstractExternalExtractor = AbstractExternalExtractor
+        cls.AbstractConfirmation = AbstractConfirmation

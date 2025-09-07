@@ -2,7 +2,7 @@ from .. import Implementation as Json
 from declarable.Arguments import StringArgument
 from utils.MainUtils import parse_json
 
-class Method(Json.AbstractReceivation):
+class Implementation(Json.AbstractReceivation):
     @classmethod
     def declare(cls):
         params = {}

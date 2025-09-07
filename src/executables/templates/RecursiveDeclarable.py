@@ -23,7 +23,7 @@ class RecursiveDeclarable:
     @classmethod
     def declare(cls) -> dict:
         '''
-        Method that defines dictionary of current executable args
+        Implementation that defines dictionary of current executable args
         '''
         params = {}
 

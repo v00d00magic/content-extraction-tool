@@ -14,7 +14,7 @@ class Implementation(Act):
 
     async def execute(self, i = {}):
         fnl = []
-        for item in app.indexated_scripts.items_by_class(i.get("type")):
+        for item in app.indexated_scripts.listByClass(i.get("type")):
             try:
                 fnl.append(item.describe())
             except ModuleNotFoundError:

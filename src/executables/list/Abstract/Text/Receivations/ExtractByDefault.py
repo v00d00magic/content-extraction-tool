@@ -2,7 +2,7 @@ from .. import Implementation as Text
 from declarable.Arguments import StringArgument, CsvArgument
 from utils.MainUtils import proc_strtr
 
-class Method(Text.AbstractReceivation):
+class Implementation(Text.AbstractReceivation):
     @classmethod
     def declare(cls):
         params = {}

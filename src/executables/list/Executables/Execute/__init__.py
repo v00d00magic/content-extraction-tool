@@ -46,7 +46,6 @@ class Implementation(Act):
         is_confirmed = int(i.get("confirm")) == 1
         link_to = []
 
-        # REWRITE
         if executable.isConfirmable() != None:
             args = executable.validate(executable.declare_recursive(), i.copy())
 

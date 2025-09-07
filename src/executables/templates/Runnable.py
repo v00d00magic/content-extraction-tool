@@ -37,10 +37,6 @@ class Runnable:
         return at in cls.available
 
     @classmethod
-    def isConfirmable(cls):
-        return getattr(cls, "PreExecute", None)
-
-    @classmethod
     def isModulesInstalled(cls):
         all_installed = {dist.metadata["Name"].lower() for dist in distributions()}
         satisf_libs = []

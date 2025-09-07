@@ -1,7 +1,7 @@
 from .. import Implementation as Hyperlink
 from declarable.Arguments import CsvArgument
 
-class Method(Hyperlink.AbstractAct):
+class Implementation(Hyperlink.AbstractAct):
     @classmethod
     def declare(cls):
         params = {}

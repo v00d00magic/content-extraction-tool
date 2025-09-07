@@ -11,9 +11,9 @@ class Argument extends Model {
 
     render(container) {
         const _u = u(`
-            <div>
+            <div style="display: flex">
                 ${this.name != null ? `<b>${this.name}</b>` : ""}
-                <input type="text" value="${this.default ?? ""}">
+                <input style="width:100%" type="text" value="${this.default ?? ""}">
             </div>
         `)
         this.node = _u
@@ -53,7 +53,8 @@ export const subtypes = {
     "CsvArgument": class CsvArgument extends Argument {
         render(container) {
             const _u = u(`
-                <div>
+                <div style="display: flex">
+                    ${this.name != null ? `<b>${this.name}</b>` : ""}
                     <div class="csv_argument">
                         <div style="gap: 7px;" class="column wide _items"></div>
                         <div class="flex" style="gap: 7px;">
@@ -88,7 +89,7 @@ export const subtypes = {
                     orig_arg.data.default = preset
                 }
 
-                orig_arg.render(this.container.find(".csv_argument ._items"))
+                orig_arg.render(this.node.find(".csv_argument ._items"))
                 orig_arg.focus()
 
                 this.subs.push(orig_arg)

@@ -27,7 +27,7 @@ keys = {
     }
 }
 
-class Method(File.AbstractReceivation):
+class Implementation(File.AbstractReceivation):
     @classmethod
     def declare(cls):
         params = {}

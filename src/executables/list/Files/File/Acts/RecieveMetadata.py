@@ -3,7 +3,7 @@ from utils.MainUtils import extract_metadata_to_dict
 from declarable.Arguments import StringArgument, BooleanArgument, StorageUnitArgument
 from app.App import logger
 
-class Method(File.AbstractAct):
+class Implementation(File.AbstractAct):
     required_modules = ["hachoir"]
 
     @classmethod

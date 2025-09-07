@@ -1,21 +1,22 @@
-Pretty ridiculous content extraction tool
-
 Todo:
 
 #### Скрипты
 
-- [x] Упрощение встраивания (?)
-- [ ] Переписать confirmable
+- [x] Упрощение встраивания
+- [x] Сonfirmable
+- [ ] Js классы для уникального отображения каждого скрипта (?)
+- [ ] Write_progress_bar
 
-#### Логирование
+#### Логи
 
-- [ ] Максимальный размер логов (?)
+- [ ] Максимальный размер логфайла
 
 #### Экспорт
 
-- [ ] Acts.Export.Export (to .th zip)
+- [ ] Acts.Export.Export
+- [ ] Acts.Export.ExportHumanly
 - [ ] Acts.Export.Import
-- [ ] Подмена даты создания файла при экспорте (если возможно?)
+- [ ] Подмена даты создания файла при выводе (если возможно?)
 
 #### ServiceInstance
 
@@ -23,32 +24,24 @@ Todo:
 
 #### Contentunit
 
-- [ ] Генерируемая колонка indexation_content_string (колонка `content` без ключей и пробелов)
+- [ ] Поиск внутри json
 - [ ] Подключение альтернативной базы данных по аргументу
-- [ ] Unsaved и последующее save
-- [ ] Объявить типы `source`
+- [x] Unsaved и последующее save
+- [ ] Явный `source`
 
-#### StorageUnit
-
-- [ ] Поиск дубликатов по хешу (?)
-
-#### Декларируемые аргументы
+#### Декл. аргументы
 
 - [ ] ObjectArgument: scheme (?)
 
 #### Репрезентации
 
 - [ ] Data.Hyperlink
-- [ ] Внутреннее создание коллекции?
-
-#### Инциализация
-
-- [ ] Адаптация под bash
+- [ ] Внутреннее создание коллекции
 
 #### Web crawler
 
 - [ ] .
-- [ ] Определённые декларируемые функции для определённого сайта
+- [ ] Декл. функции для поддомена
 
 #### Content.ContentUnits.
 
@@ -61,14 +54,6 @@ Todo:
 - [ ] GetListByItem
 - [ ] ReoderLink
 
-#### Acts.Executables.
-
-- [x] Ускорить List
-
 #### Acts.Storage.
 
-- [ ] ClearTemp
-
-#### Acts.Metadata.
-
-- [ ] для каждого mime-типа (?)
+- [ ] ClearTemp (?)

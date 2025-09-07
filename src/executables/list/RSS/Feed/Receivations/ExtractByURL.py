@@ -3,7 +3,7 @@ from .. import Implementation as RSS
 from executables.list.Data.Json import Implementation as JsonRepresentation
 from app.App import logger
 
-class Method(RSS.AbstractReceivation):
+class Implementation(RSS.AbstractReceivation):
     @classmethod
     def declare(cls):
         params = {}

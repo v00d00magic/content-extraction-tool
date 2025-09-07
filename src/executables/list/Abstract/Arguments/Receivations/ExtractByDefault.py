@@ -1,6 +1,6 @@
 from .. import Implementation as Scratch
 
-class Method(Scratch.AbstractReceivation):
+class Implementation(Scratch.AbstractReceivation):
     async def execute(self, i = {}):
         out = self.ContentUnit()
         out.content = i
