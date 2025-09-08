@@ -43,7 +43,7 @@ class Implementation(Act):
         return params
 
     async def execute(self, i = {}):
-        executable = i.get('i')()
+        executable = i.get('i')(self.index)
         is_save = i.get('is_save')
         links = i.get('link')
         is_skip_confirmation = int(i.get("confirm")) == 1

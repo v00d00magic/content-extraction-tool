@@ -65,7 +65,6 @@ class Logger(Hookable):
             "should": should,
         })
         self.__log_file_check()
-        self.__console_hook(message=message) # not a hook cuz its uses async and prints wrong
 
         self.trigger("log", message=message)
 
@@ -81,6 +80,7 @@ class Logger(Hookable):
         self.skip_categories = config.get("logger.skip_categories")
         self.skip_file = config.get("logger.skip_file") == 1
 
+        self.add_hook("log", self.__console_hook)
         self.add_hook("log", self.__write_to_file_hook)
 
     def __console_hook(self, **kwargs):

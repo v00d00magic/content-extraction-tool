@@ -11,6 +11,14 @@ import asyncio
 consts['context'] = 'cli'
 
 class CLI:
+    def __progress_hook_outer(self, message):
+        try:
+            print(message.message.out())
+            print(message.percentage)
+        except Exception as e:
+            print(e)
+            pass
+
     async def act(self):
         app.setup()
 

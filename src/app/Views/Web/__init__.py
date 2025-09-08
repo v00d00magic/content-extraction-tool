@@ -2,14 +2,17 @@ from resources.Consts import consts
 from app.App import config, logger
 from aiohttp import web
 import os
+import asyncio
+import threading
 
 from executables.list.Executables.Execute import Implementation as Execute
 from db.Models.Content.StorageUnit import StorageUnit
 from utils.MainUtils import dump_json, parse_json
 from pathlib import Path
-from app.App import app as orig_app
+from app.App import app as mainApp
 
-orig_app.setup()
+mainApp.setup()
+
 consts["context"] = "web"
 
 def check_node_modules():
@@ -107,7 +110,7 @@ async def upload(request):
 
     with open(os.path.join(su.path(), filename), 'wb') as f:
         while True:
-            chunk = await field.read_chunk()  # 8192 bytes by default.
+            chunk = await field.read_chunk()
             if not chunk:
                 break
             size += len(chunk)
@@ -116,7 +119,7 @@ async def upload(request):
 async def websocket_connection(request):
     ws = web.WebSocketResponse()
 
-    # logger.log(message=f"Started WebSocket connection", kind=logger.KIND_MESSAGE, section=logger.SECTION_WEB)
+    await ws.prepare(request)
 
     async def __logger_hook(**kwargs):
         try:
@@ -125,64 +128,59 @@ async def websocket_connection(request):
                 "event_index": 0,
                 "payload": {"result": kwargs.get("message").data}
             }))
-        except Exception:
-            pass
+        except Exception as e:
+            logger.log(e)
 
-    async def __progress_hook(**kwargs):
+    async def __progress_hook_outer(message):
         try:
             await ws.send_str(dump_json({
                 "type": "progress",
-                "event_index": data.get("event_index"),
-                "payload": {"result": kwargs.get("message").data}
+                "event_index": message.index,
+                "payload": {"message": message.message.out(), "percentage": message.percentage}
             }))
-        except Exception:
+        except Exception as e:
+            print(e)
             pass
 
+    mainApp.add_hook("progress", __progress_hook_outer)
     logger.add_hook("log", __logger_hook)
 
-    await ws.prepare(request)
+    async def send_act(data):
+        results = None
+        payload = {}
 
-    async for msg in ws:
-        if msg.type != web.WSMsgType.TEXT:
-            continue
+        try:
+            results = await Execute(data.get("event_index")).execute_with_validation(data.get("payload"))
+            payload["result"] = results
+        except Exception as e:
+            logger.log(e)
+            payload["error"] = {
+                "status_code": 500,
+                "exception_name": e.__class__.__name__,
+                "message": str(e),
+            }
 
-        data = parse_json(msg.data)
-        match (data.get("type")):
-            case "act":
-                results = None
-                payload = {}
-                act = Execute()
+        await ws.send_str(dump_json({
+            "type": data.get("type"),
+            "event_index": data.get("event_index"),
+            "payload": payload
+        }))
 
-                async def __progress_hook_outer(message):
-                    try:
-                        await ws.send_str(dump_json({
-                            "type": "progress",
-                            "event_index": data.get("event_index"),
-                            "payload": {"message": message.message.out(), "percentage": message.percentage}
-                        }))
-                    except Exception as e:
-                        print(e)
-                        pass
+    try:
+        async for msg in ws:
+            if msg.type != web.WSMsgType.TEXT:
+                continue
 
-                act.add_hook("progress", __progress_hook_outer)
-
-                try:
-
-                    results = await act.execute_with_validation(data.get("payload"))
-                    payload["result"] = results
-                except Exception as e:
-                    logger.log(e)
-                    payload["error"] = {
-                        "status_code": 500,
-                        "exception_name": e.__class__.__name__,
-                        "message": str(e),
-                    }
-
-                await ws.send_str(dump_json({
-                    "type": data.get("type"),
-                    "event_index": data.get("event_index"),
-                    "payload": payload
-                }))
+            data = parse_json(msg.data)
+            match (data.get("type")):
+                case "act":
+                    asyncio.get_event_loop().run_in_executor(
+                        None, 
+                        lambda: asyncio.run(send_act(data)) 
+                    )
+    finally:
+        mainApp.remove_hook("progress", __progress_hook_outer)
+        logger.remove_hook("log", __logger_hook)
 
     return ws
 

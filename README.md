@@ -11,6 +11,7 @@ Todo:
 - [ ] Js классы для уникального отображения каждого скрипта (?)
 - [x] notifyAboutProgress
 - [ ] Extend contentunit from representation
+- [ ] Сохранение запусков с параметрами в отдельн. модель
 
 #### Логи
 
