@@ -1,53 +1,46 @@
 Todo:
 
-#### Cli
+#### Executables
 
-- [ ] Прогресс-бары
-
-#### Скрипты
-
-- [x] Упрощение встраивания
-- [x] Сonfirmable
-- [ ] Js классы для уникального отображения каждого скрипта (?)
-- [x] notifyAboutProgress
+- [x] Сonfirmable classes
+- [ ] Js classes for unique displayment
+- [x] Progress notifications
 - [ ] Extend contentunit from representation
-- [ ] Сохранение запусков с параметрами в отдельн. модель
+- [ ] Saving executables runs to db
 
-#### Логи
+#### Representations
 
-- [ ] Максимальный размер логфайла
+- [ ] Data.Hyperlink
+- [x] Collections creation
 
-#### Экспорт
+#### Logs
+
+- [ ] Max logfile size
+
+#### Export
 
 - [ ] Acts.Export.Export
 - [ ] Acts.Export.ExportHumanly
 - [ ] Acts.Export.Import
-- [ ] Подмена даты создания файла при выводе (если возможно?)
 
 #### ServiceInstance
 
-- [ ] Рефактор
+- [ ] Do
 
 #### Contentunit
 
-- [ ] Поиск внутри json
-- [ ] Подключение альтернативной базы данных по аргументу
-- [x] Unsaved и последующее save
-- [ ] Явный `source`
+- [ ] Search inside json
+- [ ] Connection of alternate db
+- [x] Unsaved contentunits
+- [ ] Obvious description of `source`
 
-#### Декл. аргументы
+#### Declared arguments
 
 - [ ] ObjectArgument: scheme (?)
 
-#### Репрезентации
-
-- [ ] Data.Hyperlink
-- [ ] Внутреннее создание коллекции
-
 #### Web crawler
 
-- [ ] .
-- [ ] Декл. функции для поддомена
+- [ ] Do
 
 #### Content.ContentUnits.
 
@@ -63,3 +56,8 @@ Todo:
 #### Acts.Storage.
 
 - [ ] ClearTemp (?)
+
+#### Interface
+
+- [ ] Web-server
+- [ ] Cli progressbars

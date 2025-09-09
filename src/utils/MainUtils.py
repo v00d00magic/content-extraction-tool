@@ -61,7 +61,6 @@ def parse_json(text):
     '''
     Parses JSON from text
     '''
-
     if type(text) == dict or type(text) == list:
         return text
 

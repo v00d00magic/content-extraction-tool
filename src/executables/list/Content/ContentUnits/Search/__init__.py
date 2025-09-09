@@ -40,7 +40,7 @@ class Implementation(Act):
                     },
                 }
             },
-            'values': ['created_asc', 'created_desc'],
+            'values': ['created_asc', 'created_desc', 'random'],
             'default': 'created_desc',
         })
         params["count"] = IntArgument({
@@ -80,7 +80,7 @@ class Implementation(Act):
         assert count > 0, "count can't be negative"
 
         if offset != None:
-            assert offset > 0, "offset can't be negative"
+            assert offset >= 0, "offset can't be negative"
 
         select_query = ContentUnit.select()
         if in_ids != None:
@@ -138,6 +138,8 @@ class Implementation(Act):
                     select_query = select_query.where(ContentUnit.uuid > int(offset))
 
                 select_query = select_query.order_by(ContentUnit.created_at.asc())
+            case 'random':
+                select_query = select_query.order_by(fn.Random())
 
         if count != None:
             select_query = select_query.limit(count)

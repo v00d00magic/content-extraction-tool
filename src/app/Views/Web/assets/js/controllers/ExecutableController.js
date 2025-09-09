@@ -34,8 +34,14 @@ class ExecutableController extends Controller {
 
             values() {
                 const _out = {}
+                const null_appending = false
                 this._items.forEach(item => {
-                    _out[item.name] = item.collect()
+                    const got = item.collect()
+                    if (got == null && null_appending == false) {
+                        return
+                    }
+
+                    _out[item.name] = got
                 })
 
                 return _out

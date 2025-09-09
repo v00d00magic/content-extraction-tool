@@ -48,8 +48,6 @@ export const ws = new class {
                     }
             }
         }
-
-        this.ws.onerror = (error) => {}
     }
 
     increment_index() {
@@ -71,6 +69,10 @@ export const ws = new class {
             this.callback_dictionary[event.index] = {resolve, reject}
 
             try {
+                if (this.ws.readyState != WebSocket.OPEN) {
+                    this.ws.connect()
+                }
+
                 this.ws.send(event.toJson())
                 this.increment_index()
             } catch(err) {

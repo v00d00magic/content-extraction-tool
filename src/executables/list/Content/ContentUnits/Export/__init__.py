@@ -32,15 +32,22 @@ class Implementation(Act):
         # Linked_depth (def: 0)
 
         items = i.get("items")
-
-        assert type(items) == list, "this is not a list >:("
+        assert type(items) == list, "this is not a list"
 
         # type:
         # archive - can be imported later
-        # readable - cannot be imported, but can be seen from explorer
+        # readable - cannot be imported, but can be seen by human eye
 
-        type = i.get("type")
+        export_type = i.get("type")
         to_export = []
+
+        class ExportItem():
+            def __init__(self, element_item, flags):
+                self.item = element_item
+                self.flags = flags
+
+            def export(self):
+                pass
 
         export_manager = ArchiveExport.create_manager()
         export_manager.define_temp()
@@ -49,15 +56,10 @@ class Implementation(Act):
         for item in items:
             element_type = item.get("class")
             element_id = item.get("id")
-            element_flags = item.get("flags")
 
             element_item = export_manager.getByTypeAndId(element_type, int(element_id))
             if element_item == None:
                 continue
 
-            print(element_item)
-            #args = {}
-
-            #await export_manager.export(element_item, args)
-
-            to_export.append(element_item)
+            _item = ExportItem(element_item, item.get("flags"))
+            _item.export()

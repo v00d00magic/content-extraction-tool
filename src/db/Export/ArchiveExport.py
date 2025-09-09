@@ -42,6 +42,10 @@ class ArchiveExport:
         self.db.close()
 
     def getByTypeAndId(self, type: str, id: int):
+        '''
+        type: cu or su
+        id: id of model
+        '''
         element_class = None
 
         match(type):

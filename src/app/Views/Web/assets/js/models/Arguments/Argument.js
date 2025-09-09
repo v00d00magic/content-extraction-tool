@@ -10,21 +10,33 @@ class Argument extends Model {
     }
 
     render(container) {
-        const _u = u(`
+        this.node = this.renderUmbrella()
+        container.append(this.node)
+        this.events()
+
+        return this.node
+    }
+
+    events() {
+        return
+    }
+
+    renderUmbrella() {
+        return u(`
             <div style="display: flex">
                 ${this.name != null ? `<b>${this.name}</b>` : ""}
                 <input style="width:100%" type="text" value="${this.default ?? ""}">
             </div>
         `)
-        this.node = _u
-
-        container.append(_u)
-
-        return _u
     }
 
     collect() {
-        return this.node.find("input").nodes[0].value
+        const got_value = this.node.find("input").nodes[0].value
+        if (got_value == "") {
+            return null
+        }
+
+        return got_value
     }
 
     focus() {
@@ -51,8 +63,11 @@ class Argument extends Model {
 export const subtypes = {
     "StringArgument": class StringArgument extends Argument {},
     "CsvArgument": class CsvArgument extends Argument {
-        render(container) {
-            const _u = u(`
+        renderUmbrella() {
+            this.subs = []
+            this._default = (this.data['default'] ?? this.data.default) ?? []
+
+            return u(`
                 <div style="display: flex">
                     ${this.name != null ? `<b>${this.name}</b>` : ""}
                     <div class="csv_argument">
@@ -64,13 +79,6 @@ export const subtypes = {
                     </div>
                 </div>
             `)
-            this.subs = []
-            this.container = container
-            this._default = (this.data['default'] ?? this.data.default) ?? []
-            this.node = _u
-
-            container.append(_u)
-            this.events()
         }
 
         collect() {
@@ -78,6 +86,10 @@ export const subtypes = {
             this.subs.forEach(item => {
                 out.push(item.collect())
             })
+
+            if (out.length == 0) {
+                return null
+            }
 
             return out
         }
@@ -122,6 +134,39 @@ export const subtypes = {
                     removeItem(this.subs[this.subs.length - 1])
                 }
             })
+        }
+    },
+    "BooleanArgument": class BooleanArgument extends Argument {
+        renderUmbrella() {
+            return u(`
+                <div style="display: flex">
+                    ${this.name != null ? `<b>${this.name}</b>` : ""}
+                    <input type="checkbox" ${this.default == true ? "checked" : ""}>
+                </div>
+            `)
+        }
+
+        collect() {
+            return this.node.find("input").nodes[0].checked == true
+        }
+    },
+    "IntArgument": class IntArgument extends Argument {
+        renderUmbrella() {
+            return u(`
+                <div style="display: flex">
+                    ${this.name != null ? `<b>${this.name}</b>` : ""}
+                    <input type="number" value="${this.default}">
+                </div>
+            `)
+        }
+
+        collect() {
+            const got = Number(this.node.find("input").nodes[0].value)
+            if (got == 0) {
+                return null
+            }
+
+            return got
         }
     }
 }
