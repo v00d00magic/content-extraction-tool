@@ -58,12 +58,15 @@ class Implementation(RSS.AbstractReceivation):
             "object": items
         })
 
-        for out in out_items:
+        output = []
+
+        for out in out_items.items():
             out.display_name = out.content_json.get("title", "Untitled")
             out.declared_created_at = rss_date_parse(out.content_json.get("pubDate")).timestamp()
 
             self.notifyAboutProgress(logger.log(f'Got item with name "{out.display_name}"', section=self.outer.section), got / total)
 
+            output.append(out)
             got += 1
 
-        return out_items
+        return output

@@ -30,7 +30,7 @@ class CLI:
         output = await act.execute_with_validation(app.argv)
 
         if is_silent == False:
-            print(dump_json(output, indent=4))
+            print(dump_json(output.display(), indent=4))
 
     async def service(self):
         assert "i" in app.argv, "service_instance id (--i) not passed"

@@ -3,6 +3,7 @@ from thumbnails import ThumbnailMethod
 from declarable.ArgsComparer import ArgsComparer
 from declarable.Arguments import BooleanArgument
 from executables.templates.Executable import Executable
+from executables.responses.ItemsResponse import ItemsResponse
 
 class RepresentationMeta(type):
     def __init__(cls, name, bases, attrs):
@@ -78,7 +79,7 @@ class Representation(Executable, metaclass=RepresentationMeta):
         return await extract_strategy_instance.execute(_dict.dict())
 
     async def execute(self, i: dict = {}):
-        return await self.extract(i)
+        return ItemsResponse(await self.extract(i))
 
     @classmethod
     def describe(cls):

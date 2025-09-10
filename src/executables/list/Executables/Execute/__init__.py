@@ -1,6 +1,7 @@
 from executables.templates.acts import Act
 from db.Models.Content.ContentUnit import ContentUnit
 from declarable.Arguments import CsvArgument, ContentUnitArgument, ExecutableArgument, BooleanArgument
+from executables.responses.Response import Response
 
 keys = {
     "name": {
@@ -83,20 +84,11 @@ class Implementation(Act):
         if getattr(executable, "beforeExecute", None) != None:
             executable.beforeExecute(i)
 
-        result = await executable.execute_with_validation(_pass)
-
-        if executable.self_name in ["Extractor", "Receivation", "Representation"]:
-            output = []
-
-            for item in result:
+        result = Response.convert(await executable.execute_with_validation(_pass))
+        if hasattr(result, "items") == True:
+            for item in result.items():
                 if is_save == True:
                     item.save()
                     executable.doLink(item)
-
-                output.append(item.getStructure())
-
-            return {
-                "items": output
-            }
 
         return result

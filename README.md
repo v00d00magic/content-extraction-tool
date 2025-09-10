@@ -6,7 +6,10 @@ Todo:
 - [ ] Js classes for unique displayment
 - [x] Progress notifications
 - [ ] Extend contentunit from representation
-- [ ] Saving executables runs to db
+- [ ] Executable runs dumps
+- [ ] Class sections
+- [ ] Open variables of the class
+- [x] Move `response` to class
 
 #### Representations
 
@@ -59,5 +62,5 @@ Todo:
 
 #### Interface
 
-- [ ] Web-server
+- [ ] Web server
 - [ ] Cli progressbars
