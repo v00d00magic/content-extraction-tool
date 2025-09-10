@@ -41,14 +41,6 @@ class Implementation(Act):
         export_type = i.get("type")
         to_export = []
 
-        class ExportItem():
-            def __init__(self, element_item, flags):
-                self.item = element_item
-                self.flags = flags
-
-            def export(self):
-                pass
-
         export_manager = ArchiveExport.create_manager()
         export_manager.define_temp()
         export_manager.define_db()
@@ -61,5 +53,9 @@ class Implementation(Act):
             if element_item == None:
                 continue
 
-            _item = ExportItem(element_item, item.get("flags"))
+            _item = export_manager.getExportItem(element_item, item.get("flags"))
             _item.export()
+
+        export_manager.end()
+
+        return {}

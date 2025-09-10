@@ -1,5 +1,7 @@
 from utils.MainUtils import replace_cwd, replace_src
-from peewee import SqliteDatabase, MySQLDatabase, PostgresqlDatabase
+from peewee import SqliteDatabase, MySQLDatabase, PostgresqlDatabase, DatabaseProxy
+
+database_proxy = DatabaseProxy()
 
 class DbConnection:
     conf = {}
@@ -11,20 +13,27 @@ class DbConnection:
 
         match(conn_type):
             case "sqlite":
-                connection_path = replace_src(replace_cwd(conn_list[1]))
-                db = SqliteDatabase(connection_path)
+                if conn_list[1] == ":memory:":
+                    db = SqliteDatabase(":memory:")
+                else:
+                    connection_path = replace_src(replace_cwd(conn_list[1]))
+                    db = SqliteDatabase(connection_path)
 
         return db
 
     def attachDb(self, config, env):
-        self.__setDb(self.__resolve_str(config.get("db.content.connection")))
-        self.__setInstanceDb(self.__resolve_str(config.get("db.instance.connection")))
+        self.db = self.__resolve_str(config.get("db.content.connection"))
+        self.instance_db = self.__resolve_str(config.get("db.instance.connection"))
 
-    def __setDb(self, db):
-        self.db = db
+    def __createTablesSection(self, db, models: list):
+        proxy = DatabaseProxy()
+        for model in models:
+            model._meta.table_name = model.table_name
+            model._meta.database = proxy
 
-    def __setInstanceDb(self, instance_db):
-        self.instance_db = instance_db
+        proxy.initialize(db)
+        db.connect()
+        db.create_tables(models, safe=True)
 
     def createTables(self):
         from db.Models.Content.ContentUnit import ContentUnit
@@ -33,21 +42,7 @@ class DbConnection:
         from db.Models.Content.StorageUnit import StorageUnit
         from db.Models.Instances.ServiceInstance import ServiceInstance
 
-        tables_list = [ContentUnitRelation, ContentUnit, StorageUnit]
-        tables_list_app = [Stat, ServiceInstance]
-
-        # Appending content db
-        self.db.bind(tables_list)
-
-        self.db.connect()
-        self.db.create_tables(tables_list, safe=True)
-        self.db.close()
-
-        # Appending instance db
-        self.instance_db.bind(tables_list_app)
-
-        self.instance_db.connect()
-        self.instance_db.create_tables(tables_list_app, safe=True)
-        self.instance_db.close()
+        self.__createTablesSection(self.db, [ContentUnitRelation, ContentUnit, StorageUnit])
+        self.__createTablesSection(self.instance_db, [Stat, ServiceInstance])
 
 db_connection = DbConnection()

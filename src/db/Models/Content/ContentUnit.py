@@ -36,10 +36,7 @@ class ContentUnit(BaseModel):
     is_unlisted = BooleanField(index=True,default=0)
     # is_deleted = BooleanField(index=True,default=0)
 
-    # so the class
-    class Meta:
-        table_name = 'content_units'
-
+    table_name = 'content_units'
     self_name = 'ContentUnit'
     short_name = 'cu'
     link_queue = None

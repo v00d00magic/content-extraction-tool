@@ -8,13 +8,11 @@ from submodules.Files.FileManager import file_manager
 import shutil, mimetypes
 
 class StorageUnit(BaseModel):
+    table_name = 'storage_units'
     self_name = 'StorageUnit'
     short_name = 'su'
     temp_dir = None
     path_link = None
-
-    class Meta:
-        table_name = 'storage_units'
 
     # Identification
     uuid = IntegerField(unique=True, primary_key=True)

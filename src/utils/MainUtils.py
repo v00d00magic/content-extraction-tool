@@ -168,18 +168,21 @@ def name_from_url(input_url):
     return OUTPUT_NAME, OUTPUT_NAME_EXT
 
 @contextmanager
-def override_db(__classes = [], __db = None):
+def override_db(classes = [], db = None):
     '''
     Overrides db for a time
     '''
+    
+    db.bind(classes)
     old_db = None
-    for __class in __classes:
+    for __class in classes:
         old_db = __class._meta.database
-        __class._meta.database = __db
+        __class._meta.database = db
     
     yield
 
-    for __class in __classes:
+    print("Yay!")
+    for __class in classes:
         __class._meta.database = old_db
 
 def valid_name(text):

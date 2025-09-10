@@ -3,10 +3,8 @@ from utils.MainUtils import parse_json, dump_json
 import time
 
 class ServiceInstance(Model):
+    table_name = 'services'
     self_name = 'service'
-
-    class Meta:
-        table_name = 'services'
 
     id = AutoField()
     service_name = TextField()

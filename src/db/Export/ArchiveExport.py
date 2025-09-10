@@ -7,8 +7,27 @@ from peewee import Model, SqliteDatabase
 from db.LinkManager import LinkManager
 from app.App import storage
 
+class ExportItem():
+    def __init__(self, element_item, flags):
+        self.item = element_item
+        self.flags = flags
+
+    def export(self):
+        item_type = self.item.short_name
+        save_at_db = True
+        save_files = True
+
+        if save_at_db == True:
+            with override_db([ContentUnit, StorageUnit], self.db):
+                item_data = self.item.__dict__["__data__"]
+                self.item.insert(item_data).execute()
+
+        match (item_type):
+            case "su":
+                pass
+
 class ArchiveExport:
-    EXTENSION_NAME = "th"
+    EXTENSION_NAME = "units"
 
     @classmethod
     def create_manager(cls):
@@ -37,6 +56,7 @@ class ArchiveExport:
         with override_db(_models, self.db):
             self.db.connect()
             self.db.create_tables(_models, safe=True)
+            print(self.db)
 
     def end(self):
         self.db.close()
@@ -56,16 +76,5 @@ class ArchiveExport:
 
         return element_class
 
-    async def export(self, item: BaseModel, args: dict):
-        item_type = item.short_name
-        save_at_db = True
-        save_files = True
-
-        if save_at_db == True:
-            with override_db([ContentUnit, StorageUnit], self.db):
-                item_data = item.__dict__["__data__"]
-                item.insert(item_data).execute()
-
-        match (item_type):
-            case "su":
-                pass
+    def getExportItem(self, item: BaseModel, flags):
+        return ExportItem(item, flags)
