@@ -12,7 +12,7 @@ class Implementation(Json.AbstractReceivation):
 
         return params
 
-    async def execute(self, i = {}):
+    async def implementation(self, i = {}):
         json_object = list_conversation(i.get('object'))
         outs = []
         

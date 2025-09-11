@@ -14,7 +14,7 @@ class Implementation(Act):
 
         return params
 
-    async def execute(self, i = {}):
+    async def implementation(self, i = {}):
         items = i.get("items")
         successes = 0
 

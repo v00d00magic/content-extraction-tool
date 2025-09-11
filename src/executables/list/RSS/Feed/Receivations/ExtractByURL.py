@@ -15,7 +15,7 @@ class Implementation(RSS.AbstractReceivation):
 
         return params
 
-    async def execute(self, i = {}):
+    async def implementation(self, i = {}):
         import aiohttp, xmltodict
         from utils.MediaUtils import rss_date_parse
 

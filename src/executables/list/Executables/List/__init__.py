@@ -12,7 +12,7 @@ class Implementation(Act):
 
         return params
 
-    async def execute(self, i = {}):
+    async def implementation(self, i = {}):
         fnl = []
         for item in app.indexated_scripts.listByClass(i.get("type")):
             try:

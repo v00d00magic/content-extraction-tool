@@ -11,7 +11,7 @@ class Implementation(Act):
 
         return super().canBeUsedAt(at)
 
-    async def execute(self, i = {}):
+    async def implementation(self, i = {}):
         logs_storage = logger.logs_storage
         dir_storage = logs_storage.dir
 

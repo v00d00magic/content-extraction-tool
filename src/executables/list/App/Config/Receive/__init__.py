@@ -10,7 +10,7 @@ class Implementation(Act):
 
         return super().canBeUsedAt(at)
 
-    async def execute(self, args = {}):
+    async def implementation(self, args = {}):
         result = []
 
         for name, itm in config.compared_options.items():

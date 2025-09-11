@@ -24,7 +24,7 @@ class Implementation(Act):
 
         return params
     
-    async def execute(self, i = {}):
+    async def implementation(self, i = {}):
         # Array of objects:
         # class — cu | su
         # id — id of item

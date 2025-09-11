@@ -26,7 +26,7 @@ class Implementation(Act):
 
         return params
 
-    async def execute(self, i = {}):
+    async def implementation(self, i = {}):
         display_name = i.get('display_name')
         interval = i.get('interval')
         service_class_name = i.get('class')

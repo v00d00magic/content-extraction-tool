@@ -59,7 +59,7 @@ class Implementation(File.AbstractReceivation):
 
         return params
 
-    async def execute(self, i = {}):
+    async def implementation(self, i = {}):
         pathes = i.get('path')
         outs = []
 

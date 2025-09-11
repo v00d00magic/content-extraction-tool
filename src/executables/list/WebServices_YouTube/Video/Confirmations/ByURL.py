@@ -12,7 +12,7 @@ class Implementation(Video.AbstractConfirmation):
 
         return params
 
-    async def execute(self, i = {}):
+    async def implementation(self, i = {}):
         from submodules.Media.YtDlpWrapper import YtDlpWrapper
 
         outer = self.outer.declare_recursive()

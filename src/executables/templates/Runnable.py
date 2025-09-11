@@ -60,9 +60,10 @@ class Runnable:
     def full_name(cls):
         return ".".join(cls.__module__.split('.')[2:])
 
-    # Execution
-    async def execute(self, args):
-        pass
+    async def execute(self, i):
+        logger.log(message=f"Executed {self.full_name()}",section=logger.SECTION_EXECUTABLES,kind=logger.KIND_MESSAGE)
+
+        return await self.implementation(i)
 
     async def execute_with_validation(self, args: dict, declare_with = None):
         if declare_with == None:
@@ -73,7 +74,6 @@ class Runnable:
         decl = ArgsComparer(declare_with, args, 'assert', self.executable_configuration.is_free_args())
         _args = decl.dict()
 
-        logger.log(message=f"Executed {self.full_name()}",section=logger.SECTION_EXECUTABLES,kind=logger.KIND_MESSAGE)
 
         if getattr(self, "beforeExecute", None) != None:
             self.beforeExecute(_args)

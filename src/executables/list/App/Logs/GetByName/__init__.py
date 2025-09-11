@@ -24,7 +24,7 @@ class Implementation(Act):
 
         return super().canBeUsedAt(at)
 
-    async def execute(self, args = {}):
+    async def implementation(self, args = {}):
         _file = args.get("file")
 
         if ".json" not in _file:

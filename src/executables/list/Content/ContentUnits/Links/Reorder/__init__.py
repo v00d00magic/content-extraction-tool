@@ -11,7 +11,7 @@ class Implementation(Act):
         params["item_2"] = IntArgument({})
         return params
     
-    async def execute(self, i = {}):
+    async def implementation(self, i = {}):
         item_1 = i.get("item_1")
         item_2 = i.get("item_2")
 

@@ -18,7 +18,7 @@ class Implementation(Text.AbstractReceivation):
 
         return params
 
-    async def execute(self, i = {}):
+    async def implementation(self, i = {}):
         texts = i.get('text')
         output = []
 

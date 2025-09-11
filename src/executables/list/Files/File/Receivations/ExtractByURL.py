@@ -24,7 +24,7 @@ class Implementation(File.AbstractReceivation):
 
         return params
     
-    async def execute(self, i = {}):
+    async def implementation(self, i = {}):
         from submodules.Web.DownloadManager import download_manager
         import mimetypes, os
 

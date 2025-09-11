@@ -44,7 +44,7 @@ class Implementation(Service):
         if self.c_cached_executable == None:
             raise FatalError("executable not found")
 
-    async def execute(self, i = {}):
+    async def implementation(self, i = {}):
         executable_type = self.config.get("executable_type")
         executable_name = self.config.get("executable_name")
 

@@ -21,7 +21,7 @@ class Implementation(File.AbstractAct):
 
         return params
 
-    async def execute(self, i = {}):
+    async def implementation(self, i = {}):
         from hachoir.core import config as HachoirConfig
         from hachoir.parser import createParser
         from hachoir.metadata import extractMetadata

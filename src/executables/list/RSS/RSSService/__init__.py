@@ -14,7 +14,7 @@ class Implementation(BaseDeclaredAtDependent):
 
         return params
 
-    async def execute(self, i = {}):
+    async def implementation(self, i = {}):
         self.regular_extractor = Extractor.find('Rss.RSSFeed')
         self.pass_params = {
             "url": self.config.get('url'),

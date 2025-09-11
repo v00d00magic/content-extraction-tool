@@ -22,7 +22,7 @@ class Implementation(Act):
 
         return super().canBeUsedAt(at)
 
-    async def execute(self, args = {}):
+    async def implementation(self, args = {}):
         values = args.get("values")
         tabu = consts.get("config.hidden_values_spaces")
 

@@ -20,7 +20,7 @@ class Implementation(BaseDeclaredAtDependent):
 
         return params
 
-    async def execute(self, i = {}):
+    async def implementation(self, i = {}):
         self.regular_extractor = Extractor.find(self.config.get('extractor'))
         self.pass_params = self.config.get('pass_args')
 

@@ -16,7 +16,7 @@ class Implementation(Act):
 
         return params
 
-    async def execute(self, i):
+    async def implementation(self, i):
         dump = ArgumentsDump()
         if i.get("executable") != None:
             dump.executable = i.get("executable").full_name()

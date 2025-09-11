@@ -11,6 +11,3 @@ class Implementation(Representation):
     docs = {
         "name": keys.get("arguments.name"),
     }
-    executable_cfg =  {
-        'free_args': True
-    }

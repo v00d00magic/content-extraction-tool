@@ -10,7 +10,6 @@ Todo:
 - [ ] Class sections
 - [ ] Open variables of the class
 - [x] Move `response` to class
-- [ ] execute() -> implementation()
 
 #### Representations
 

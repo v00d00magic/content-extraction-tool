@@ -58,6 +58,9 @@ class Representation(Executable, metaclass=RepresentationMeta):
         if getattr(cls, "extractor_wheel", None) != None:
             return cls.extractor_wheel(args)
 
+        if len(cls.receivations) == 1:
+            return cls.receivations[0]
+
         # dumb way
         for extractor_item in cls.receivations:
             decls = extractor_item.declare_recursive()
@@ -78,7 +81,7 @@ class Representation(Executable, metaclass=RepresentationMeta):
 
         return await extract_strategy_instance.execute(_dict.dict())
 
-    async def execute(self, i: dict = {}):
+    async def implementation(self, i: dict = {}):
         return ItemsResponse(await self.extract(i))
 
     @classmethod

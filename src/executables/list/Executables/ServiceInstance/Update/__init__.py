@@ -18,7 +18,7 @@ class Implementation(Act):
 
         return params
 
-    async def execute(self, i = {}):
+    async def implementation(self, i = {}):
         service = i.get('service')
         data = i.get('data')
 

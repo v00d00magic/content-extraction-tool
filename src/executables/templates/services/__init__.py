@@ -31,7 +31,7 @@ class Service(Executable):
     def stop(self):
         self.is_stopped = True
 
-    def execute(self, args = {}):
+    def implementation(self, args = {}):
         pass
 
     def terminate(self):

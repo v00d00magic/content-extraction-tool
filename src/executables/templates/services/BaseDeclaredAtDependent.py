@@ -27,7 +27,7 @@ class BaseDeclaredAtDependent(Service):
 
         return params
 
-    async def execute(self, i = {}):
+    async def implementation(self, i = {}):
         append_ids = self.config.get('append_ids', [])
 
         if self.add_after == None:

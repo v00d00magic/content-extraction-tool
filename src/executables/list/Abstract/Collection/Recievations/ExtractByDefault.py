@@ -16,7 +16,7 @@ class Implementation(Collection.AbstractReceivation):
 
         return params
 
-    async def execute(self, i = {}):
+    async def implementation(self, i = {}):
         out = self.ContentUnit()
         out.content = {}
         out.display_name = i.get('name')

@@ -13,7 +13,7 @@ class Implementation(Act):
         'name': keys.get("name")
     }
 
-    async def execute(self, args = {}):
+    async def implementation(self, args = {}):
         return {
             "input": {
                 "validated_args": args.__dict__(),

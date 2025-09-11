@@ -1,8 +1,12 @@
 from .. import Implementation as Scratch
 
 class Implementation(Scratch.AbstractReceivation):
-    async def execute(self, i = {}):
+    executable_cfg =  {
+        'free_args': True
+    }
+
+    async def implementation(self, i = {}):
         out = self.ContentUnit()
-        out.content = i
+        out.content = i.__dict__()
 
         return [out]

@@ -23,7 +23,7 @@ class Implementation(Extractor, Timeoutable):
 
         return params
 
-    async def execute(self, i):
+    async def implementation(self, i):
         for iterator in range(i.get("start"), i.get("end")):
             try:
                 await self.iterate(i, iterator)
