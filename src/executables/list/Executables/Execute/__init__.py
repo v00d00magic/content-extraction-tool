@@ -1,7 +1,8 @@
-from executables.templates.acts import Act
-from db.Models.Content.ContentUnit import ContentUnit
 from declarable.Arguments import CsvArgument, ContentUnitArgument, ExecutableArgument, BooleanArgument
 from executables.responses.Response import Response
+from executables.list.Executables.Dump import Implementation as Dump
+from executables.templates.acts import Act
+from db.Models.Content.ContentUnit import ContentUnit
 
 keys = {
     "name": {
@@ -37,6 +38,9 @@ class Implementation(Act):
         params["confirm"] = BooleanArgument({
             "default": True
         })
+        params["dump"] = BooleanArgument({
+            "default": True
+        })
         params["ignore_requirements"] = BooleanArgument({
             'default': False,
         })
@@ -45,11 +49,8 @@ class Implementation(Act):
 
     async def execute(self, i = {}):
         executable = i.get('i')(self.index)
-        is_save = i.get('is_save')
         links = i.get('link')
-        is_skip_confirmation = int(i.get("confirm")) == 1
         link_to = []
-        ignore_requirements = i.get("ignore_requirements")
         _pass = i.__dict__()
         _pass.pop("i")
 
@@ -58,11 +59,17 @@ class Implementation(Act):
 
         executable.add_hook("progress", __progress_hook)
 
-        if ignore_requirements == False:
+        if i.get("dump") == True:
+            await Dump().execute({
+                "executable": executable,
+                "data": _pass
+            })
+
+        if i.get("ignore_requirements") == False:
             assert executable.isModulesInstalled(), f"requirements not installed. run 'Executables.InstallRequirements'"
 
         if len(executable.confirmations) > 0:
-            if is_skip_confirmation == False:
+            if int(i.get("confirm")) == 1 == False:
                 res = await executable.confirmations[0]().execute_with_validation(i)
                 _out = {
                     "preferred_receivation": None,
@@ -87,7 +94,7 @@ class Implementation(Act):
         result = Response.convert(await executable.execute_with_validation(_pass))
         if hasattr(result, "items") == True:
             for item in result.items():
-                if is_save == True:
+                if i.get('is_save') == True:
                     item.save()
                     executable.doLink(item)
 

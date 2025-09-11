@@ -151,7 +151,7 @@ async def websocket_connection(request):
 
         try:
             results = await Execute(data.get("event_index")).execute_with_validation(data.get("payload"))
-            payload["result"] = results
+            payload["result"] = results.display()
         except Exception as e:
             logger.log(e)
             payload["error"] = {

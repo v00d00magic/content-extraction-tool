@@ -41,8 +41,9 @@ class DbConnection:
         from db.Models.Instances.Stat import Stat
         from db.Models.Content.StorageUnit import StorageUnit
         from db.Models.Instances.ServiceInstance import ServiceInstance
+        from db.Models.Instances.ArgumentsDump import ArgumentsDump
 
         self.__createTablesSection(self.db, [ContentUnitRelation, ContentUnit, StorageUnit])
-        self.__createTablesSection(self.instance_db, [Stat, ServiceInstance])
+        self.__createTablesSection(self.instance_db, [Stat, ServiceInstance, ArgumentsDump])
 
 db_connection = DbConnection()
