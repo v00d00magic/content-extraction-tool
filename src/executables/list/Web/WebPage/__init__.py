@@ -1,7 +1,10 @@
 from executables.templates.representations import Representation
+from utils.ClassProperty import classproperty
 
 class Implementation(Representation):
-    required_modules = ["selenium", "beautifulsoup4", "fake-useragent"]
+    @classproperty
+    def required_modules(cls):
+        return ["selenium", "beautifulsoup4", "fake-useragent"]
 
     def extractByHtml(self, i = {}):
         xml_text = i.get('html')

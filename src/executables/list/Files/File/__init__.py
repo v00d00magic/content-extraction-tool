@@ -1,6 +1,6 @@
 from executables.templates.representations import Representation
 
-keys = {
+locale_keys = {
     "name": {
         "ru_RU": "Файл",
         "en_US": "File"
@@ -12,10 +12,12 @@ keys = {
 }
 
 class Implementation(Representation):
-    docs = {
-        "name": keys.get("name"),
-        "definition": keys.get("definition"),
-    }
+    @classmethod
+    def define_meta(cls):
+        return {
+            "name": cls.key("name"),
+            "definition": cls.key("definition"),
+        }
 
     @staticmethod
     async def process_item(item):

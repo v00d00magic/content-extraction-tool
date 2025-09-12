@@ -1,13 +1,30 @@
+from declarable.Documentation import Documentation
+
 class Documentable:
     '''
-    Class that contains api description methods
+    Class with description methods
     '''
 
-    docs = {
-        "definition": {
-            "en_US": "No description"
-        },
-    }
+    def __init_subclass__(cls, **kwargs):
+        cls.documentation = Documentation()
+
+        return super().__init_subclass__(**kwargs)
+
+    @classmethod
+    def define_meta(cls):
+        return {
+            "definition": {
+                "en_US": "No description"
+            },
+        }
+
+    @classmethod
+    def key(cls, key_name):
+        return cls.documentation.get(key_name)
+
+    @classmethod
+    def loadKeys(cls, keys):
+        cls.documentation.loadKeys(keys)
 
     @classmethod
     def describe(cls):

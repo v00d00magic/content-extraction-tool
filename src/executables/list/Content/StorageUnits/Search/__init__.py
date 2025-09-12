@@ -4,7 +4,7 @@ from db.Models.Content.StorageUnit import StorageUnit
 from functools import reduce
 import operator
 
-keys = {
+locale_keys = {
     "order.name": {
         "en_US": "Order",
         "ru_RU": "Порядок"
@@ -20,7 +20,7 @@ class Implementation(Act):
         })
         params["order"] = LimitedArgument({
             "docs": {
-                "name": keys.get("order.name"),
+                "name": cls.key("order.name"),
                 "values": {
                     "created_asc": {
                         "name": "c.search.order.c_asc.name",

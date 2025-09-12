@@ -1,6 +1,6 @@
 from executables.templates.representations import Representation
 
-keys = {
+locale_keys = {
     "hyperlink.name": {
         "en_US": "Hyperlink",
         "ru_RU": "Ссылка"
@@ -12,7 +12,9 @@ keys = {
 }
 
 class Implementation(Representation):
-    docs = {
-        "definition": keys.get("hyperlink.definition"),
-        "name": keys.get("hyperlink.name"),
-    }
+    @classmethod
+    def define_meta(cls):
+        return {
+            "definition": cls.key("hyperlink.definition"),
+            "name": cls.key("hyperlink.name"),
+        }

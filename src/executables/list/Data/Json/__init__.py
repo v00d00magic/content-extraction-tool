@@ -1,12 +1,14 @@
 from executables.templates.representations import Representation
 
-keys = {
+locale_keys = {
     "json.name": {
         "en_US": "JSON"
     }
 }
 
 class Implementation(Representation):
-    docs = {
-        "name": keys.get("json.name"),
-    }
+    @classmethod
+    def define_meta(cls):
+        return {
+            'name': cls.key("json.name")
+        }

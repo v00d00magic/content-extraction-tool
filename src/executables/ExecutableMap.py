@@ -130,6 +130,11 @@ class ExecutableMap:
         common_object = getattr(module, title, None)
         assert common_object != None, f"{module_path} > {title} not found"
 
+        if hasattr(module, "locale_keys") == True:
+            common_object.loadKeys(getattr(module, "locale_keys"))
+
+        common_object.docs = common_object.define_meta()
+
         return common_object
 
     def register(self, module):

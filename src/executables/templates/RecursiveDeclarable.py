@@ -2,15 +2,19 @@ from declarable.ExecutableConfig import ExecutableConfig
 from utils.ClassProperty import classproperty
 
 class RecursiveDeclarable:
-    executable_cfg =  {}
     consts = {}
+
+    @classmethod
+    def executable_cfg(cls):
+        pass
 
     @classproperty
     def executable_configuration(cls):
-        if type(cls.executable_cfg) == dict:
-            return ExecutableConfig(cls.executable_cfg)
+        _res = cls.executable_cfg()
+        if isinstance(_res, ExecutableConfig) == False:
+            return ExecutableConfig(_res)
 
-        return cls.executable_cfg
+        return _res
 
     @classmethod
     def define(cls):
@@ -50,7 +54,6 @@ class RecursiveDeclarable:
 
             intermediate_dict = {}
             current_level_declaration = __sub_class.declare()
-            
             if current_level_declaration == None:
                 continue
 

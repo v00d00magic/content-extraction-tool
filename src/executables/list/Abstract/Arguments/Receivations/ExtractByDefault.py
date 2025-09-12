@@ -1,9 +1,12 @@
 from .. import Implementation as Scratch
+from declarable.ExecutableConfig import ExecutableConfig
 
 class Implementation(Scratch.AbstractReceivation):
-    executable_cfg =  {
-        'free_args': True
-    }
+    @classmethod
+    def executable_cfg(cls):
+        return ExecutableConfig({
+            'free_args': True
+        })
 
     async def implementation(self, i = {}):
         out = self.ContentUnit()

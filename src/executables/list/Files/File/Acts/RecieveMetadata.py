@@ -1,10 +1,13 @@
 from .. import Implementation as File
 from utils.MainUtils import extract_metadata_to_dict
 from declarable.Arguments import StringArgument, BooleanArgument, StorageUnitArgument
+from utils.ClassProperty import classproperty
 from app.App import logger
 
 class Implementation(File.AbstractAct):
-    required_modules = ["hachoir"]
+    @classproperty
+    def required_modules(cls):
+        return ["hachoir"]
 
     @classmethod
     def declare(cls):

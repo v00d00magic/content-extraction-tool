@@ -1,6 +1,7 @@
 from declarable.Arguments import Argument, StringArgument, IntArgument, BooleanArgument, LimitedArgument, CsvArgument
+from declarable.Documentation import documentation
 
-keys = {
+locale_keys = {
     "ui.lang.name": {
         "en_US": "Language",
         "ru_RU": "Язык",
@@ -66,17 +67,19 @@ keys = {
     }
 }
 
+documentation.loadKeys(locale_keys)
+
 DefaultSettings = {
     "ui.lang": StringArgument({
         "default": 'en_US',
         "docs": {
-            "name": keys.get("ui.lang.name"),
+            "name": documentation.get("ui.lang.name"),
         },
     }),
     "ui.name": StringArgument({
         "default": "Content extraction tool",
         "docs": {
-            "name": keys.get("ui.name.name"),
+            "name": documentation.get("ui.name.name"),
         },
     }),
     "web.config_editing.allow": BooleanArgument({ # Allow to edit config from web
@@ -91,13 +94,13 @@ DefaultSettings = {
     "web.host": StringArgument({
         "default": "127.0.0.1",
         "docs": {
-            "name": keys.get("web.host.name"),
+            "name": documentation.get("web.host.name"),
         },
     }),
     "web.port": IntArgument({
         "default": 26666,
         "docs": {
-            "name": keys.get("web.port.name"),
+            "name": documentation.get("web.port.name"),
         },
     }),
     "web.debug": BooleanArgument({
@@ -106,8 +109,8 @@ DefaultSettings = {
     "storage.root_path": StringArgument({
         "default": "?cwd?/storage", # cwd -> /storage
         "docs": {
-            "name": keys.get("storage.root_path.name"),
-            "definition": keys.get("storage.root_path.definition"),
+            "name": documentation.get("storage.root_path.name"),
+            "definition": documentation.get("storage.root_path.definition"),
         },
     }),
     "db.content.connection": StringArgument({
@@ -119,21 +122,21 @@ DefaultSettings = {
     "net.max_speed": IntArgument({
         "default": 2000, # kbs
         "docs": {
-            "name": keys.get("net.max_speed.name"),
-            "definition": keys.get("net.max_speed.definition"),
+            "name": documentation.get("net.max_speed.name"),
+            "definition": documentation.get("net.max_speed.definition"),
         },
     }),
     "net.useragent": StringArgument({
         "default": 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0',
         "docs": {
-            "name": keys.get("net.useragent.name"),
+            "name": documentation.get("net.useragent.name"),
         },
     }),
     "net.timeout": IntArgument({
         "default": 100,
         "docs": {
-            "name": keys.get("net.timeout.name"),
-            "definition": keys.get("net.timeout.definition"),
+            "name": documentation.get("net.timeout.name"),
+            "definition": documentation.get("net.timeout.definition"),
         },
     }),
     "logger.skip_categories": CsvArgument({
@@ -147,26 +150,26 @@ DefaultSettings = {
             "tip": ["name", "where", "wildcard", "kinda"]
         }),
         "docs": {
-            "name": keys.get("logger.skip_categories.name"),
-            "definition": keys.get("logger.skip_categories.definition"),
+            "name": documentation.get("logger.skip_categories.name"),
+            "definition": documentation.get("logger.skip_categories.definition"),
         },
     }),
     "logger.skip_file": BooleanArgument({
         "default": 0,
         "docs": {
-            "name": keys.get("logger.skip_file.name"),
+            "name": documentation.get("logger.skip_file.name"),
         },
     }),
     "thumbnail.width": IntArgument({
         "default": 200,
         "docs": {
-            "name": keys.get("thumbnail.width.name"),
+            "name": documentation.get("thumbnail.width.name"),
         },
     }),
     "thumbnail.height": IntArgument({
         "default": 200,
         "docs": {
-            "name": keys.get("thumbnail.width.height"),
+            "name": documentation.get("thumbnail.width.height"),
         },
     }),
 }

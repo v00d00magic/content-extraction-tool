@@ -28,7 +28,7 @@ class Implementation(Extractor, Timeoutable):
             try:
                 await self.iterate(i, iterator)
             except Exception as _e:
-                logger.log(_e, "Iterable", silent=False)
+                logger.log(_e, "Iterable")
 
             await asyncio.sleep(i.get("timeout"))
 

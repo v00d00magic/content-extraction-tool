@@ -4,7 +4,7 @@ from utils.WebUtils import is_generated_ext
 from utils.MainUtils import name_from_url
 from pathlib import Path
 
-keys = {
+locale_keys = {
     "url.name": {
         "en_US": "URL"
     }
@@ -16,7 +16,7 @@ class Implementation(File.AbstractReceivation):
         params = {}
         params["url"] = CsvArgument({
             "docs": {
-                "name": keys.get("url.name")
+                "name": cls.key("url.name")
             },
             "orig": StringArgument({}),
             "default": None,

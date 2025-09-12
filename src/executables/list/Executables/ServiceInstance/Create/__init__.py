@@ -2,11 +2,14 @@ from executables.templates.acts import Act
 from executables.templates.services import Service
 from db.Models.Instances.ServiceInstance import ServiceInstance
 from declarable.Arguments import StringArgument, IntArgument
+from declarable.ExecutableConfig import ExecutableConfig
 
 class Implementation(Act):
-    executable_cfg = {
-        'free_args': True
-    }
+    @classmethod
+    def executable_cfg(cls):
+        return ExecutableConfig({
+            'free_args': True
+        })
 
     @classmethod
     def declare(cls):

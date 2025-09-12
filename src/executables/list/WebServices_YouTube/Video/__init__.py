@@ -1,11 +1,11 @@
 from executables.templates.representations import Representation
 from declarable.Arguments import CsvArgument, StringArgument
+from utils.ClassProperty import classproperty
 
 class Implementation(Representation):
-    required_modules = ["yt-dlp"]
-    executable_cfg = {
-        "variants": []
-    }
+    @classproperty
+    def required_modules(cls):
+        return ["yt-dlp"]
 
     @classmethod
     def declare(cls):

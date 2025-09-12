@@ -2,7 +2,10 @@ from resources.Exceptions import DeclaredArgumentsException
 
 class ExecutableConfig:
     def __init__(self, content):
-        self.content = content
+        if content == None:
+            self.content = {}
+        else:
+            self.content = content
 
     def ignores(self):
         return self.content.get("ignore", [])

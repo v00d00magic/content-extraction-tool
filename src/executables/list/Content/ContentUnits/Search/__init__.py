@@ -5,7 +5,7 @@ from functools import reduce
 from peewee import fn
 import operator
 
-keys = {
+locale_keys = {
     "order.name": {
         "en_US": "Order",
         "ru_RU": "Порядок"
@@ -19,14 +19,10 @@ class Implementation(Act):
         params["query"] = StringArgument({
             "default": None,
         })
-        params["representation"] = StringArgument({
-            "docs": {
-                "name": keys.get("order.name"),
-            }
-        })
+        params["representation"] = StringArgument({})
         params["order"] = LimitedArgument({
             "docs": {
-                "name": keys.get("order.name"),
+                "name": cls.key("order.name"),
                 "values": {
                     "created_asc": {
                         "name": {

@@ -59,7 +59,7 @@ class Submodulable():
             outer = cls
 
             @classmethod
-            def self_insert(cls, item):
+            def selfInsert(cls, item):
                 item.markSavedJson(cls)
 
         class AbstractExternalExtractor(Extractor):
@@ -68,7 +68,7 @@ class Submodulable():
             outer = cls
 
             @classmethod
-            def self_insert(cls, item):
+            def selfInsert(cls, item):
                 item.markSavedJson(cls)
 
         class AbstractConfirmation(Extractor):

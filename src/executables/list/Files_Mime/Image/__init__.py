@@ -9,10 +9,13 @@ keys = {
 }
 
 class Implementation(FileImplementation):
-    docs = {
-        "name": keys.get("image.name"),
-    }
     inherit_from = [FileImplementation]
+
+    @classmethod
+    def define_meta(cls):
+        return {
+            "name": cls.key("image.name"),
+        }
 
     @staticmethod
     async def process_item(item):

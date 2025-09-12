@@ -4,7 +4,7 @@ from submodules.Files.FileManager import file_manager
 from pathlib import Path
 import os
 
-keys = {
+locale_keys = {
     "path.name": {
         "en_US": "Path to file",
         "ru_RU": "Путь к файлу"
@@ -34,22 +34,22 @@ class Implementation(File.AbstractReceivation):
         params["path"] = CsvArgument({
             "orig": StringArgument({}),
             "docs": {
-                "name": keys.get("path.name"),
+                "name": cls.key("path.name"),
             },
             "default": None,
         })
         params["type"] = LimitedArgument({
             "docs": {
-                "name": keys.get("type.name"),
+                "name": cls.key("type.name"),
                 "values": {
                     "copy": {
-                        "name": keys.get("type.copy.name")
+                        "name": cls.key("type.copy.name")
                     },
                     "move": {
-                        "name": keys.get("type.move.name")
+                        "name": cls.key("type.move.name")
                     },
                     "link": {
-                        "name": keys.get("type.link.name")
+                        "name": cls.key("type.link.name")
                     },
                 }
             },

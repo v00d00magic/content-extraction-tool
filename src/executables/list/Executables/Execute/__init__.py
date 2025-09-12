@@ -3,8 +3,9 @@ from executables.responses.Response import Response
 from executables.list.Executables.Dump import Implementation as Dump
 from executables.templates.acts import Act
 from db.Models.Content.ContentUnit import ContentUnit
+from declarable.ExecutableConfig import ExecutableConfig
 
-keys = {
+locale_keys = {
     "name": {
         "en_US": "Link to",
         "ru_RU": "Привязать к",
@@ -12,9 +13,11 @@ keys = {
 }
 
 class Implementation(Act):
-    executable_cfg = {
-        'free_args': True
-    }
+    @classmethod
+    def executable_cfg(cls):
+        return ExecutableConfig({
+            'free_args': True
+        })
 
     @classmethod
     def declare(cls):
@@ -28,7 +31,7 @@ class Implementation(Act):
         params["link_after"] = CsvArgument({
             "orig": ContentUnitArgument({}),
             "docs": {
-                "name": keys.get("name"),
+                "name": Act.key("name"),
             },
             "default": []
         })

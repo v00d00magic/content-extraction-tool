@@ -1,6 +1,6 @@
 from executables.templates.representations import Representation
 
-keys = {
+locale_keys = {
     "collection.name": {
         "en_US": "Collection",
         "ru_RU": "Коллекция"
@@ -8,6 +8,8 @@ keys = {
 }
 
 class Implementation(Representation):
-    docs = {
-        "name": keys.get("collection.name"),
-    }
+    @classmethod
+    def define_meta(cls):
+        return {
+            "name": cls.key("collection.name"),
+        }

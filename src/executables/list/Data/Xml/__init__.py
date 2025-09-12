@@ -1,13 +1,15 @@
 from executables.templates.representations import Representation
 from declarable.Arguments import StringArgument, ObjectArgument
 
-keys = {
+locale_keys = {
     "xml.name": {
         "en_US": "Xml"
     }
 }
 
 class Implementation(Representation):
-    docs = {
-        "name": keys.get("xml.name"),
-    }
+    @classmethod
+    def define_meta(cls):
+        return {
+            "name": cls.key("xml.name"),
+        }

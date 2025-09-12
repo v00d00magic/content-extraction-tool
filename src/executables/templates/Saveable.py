@@ -31,7 +31,7 @@ class Saveable:
     def ContentUnit(cls):
         out = ContentUnit()
         out.created_at = float(datetime.datetime.now().timestamp())
-        cls.self_insert(out)
+        cls.selfInsert(out)
 
         return out
 
@@ -41,7 +41,7 @@ class Saveable:
 
         return out
 
-    def self_insert(item):
+    def selfInsert(item):
         '''
         You can append needed keys here
         '''

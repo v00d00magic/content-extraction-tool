@@ -6,7 +6,10 @@ from app.App import logger
 class Runnable:
     base_categories = ["template", "base"]
     available = ['web', 'cli']
-    required_modules = []
+
+    @classproperty
+    def required_modules(cls):
+        return []
 
     @classproperty
     def category(self)->str:

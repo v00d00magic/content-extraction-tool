@@ -1,7 +1,7 @@
 from declarable.Arguments import CsvArgument, StorageUnitArgument
 from .. import Implementation as File
 
-keys = {
+locale_keys = {
     "storage_unit.name": {
         "en_US": "Storage unit ID"
     }
@@ -14,7 +14,7 @@ class Implementation(File.AbstractReceivation):
         params["storage_unit"] = CsvArgument({
             "orig": StorageUnitArgument({}),
             "docs": {
-                "name": keys.get("storage_unit.name")
+                "name": cls.key("storage_unit.name")
             },
         })
 
