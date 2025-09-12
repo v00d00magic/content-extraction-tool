@@ -9,4 +9,6 @@ class Implementation(Scratch.AbstractReceivation):
         out = self.ContentUnit()
         out.content = i.__dict__()
 
+        self.log("Written arguments")
+
         return [out]

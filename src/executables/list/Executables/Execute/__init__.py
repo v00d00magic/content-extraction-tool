@@ -39,7 +39,7 @@ class Implementation(Act):
             "default": True
         })
         params["dump"] = BooleanArgument({
-            "default": True
+            "default": False
         })
         params["ignore_requirements"] = BooleanArgument({
             'default': False,

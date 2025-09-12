@@ -50,24 +50,30 @@ class Submodulable():
 
         class AbstractAct(Act):
             self_name = "Act"
+            section_name = "Act!" + cls.full_name()
             outer = cls
 
         class AbstractReceivation(Extractor):
             self_name = "Receivation"
+            section_name = "Receivation!" + cls.full_name()
             outer = cls
 
-            def self_insert(self, item):
-                item.markSavedJson(self)
+            @classmethod
+            def self_insert(cls, item):
+                item.markSavedJson(cls)
 
         class AbstractExternalExtractor(Extractor):
             self_name = "ExternalExtractor"
+            section_name = "ExternalExtractor!" + cls.full_name()
             outer = cls
 
-            def self_insert(self, item):
-                item.markSavedJson(self)
+            @classmethod
+            def self_insert(cls, item):
+                item.markSavedJson(cls)
 
         class AbstractConfirmation(Extractor):
             self_name = "Confirmation"
+            section_name = "Confirmation!" + cls.full_name()
             outer = cls
 
         cls.AbstractAct = AbstractAct

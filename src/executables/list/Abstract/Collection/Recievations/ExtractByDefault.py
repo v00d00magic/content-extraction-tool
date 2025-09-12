@@ -22,5 +22,7 @@ class Implementation(Collection.AbstractReceivation):
         out.display_name = i.get('name')
         out.description = i.get('description')
         out.is_collection = True
+        
+        self.log("Created collection")
 
         return [out]

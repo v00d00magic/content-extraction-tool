@@ -27,19 +27,21 @@ class Saveable:
 
     # signed
 
-    def ContentUnit(self):
+    @classmethod
+    def ContentUnit(cls):
         out = ContentUnit()
         out.created_at = float(datetime.datetime.now().timestamp())
-        self.self_insert(out)
+        cls.self_insert(out)
 
         return out
 
-    def StorageUnit(self):
+    @classmethod
+    def StorageUnit(cls):
         out = StorageUnit()
 
         return out
 
-    def self_insert(self, item):
+    def self_insert(item):
         '''
         You can append needed keys here
         '''
