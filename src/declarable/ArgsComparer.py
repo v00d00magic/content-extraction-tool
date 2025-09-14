@@ -1,13 +1,19 @@
 from declarable.ArgsHashTable import ArgsHashTable
 
 class ArgsComparer():
-    def __init__(self, comparing_options: dict, passed_options: dict, exc_type: str = "assert", is_free_settings: bool = False, rude_substitution: bool = False):
-        self.compare = comparing_options # Argument class dict
-        self.args = passed_options # what we got at input
-        self.impact = exc_type # "assert": raise exceptions, "default": pass default on exception
-        self.missing_args_inclusion = is_free_settings # Return the same value if argument didnt found in compared
-        self.same_dict_mode = rude_substitution # Return input dict
-        self.default_sub = True # Pass default value insted of None if None
+    def __init__(self, 
+                 compare: dict, 
+                 args: dict, 
+                 exc: str = "assert", 
+                 default_sub = True,
+                 missing_args_inclusion: bool = False, 
+                 same_dict_mode: bool = False):
+        self.compare = compare # Argument class dict
+        self.args = args # what we got at input
+        self.exc = exc # "assert": raise exceptions, "default": pass default on exception
+        self.missing_args_inclusion = missing_args_inclusion # Return the same value if argument didnt found in compared
+        self.same_dict_mode = same_dict_mode # Return input dict
+        self.default_sub = default_sub # Pass default value insted of None if None
         self.save_none_values = False # Save dict key even if None
 
     def diff(self):
@@ -56,7 +62,7 @@ class ArgsComparer():
                 if value == None and is_unexist == False:
                     continue
             except Exception as _y:
-                if self.impact == "assert":
+                if self.exc == "assert":
                     raise _y
                 else:
                     if self.default_sub == True:

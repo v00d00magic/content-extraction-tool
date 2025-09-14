@@ -6,6 +6,7 @@ from app.App import logger
 class Runnable:
     base_categories = ["template", "base"]
     available = ['web', 'cli']
+    _default_sub = True
 
     @classproperty
     def required_modules(cls):
@@ -74,7 +75,11 @@ class Runnable:
 
         self.executable_configuration.check()
 
-        decl = ArgsComparer(declare_with, args, 'assert', self.executable_configuration.is_free_args())
+        decl = ArgsComparer(compare=declare_with, 
+                            args=args, 
+                            exc='assert', 
+                            missing_args_inclusion=self.executable_configuration.is_free_args(), 
+                            default_sub=self._default_sub)
         _args = decl.dict()
 
 

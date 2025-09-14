@@ -36,7 +36,6 @@ class Implementation(File.AbstractReceivation):
             "docs": {
                 "name": cls.key("path.name"),
             },
-            "default": None,
         })
         params["type"] = LimitedArgument({
             "docs": {

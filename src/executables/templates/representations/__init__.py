@@ -13,6 +13,7 @@ class RepresentationMeta(type):
 
 class Representation(Executable, metaclass=RepresentationMeta):
     self_name = "Representation"
+    _default_sub = False
 
     @classmethod
     def declare(cls):

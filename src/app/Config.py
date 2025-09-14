@@ -26,7 +26,11 @@ class Config():
     def __pass_declarable(self):
         from declarable.ArgsComparer import ArgsComparer
 
-        self.declared_settings = ArgsComparer(self.compared_options, self.passed_options, "pass", True, self.compared_options == None)
+        self.declared_settings = ArgsComparer(compare=self.compared_options, 
+                                              args=self.passed_options, 
+                                              exc="pass", 
+                                              default_sub=True,
+                                              same_dict_mode=self.compared_options == None)
         self.options = self.declared_settings.dict()
 
     def __load_path(self, path):

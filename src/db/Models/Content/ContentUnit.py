@@ -127,6 +127,10 @@ class ContentUnit(BaseModel, ThumbnailMixin):
         self.link_queue = []
         self.via_method = None
 
+        _now = now_timestamp()
+        self.created_at = float(_now)
+        self.declared_created_at = float(_now)
+
         return super().__init__()
 
     @cached_property
@@ -210,19 +214,16 @@ class ContentUnit(BaseModel, ThumbnailMixin):
         kwargs["force_insert"] = True
         make_thumbnail = True
 
-        self.created_at = float(now_timestamp())
-
+        '''
         if getattr(self, "content", None) != None and type(self.content) != str:
             self.JSONContent.update(self.content)
 
         if getattr(self, "source", None) != None and type(self.source) != str:
             self.Source.update(self.source)
+        '''
 
         if self.via_method != None and make_thumbnail == True:
             self.setThumbnail(self.saveThumbnail(self.via_method))
-
-        if getattr(self, "declared_created_at", None) == None:
-            self.declared_created_at = float(now_timestamp())
 
         super().save(**kwargs)
 
