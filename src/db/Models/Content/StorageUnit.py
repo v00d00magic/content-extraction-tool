@@ -2,9 +2,9 @@ import os, json
 from app.App import logger, storage
 from pathlib import Path
 from peewee import TextField, BigIntegerField, IntegerField, BooleanField
+from utils.Files.DirItem import DirItem
 from utils.MainUtils import dump_json, parse_json, get_random_hash
 from db.Models.Content.ContentModel import BaseModel
-from submodules.Files.FileManager import file_manager
 import shutil, mimetypes
 
 class StorageUnit(BaseModel):
@@ -29,101 +29,153 @@ class StorageUnit(BaseModel):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.temp_dir = None
-        self.path_link = None
+        class Temp:
+            @classmethod
+            def get(cls):
+                return self._temp_dir
+
+            @classmethod
+            def allocate(cls):
+                return storage.sub('tmp_files').allocateTemp()
+
+            @classmethod
+            def remove(cls):
+                # Do not use
+                if self._temp_dir != None:
+                    DirItem(self._temp_dir).rmdir()
+
+            @classmethod
+            def detempize(cls):
+                if self._temp_dir == None:
+                    return 
+
+                current_path = self._temp_dir.joinpath(self.upload_name)
+                new_name = self._temp_dir.joinpath('.'.join([str(self.hash), self.extension]))
+
+                current_path.rename(str(new_name))
+
+                new_storage_category = storage.sub('files').allocateHash(self.hash, only_return=True)
+                self._temp_dir.rename(str(new_storage_category))
+
+                self._temp_dir = None
+
+        class Meta:
+            @classmethod
+            def generateFilesList(cls):
+                current_dir = self.getCurrentDir()
+                files_list = []
+
+                for file in current_dir.rglob('*'):
+                    if file.is_file():
+                        files_list.append({
+                            'path': str(file.relative_to(current_dir)),
+                            'size': file.stat().st_size,
+                            'name': file.name
+                        })
+
+                return files_list
+
+            @classmethod
+            def getFilesList(cls):
+                return parse_json(self.lists)
+
+            @classmethod
+            def getFilesSize(cls):
+                common_filesize = 0
+
+                for file in self.Meta.getFilesList():
+                    common_filesize += file.get("size")
+
+                return common_filesize
+
+        class Path:
+            @classmethod
+            def getStorage(cls):
+                return storage.sub('files').path()
+
+            @classmethod
+            def getUpper(cls):
+                return cls.getStorage().joinpath(self.hash[0:2])
+
+            @classmethod
+            def getCommon(cls, need_check = True, relative = False):
+                _ret = cls.getUpper().joinpath(self.hash)
+                #if self._temp_dir != None:
+                #    return self._temp_dir
+
+                if need_check == True and _ret.exists() == False:
+                    _ret.mkdir(parents=True)
+
+                if relative == True:
+                    return _ret.relative_to(cls.getStorage())
+
+                return _ret
+
+            @classmethod
+            def getMainFilePath(cls, relative = False):
+                _ret = cls.getCommon().joinpath(str(cls.getFilename()))
+
+                if relative == True:
+                    return _ret.relative_to(cls.getStorage())
+
+                return _ret
+
+            @classmethod
+            def getFilename(cls):
+                if self._temp_dir != None:
+                    return f"{self.upload_name}"
+
+                return f"{self.hash}.{str(self.extension)}"
+
+        self._temp_dir = None
+        self._path_link = None
         self.hash = get_random_hash(32)
 
+        self.Temp = Temp()
+        self.Meta = Meta()
+        self.Path = Path()
+
         if self.is_saved() == False:
-            self.temp_dir = storage.sub('tmp_files').allocateTemp()
+            self._temp_dir = self.Temp.allocate()
 
-    @property
-    def dir_filesize(self):
-        maps = parse_json(self.lists)
-        common_filesize = 0
-
-        for file in maps:
-            common_filesize += file.get("size")
-
-        return common_filesize
-
-    def removeTemp(self):
-        # get cursed
-        if self.temp_dir != None:
-            file_manager.rmdir(self.temp_dir)
+    def getCurrentDir(self):
+        if self._temp_dir != None:
+            return self._temp_dir
 
     def flush(self):
-        self.generateFilesList()
+        self.lists = dump_json(self.Meta.generateFilesList())
         self.save(force_insert=True)
-        self.moveTempDir()
-
-    def setMime(self):
-        _mime = mimetypes.guess_type(self.path())
-        self.mime = _mime[0]
-
-    def generateFilesList(self):
-        _p = Path(self.temp_dir)
-        _files = _p.rglob('*')
-        _map = []
-
-        for file in _files:
-            if file.is_file():
-                _map.append({
-                    'path': str(file.relative_to(_p)),
-                    'size': file.stat().st_size,
-                    'name': file.name
-                })
-
-        self.lists = dump_json(_map)
-
-    def setAbout(self):
-        path = self.path_link
-
-        file_stat = path.stat()
-        self.filesize = file_stat.st_size
-        self.extension = str(path.suffix[1:])
-        self.upload_name = str(path.name)
-
-    def setMainFile(self, path: Path):
-        self.path_link = Path(path)
-        # self.generateHash()
-        self.setAbout()
-        self.setMime()
-        self.flush()
+        self.Temp.detempize()
 
     def markAsPreview(self):
         self.is_thumbnail = 1
 
-    def writeData(self, json_data):
-        self.extension = json_data.get("extension")
+    def getMime(self, name):
+        _mime = mimetypes.guess_type(name)
+        return _mime[0]
 
+    def linkPath(self, path: Path):
+        self._path_link = Path(path)
+        self.fillByPath(self._path_link)
+        self.flush()
+
+    def fillByPath(self, path):
+        self.filesize = path.stat().st_size
+        self.extension = str(path.suffix[1:])
+        self.upload_name = str(path.name)
+        self.mime = self.getMime(self.upload_name)
+
+    def fillByJson(self, json_data):
+        self.extension = json_data.get("extension")
         self.upload_name = json_data.get("upload_name")
         self.filesize = json_data.get("filesize")
-        self.setMime()
+        self.mime = self.getMime(self.upload_name)
 
         ''' TODO handle async
         if json_data.get("take_metadata", False) == True:
             self.fillMeta()'''
 
         self.flush()
-
-    def moveTempDir(self):
-        '''
-        Renames temp directory to new hash dir and changes main file name to hash
-        '''
-        if self.temp_dir == None:
-            return 
-
-        temp_dir = Path(self.temp_dir)
-
-        current_path = Path(os.path.join(str(temp_dir), self.upload_name))
-        new_name = Path(os.path.join(str(temp_dir), f"{'.'.join([str(self.hash), self.extension])}"))
-
-        current_path.rename(str(new_name))
-
-        new_storage_category = storage.sub('files').allocateHash(self.hash, only_return=True)
-        temp_dir.rename(str(new_storage_category))
-        
-        self.temp_dir = None
 
     def getStructure(self):
         payload = {}
@@ -135,52 +187,15 @@ class StorageUnit(BaseModel):
         }
         payload["sizes"] = {
             "main": self.filesize,
-            "dir": self.dir_filesize
+            "dir": self.Meta.getFilesSize()
         }
         payload["hash"] = {
             "main": self.hash,
-            "upper_hash": str(self.upper_hash_dir())
+            "upper_hash": str(self.hash[0:2])
         }
         payload["path"] = {
-            "dir": str(self.dir_path()),
-            "main": str(self.path()),
-            "relative_dir": self.relative_dir_path(),
-            "relative_main": self.relative_main_file_path(),
+            "relative_dir": str(self.Path.getCommon(relative=True)),
+            "relative_main": str(self.Path.getMainFilePath(relative=True))
         }
 
         return payload
-
-    def path(self):
-        __path = os.path.join(storage.sub('files').path(), self.hash[0:2])
-        __end_dir = os.path.join(__path, self.hash)
-        if self.temp_dir != None:
-            __end_dir = self.temp_dir
-
-        __path = os.path.join(__end_dir, str(self.hash_filename()))
-
-        return Path(__path)
-
-    def hash_filename(self):
-        if self.temp_dir != None:
-            return f"{self.upload_name}"
-
-        return f"{self.hash}.{str(self.extension)}"
-
-    def upper_hash_dir(self):
-        return Path(os.path.join(storage.sub('files').path(), str(self.hash[0:2])))
-
-    def dir_path(self, need_check = False):
-        __dir_path = Path(os.path.join(storage.sub('files').path(), str(self.hash[0:2]), self.hash))
-
-        if need_check == True and __dir_path.exists() == False:
-            __dir_path.mkdir(parents=True)
-
-        return __dir_path
-
-    def relative_dir_path(self):
-        return f"{str(self.hash[0:2])}/{self.hash}"
-
-    def relative_main_file_path(self):
-        _p = self.relative_dir_path()
-
-        return f"{_p}/{self.hash_filename()}"

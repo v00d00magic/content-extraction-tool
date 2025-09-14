@@ -1,5 +1,6 @@
 class ThumbnailMixin():
     def saveThumbnail(self, method):
+        return {}
         thumb_class = method.outer.Thumbnail(method)
         thumb_out = thumb_class.create(self, {})
 

@@ -81,7 +81,7 @@ async def storage_unit_file(request):
     if storage_unit == None:
         return web.HTTPNotFound(text="not found")
 
-    storage_path = storage_unit.dir_path()
+    storage_path = storage_unit.getStoragePath()
     path_to_file = storage_path / path
 
     try:

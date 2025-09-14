@@ -1,6 +1,6 @@
 from declarable.Arguments import StringArgument, LimitedArgument, CsvArgument
+from utils.Files.FileItem import FileItem
 from .. import Implementation as File
-from submodules.Files.FileManager import file_manager
 from pathlib import Path
 import os
 
@@ -70,19 +70,20 @@ class Implementation(File.AbstractReceivation):
             assert i.get("type") in ['copy', 'move', 'link'], 'invalid type'
 
             out = self.ContentUnit()
-            file = self.StorageUnit()
+            out_file = self.StorageUnit()
 
-            move_to = Path(os.path.join(file.temp_dir, file_name))
+            move_to = out_file.Temp.get().joinpath(file_name)
 
             match(i.get("type")):
                 case "copy":
-                    file_manager.copyFile(path, move_to)
-                    file.setMainFile(move_to)
+                    FileItem(path).copy(move_to)
                 case "move":
-                    file_manager.moveFile(path, move_to)
-                    file.setMainFile(move_to)
+                    FileItem(path).move(move_to)
 
-            out.link(file, True)
+            out_file.linkPath(move_to)
+            out_file.flush()
+
+            out.link(out_file, True)
             out.display_name = file_name
             out.JSONContent.update({
                 "exported": str(i.get("type")),

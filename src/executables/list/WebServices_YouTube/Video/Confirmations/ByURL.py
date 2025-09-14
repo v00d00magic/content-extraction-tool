@@ -13,10 +13,10 @@ class Implementation(Video.AbstractConfirmation):
         return params
 
     async def implementation(self, i = {}):
-        from submodules.Media.YtDlpWrapper import YtDlpWrapper
+        from utils.Media.YTDlpWrapper import YTDlpWrapper
 
         outer = self.outer.declare_recursive()
-        with YtDlpWrapper({}).ydl as ydl:
+        with YTDlpWrapper({}).ydl as ydl:
             urls = i.get("url")
             for url in urls:
                 _info = ydl.extract_info(url, download=False)

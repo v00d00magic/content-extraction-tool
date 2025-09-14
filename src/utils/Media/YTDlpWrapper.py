@@ -1,7 +1,7 @@
 from app.App import logger, config
 import yt_dlp
 
-class YtDlpWrapper:
+class YTDlpWrapper:
     def download_hook(self, d):
         if d['status'] == 'downloading':
            percent_str_clear = d['_percent_str'].replace('[0;94m', '')

@@ -7,11 +7,13 @@ locale_keys = {
     },
     "definition": {
         "ru_RU": "Файл по пути на диске или URL",
-        "en_US": "File by filepath or URL",
+        "en_US": "File by path or URL",
     },
 }
 
 class Implementation(Representation):
+    # Class for testing purposes
+
     @classmethod
     def define_meta(cls):
         return {

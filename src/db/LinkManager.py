@@ -8,7 +8,7 @@ class LinkItems:
     def __init__(self, parent):
         self.parent = parent
 
-    def items(self, by_class, revision = False):
+    def items(self, by_class = None, revision = False):
         _links = ContentUnitRelation().select().where(ContentUnitRelation.parent == self.parent.uuid)
         if by_class != None:
             _links = _links.where(ContentUnitRelation.child_type == by_class.self_name)
@@ -112,7 +112,7 @@ class LinkManager:
         return _l.items_ids(_l.items(by_class, revision))
 
     def linksList(self, by_class = None, revision: bool = False):
-        if self.parent.link_queue != None:
+        if self.parent.is_linked_queue() == False:
             return self.parent.link_queue
 
         _l = LinkItems(self.parent)

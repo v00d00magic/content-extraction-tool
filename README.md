@@ -3,13 +3,21 @@ Todo:
 #### Executables
 
 - [x] Сonfirmable classes
-- [ ] Js classes for unique displayment
+- [ ] Js classes for executable
 - [x] Progress notifications
 - [ ] Extend contentunit from representation
 - [x] Dump executable runs
 - [x] Class sections
 - [ ] Open variables of the class
 - [x] Move `response` to class
+
+#### Outer
+
+- [ ] Outer executable type
+
+#### Models
+
+- [ ] Db connection config should be dict
 
 #### Representations
 

@@ -34,29 +34,8 @@ def proc_strtr(text: str, length: int = 100, multipoint: bool = True):
 
     return newString + ("..." if text != newString else "")
 
-def get_ext(filename: str):
-    file_splitted_array = filename.split('.')
-    file_output_ext = ''
-    if len(file_splitted_array) > 1:
-        file_output_ext = file_splitted_array[-1]
-
-    return file_output_ext
-
 def get_random_hash(__bytes: int = 32):
     return secrets.token_urlsafe(__bytes)
-
-def clear_json(__json):
-    if isinstance(__json, dict):
-        return {key: clear_json(value) for key, value in __json.items() if isinstance(value, (dict, list, str))}
-    elif isinstance(__json, list):
-        return [clear_json(item) for item in __json if isinstance(item, (dict, list, str))]
-    elif isinstance(__json, str):
-        if __json.startswith("https://") == False and __json.startswith("http://") == False:
-            return __json
-    elif isinstance(__json, int):
-        return __json
-    else:
-        return None
 
 @contextmanager
 def override_db(classes = [], db = None):
@@ -98,21 +77,6 @@ def list_conversation(i_list):
         return [i_list]
 
     return i_list
-
-def resolve_lang(translation_dict: dict, lang_code: str):
-    if translation_dict == None:
-        return None
-    if type(translation_dict) == str:
-        return {"en_US": translation_dict}
-
-    return translation_dict.get(lang_code, translation_dict.get("eng"))
-
-def resolve_doc(i):
-    __lang_code = consts.get('ui.lang', 'eng')
-
-    out = i
-
-    return resolve_lang(out, __lang_code)
 
 def is_valid_json(i):
     try:

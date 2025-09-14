@@ -130,10 +130,11 @@ class ContentUnit(BaseModel, ThumbnailMixin):
         self.via_method = None
         self.common_link = None
 
-        _now = now_timestamp()
+        if self.is_saved() == False:
+            _now = now_timestamp()
 
-        self.created_at = float(_now)
-        self.declared_created_at = float(_now)
+            self.created_at = float(_now)
+            self.declared_created_at = float(_now)
 
     def markCommon(self, common_link: StorageUnit):
         self.common_link = common_link
@@ -143,11 +144,14 @@ class ContentUnit(BaseModel, ThumbnailMixin):
         from db.LinkManager import LinkManager
 
         link_manager = LinkManager(self)
-        list = link_manager.linksList(self)
+        list = link_manager.linksList()
 
         return list
 
-    def getStructure(self, return_content = True):
+    def is_linked_queue(self):
+        return self.is_saved()
+
+    def getStructure(self, return_content = True, return_linked = True):
         payload = {}
         payload['id'] = str(self.uuid) # Converting to str cuz JSON.parse cannot convert it
         payload['class_name'] = self.self_name
@@ -166,6 +170,11 @@ class ContentUnit(BaseModel, ThumbnailMixin):
             "edited": timestamp_or_float(self.edited_at),
             "declared_created": timestamp_or_float(self.declared_created_at)
         }
+
+        if return_linked == True:
+            payload["linked"] = []
+            for linked_item in self.linked_list:
+                payload.get("linked").append(linked_item.getStructure())
 
         return payload
 
@@ -192,9 +201,9 @@ class ContentUnit(BaseModel, ThumbnailMixin):
         })
 
     def postSave(self):
-        logger.log(f"Saved ContentUnit, saved id: {self.uuid}, trying to link {len(self.link_queue)}",section="Saveable")
+        logger.log(f"Saved ContentUnit, saved id: {self.uuid}, trying to link {len(self.link_queue)} items",section="Saveable")
 
-        if self.link_queue != None:
+        if len(self.link_queue) > 0:
             self.writeLinkQueue()
 
     def save(self, **kwargs):
