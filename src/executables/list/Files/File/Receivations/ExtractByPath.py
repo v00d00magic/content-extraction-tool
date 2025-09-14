@@ -89,8 +89,7 @@ class Implementation(File.AbstractReceivation):
                     su.setLink(link)
                     #file_manager.symlinkFile(INPUT_PATH, MOVE_TO)
 
-            out.addLink(su)
-            out.setCommonLink(su)
+            out.link(su, True)
             out.display_name = file_name
             out.content = {
                 "export_as": str(move_type),

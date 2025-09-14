@@ -65,8 +65,7 @@ class Implementation(File.AbstractReceivation):
                 "filesize": result_path.stat().st_size,
             })
 
-            out.addLink(su)
-            out.setCommonLink(su)
+            out.link(su, True)
             out.display_name = result_name
             out.source = {
                 'type': 'url',

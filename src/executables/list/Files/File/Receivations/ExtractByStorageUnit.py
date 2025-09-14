@@ -30,8 +30,7 @@ class Implementation(File.AbstractReceivation):
 
             out = self.ContentUnit()
 
-            out.addLink(item)
-            out.setCommonLink(item)
+            out.link(item, True)
             out = await self.outer.process_item(out)
 
             outs.append(out)

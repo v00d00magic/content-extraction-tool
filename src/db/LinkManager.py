@@ -95,6 +95,18 @@ class LinkManager:
 
         logger.log(message=f"Unlinked {self.parent.short_name}_{self.parent.uuid}<->{child.short_name}_{child.uuid}", section=logger.SECTION_LINKAGE, kind = logger.KIND_SUCCESS)
 
+    def writeQueue(self, items):
+        for item in items:
+            if item == None:
+                continue
+
+            try:
+                self.link(item)
+            except AssertionError as _e:
+                logger.log(message=f"Failed to link: {str(_e)}", section=logger.SECTION_LINKAGE, kind = logger.KIND_ERROR)
+            except AlreadyLinkedException as _e:
+                logger.log(message=f"Failed to link: {str(_e)}", section=logger.SECTION_LINKAGE, kind = logger.KIND_ERROR)
+
     def linksListId(self, by_class = None, revision: bool = False):
         _l = LinkItems(self.parent)
         return _l.items_ids(_l.items(by_class, revision))
@@ -139,4 +151,4 @@ class LinkManager:
             return to_check
 
     def injectLinksToJsonFromInstance(self, recurse_level = 0):
-        return self.injectLinksToJson(self.parent.content_json, self.linksList(), recurse_level)
+        return self.injectLinksToJson(self.parent.JSONContent.getData(), self.linksList(), recurse_level)

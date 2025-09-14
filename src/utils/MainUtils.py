@@ -1,4 +1,5 @@
 import secrets, os, sys, random, json, mimetypes
+import datetime
 from contextlib import contextmanager
 from resources.Consts import consts
 from collections import defaultdict
@@ -181,7 +182,6 @@ def override_db(classes = [], db = None):
     
     yield
 
-    print("Yay!")
     for __class in classes:
         __class._meta.database = old_db
 
@@ -233,3 +233,15 @@ def is_valid_json(i):
         return False
     except TypeError:
         return False
+
+def timestamp_or_float(date):
+    if date == None:
+        return None
+
+    if getattr(date, 'timestamp', None) != None:
+        return float(date.timestamp())
+    else:
+        return float(date)
+
+def now_timestamp():
+    return datetime.datetime.now().timestamp()

@@ -2,14 +2,6 @@ from db.Models.Content.StorageUnit import StorageUnit
 
 # Pseudo model that represents thumbnail
 class ThumbnailState():
-    '''
-    Format:
-
-    "type" - "photo", "video"
-    "storage_unit_id" - storage unit id
-    "width" - width of preview
-    "height" - same but height
-    '''
     data = {}
 
     def __init__(self, json):

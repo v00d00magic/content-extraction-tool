@@ -7,7 +7,7 @@ Todo:
 - [x] Progress notifications
 - [ ] Extend contentunit from representation
 - [x] Dump executable runs
-- [ ] Class sections
+- [x] Class sections
 - [ ] Open variables of the class
 - [x] Move `response` to class
 

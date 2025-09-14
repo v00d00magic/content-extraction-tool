@@ -15,7 +15,6 @@ class StorageUnit(BaseModel):
     path_link = None
 
     # Identification
-    uuid = IntegerField(unique=True, primary_key=True)
     hash = TextField(null=True)
     attached_path = TextField(null=True)
 
@@ -143,21 +142,29 @@ class StorageUnit(BaseModel):
         self.temp_dir = None
 
     def getStructure(self):
-        ret = {}
-        ret['class_name'] = "StorageUnit"
-        ret["id"] = str(self.uuid)
-        ret["upload_name"] = self.upload_name
-        ret["extension"] = self.extension
-        ret["filesize"] = self.filesize
-        ret["dir_filesize"] = self.dir_filesize
-        ret["hash"] = self.hash
-        ret["upper_hash"] = str(self.upper_hash_dir())
-        ret["dir"] = str(self.dir_path())
-        ret["main_file"] = str(self.path())
-        ret["relative_dir_path"] = self.relative_dir_path()
-        ret["relative_main_file_path"] = self.relative_main_file_path()
+        payload = {}
+        payload['class_name'] = self.self_name
+        payload["id"] = str(self.uuid)
+        payload["name"] = {
+            "upload_name": self.upload_name,
+            "extension": self.extension,
+        }
+        payload["sizes"] = {
+            "main": self.filesize,
+            "dir": self.dir_filesize
+        }
+        payload["hash"] = {
+            "main": self.hash,
+            "upper_hash": str(self.upper_hash_dir())
+        }
+        payload["path"] = {
+            "dir": str(self.dir_path()),
+            "main": str(self.path()),
+            "relative_dir": self.relative_dir_path(),
+            "relative_main": self.relative_main_file_path(),
+        }
 
-        return ret
+        return payload
 
     def path(self):
         if getattr(self, "attached_path", None) != None:

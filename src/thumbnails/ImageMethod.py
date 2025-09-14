@@ -1,4 +1,4 @@
-from db.Models.Content.ThumbnailState import ThumbnailState
+from db.Models.Content.Mixin.ThumbnailState import ThumbnailState
 from db.Models.Content.ContentModel import BaseModel
 from thumbnails import ThumbnailMethod
 from PIL import Image as PILImage

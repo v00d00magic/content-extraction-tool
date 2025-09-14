@@ -1,27 +1,21 @@
-from db.Models.Content.ThumbnailState import ThumbnailState
-from resources.Exceptions import AlreadyLinkedException
-from utils.MainUtils import dump_json, parse_json
-from peewee import TextField, CharField, BooleanField, FloatField, IntegerField
+from db.Models.Content.Mixin.ThumbnailState import ThumbnailState
+from db.Models.Content.Mixin.ThumbnailMixin import ThumbnailMixin
+from peewee import TextField, CharField, BooleanField, FloatField
 from db.Models.Content.ContentModel import BaseModel
 from db.Models.Content.StorageUnit import StorageUnit
+from utils.MainUtils import timestamp_or_float, now_timestamp, parse_json, dump_json
 from functools import cached_property
-import os, json, datetime
-from app.App import logger
 
-class ContentUnit(BaseModel):
-    # Identification
-    uuid = IntegerField(unique=True, primary_key=True)
-
+class ContentUnit(BaseModel, ThumbnailMixin):
     # Display
     display_name = TextField(default='N/A')
     description = TextField(index=True, null=True)
-    # author = TextField(null=True,default=consts.get('pc_fullname')) под вопросом
 
     # Data
-    content = TextField(null=True, default=None) # JSON data
+    content = TextField(null=True,default=None)
     source = TextField(null=True)
-    outer = TextField(null=True, default=None) # frontend data (with thumbnail)
-    saved = TextField(null=True, default=None)
+    outer = TextField(null=True,default=None)
+    saved = TextField(null=True,default=None)
 
     # Links
     storage_unit = CharField(null=True,max_length=100)
@@ -39,58 +33,105 @@ class ContentUnit(BaseModel):
     table_name = 'content_units'
     self_name = 'ContentUnit'
     short_name = 'cu'
-    link_queue = None
-    via_method = None
 
-    # Properties
+    def __init__(self):
+        class ContentContainer():
+            _cached = None
 
-    @cached_property
-    def content_json(self):
-        if self.content == None:
-            return {}
+            @classmethod
+            def get_attr(cls):
+                pass
 
-        return parse_json(self.content)
+            @classmethod
+            def set_attr(cls, new_data):
+                pass
 
-    @cached_property
-    def outer_json(self):
-        if self.outer == None:
-            return {}
+            @classmethod
+            def get_cached(cls):
+                return cls._cached
 
-        return parse_json(self.outer)
+            @classmethod
+            def getData(cls):
+                if cls.get_cached() != None:
+                    return cls.get_cached()
 
-    @cached_property
-    def source_json(self):
-        if self.source == None:
-            return {}
+                if cls.get_attr() == None:
+                    return {}
 
-        return parse_json(self.source)
+                cls._cached = parse_json(cls.get_attr())
+                return cls._cached
 
-    @cached_property
-    def saved_json(self):
-        if self.saved == None:
-            return {}
+            @classmethod
+            def update(cls, new_data):
+                _data = cls.getData()
+                _data.update(new_data)
 
-        return parse_json(self.saved)
+                cls.set_attr(_data)
 
-    def updateData(self, new_data: dict):
-        cnt = self.content_json
-        cnt.update(new_data)
+            @classmethod
+            def get(cls, key, default = None):
+                return cls.getData().get(key, default)
 
-        self.content = json.dumps(cnt, ensure_ascii=False)
+        class JSONContent(ContentContainer):
+            @classmethod
+            def get_attr(cls):
+                return self.content
 
-    def data_with_linked_replacements(self, recursive = False, recurse_level = 0):
-        from db.LinkManager import LinkManager
+            @classmethod
+            def set_attr(cls, new_data):
+                self.content = new_data
 
-        loaded_content = self.content_json
-        if recursive == True and recurse_level < 3:
-            link_manager = LinkManager(self)
-            loaded_content = link_manager.injectLinksToJsonFromInstance(recurse_level)
+            @classmethod
+            def getDataRecursively(cls, recursive = False, recurse_level = 0):
+                from db.LinkManager import LinkManager
 
-        return loaded_content
+                loaded_content = cls.getData()
+                if recursive == True and recurse_level < 3:
+                    link_manager = LinkManager(self)
+                    loaded_content = link_manager.injectLinksToJsonFromInstance(recurse_level)
+
+                return loaded_content
+
+        class Source(ContentContainer):
+            @classmethod
+            def get_attr(cls):
+                return self.source
+            
+            @classmethod
+            def set_attr(cls, new_data):
+                self.source = new_data
+
+        class Outer(ContentContainer):
+            @classmethod
+            def get_attr(cls):
+                return self.outer
+
+            @classmethod
+            def set_attr(cls, new_data):
+                self.outer = new_data
+
+        class SavedVia(ContentContainer):
+            @classmethod
+            def get_attr(cls):
+                return self.saved
+
+            @classmethod
+            def set_attr(cls, new_data):
+                self.saved = new_data
+
+        self.JSONContent = JSONContent
+        self.Source = Source
+        self.Outer = Outer
+        self.SavedVia = SavedVia
+
+        self.link_queue = []
+        self.via_method = None
+
+        return super().__init__()
 
     @cached_property
     def thumbnail_list(self):
-        _thumb = self.outer_json.get("thumbnail")
+        _thumb = self.outer.get("thumbnail")
         if _thumb == None:
             return []
 
@@ -119,135 +160,69 @@ class ContentUnit(BaseModel):
 
         return list
 
-    def getStructure(self, return_content = True, sensitive=False):
+    def getStructure(self, return_content = True):
         payload = {}
-        payload['class_name'] = "ContentUnit"
         payload['id'] = str(self.uuid) # Converting to str cuz JSON.parse cannot convert it
-        payload['display_name'] = self.display_name
-        payload['description'] = self.description
-        payload['source'] = self.source_json
-        payload['saved'] = self.saved_json
-        # ret['tags'] = self.get_tags()
-
+        payload['class_name'] = self.self_name
+        payload['meta'] = {
+            "display_name": self.display_name,
+            "description": self.description
+        }
+        payload['source'] = self.Source.getData()
+        payload['saved'] = self.SavedVia.getData()
+        payload['outer'] = self.Outer.getData()
         if return_content == True:
-            payload['content'] = self.data_with_linked_replacements(recursive=True)
+            payload['content'] = self.JSONContent.getDataRecursively(recursive=True)
 
-        if self.outer != None:
-            try:
-                payload['outer'] = self.outer_json
-
-                # у меня абсолютно нет идей для названия переменных ((
-                thumbnail_internal_classes_from_db_list = self.thumbnail_list
-                thumbnail_api_response_list = []
-
-                for iterated_thumbnail in thumbnail_internal_classes_from_db_list:
-                    thumbnail_api_response_list.append(iterated_thumbnail.getStructure())
-
-                payload['outer']['thumbnail'] = thumbnail_api_response_list
-            except Exception as e:
-                logger.log(e,section="ContentUnit")
-
-        try:
-            # it does not converts to datetime after saving so we need to use this workaround
-            if getattr(self.created_at, 'timestamp', None) != None:
-                payload["created"] = float(self.created_at.timestamp())
-            else:
-                payload["created"] = float(self.created_at)
-
-            if self.edited_at != None:
-                if getattr(self.edited_at, 'timestamp', None) != None:
-                    payload["edited"] = float(self.edited_at.timestamp())
-                else:
-                    payload["edited"] = float(self.edited_at)
-
-            if getattr(self.declared_created_at, 'timestamp', None) != None:
-                payload["declared_created"] = float(self.declared_created_at.timestamp())
-            else:
-                payload["declared_created"] = float(self.declared_created_at)
-        except Exception as _e:
-            logger.log(_e,section="ContentUnit")
+        payload["dates"] = {
+            "created": timestamp_or_float(self.created_at),
+            "edited": timestamp_or_float(self.edited_at),
+            "declared_created": timestamp_or_float(self.declared_created_at)
+        }
 
         return payload
 
     # it will be saved later
-    def addLink(self, item):
+    def link(self, item, is_common: bool = False):
         if self.link_queue is None:
             self.link_queue = []
+        if is_common == True:
+            self.storage_unit = item.uuid
+
         self.link_queue.append(item)
 
     def writeLinkQueue(self):
         from db.LinkManager import LinkManager
 
         link_manager = LinkManager(self)
-
-        for item in self.link_queue:
-            if item == None:
-                continue
-
-            try:
-                link_manager.link(item)
-            except AssertionError as _e:
-                logger.log(message=f"Failed to link: {str(_e)}", section=logger.SECTION_LINKAGE, kind = logger.KIND_ERROR)
-            except AlreadyLinkedException as _e:
-                logger.log(message=f"Failed to link: {str(_e)}", section=logger.SECTION_LINKAGE, kind = logger.KIND_ERROR)
+        link_manager.writeQueue(self.link_queue)
 
         self.link_queue = None
 
     def markSavedJson(self, method):
-        saved_json = {
+        self.via_method = method
+        self.SavedVia.update({
             "method": method.full_name(),
             "representation": method.outer.full_name()
-        }
-
-        self.via_method = method
-        self.setSaved(saved_json)
-
-    def setCommonLink(self, item):
-        self.storage_unit = item.uuid
-
-    def setSaved(self, save_json: dict):
-        self.saved = dump_json(save_json)
-
-    def saveThumbnail(self, method):
-        thumb_class = method.outer.Thumbnail(method)
-        thumb_out = thumb_class.create(self, {})
-
-        return thumb_out
-
-    def setThumbnail(self, thumbs):
-        thumbs_out = []
-
-        if thumbs:
-            for __ in thumbs:
-                thumbs_out.append(__.state())
-
-        write_this = {}
-        if len(thumbs_out) > 0:
-            write_this["thumbnail"] = thumbs_out
-
-        self.outer = json.dumps(write_this, ensure_ascii=False)
-
-    def setSource(self, source_json: dict):
-        self.source = dump_json(source_json)
+        })
 
     def save(self, **kwargs):
         kwargs["force_insert"] = True
-
         make_thumbnail = True
 
-        self.created_at = float(datetime.datetime.now().timestamp())
+        self.created_at = float(now_timestamp())
 
         if getattr(self, "content", None) != None and type(self.content) != str:
-            self.content = dump_json(self.content)
+            self.JSONContent.update(self.content)
 
         if getattr(self, "source", None) != None and type(self.source) != str:
-            self.source = dump_json(self.source)
+            self.Source.update(self.source)
 
         if self.via_method != None and make_thumbnail == True:
             self.setThumbnail(self.saveThumbnail(self.via_method))
 
         if getattr(self, "declared_created_at", None) == None:
-            self.declared_created_at = float(datetime.datetime.now().timestamp())
+            self.declared_created_at = float(now_timestamp())
 
         super().save(**kwargs)
 

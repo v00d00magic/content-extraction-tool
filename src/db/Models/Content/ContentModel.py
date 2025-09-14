@@ -1,19 +1,18 @@
-from peewee import Model
+from peewee import Model, IntegerField
 from snowflake import SnowflakeGenerator
-from app.App import logger
 from playhouse.sqlite_ext import fn
 
 class BaseModel(Model):
+    uuid = IntegerField(unique=True, primary_key=True)
+
     @classmethod
     def ids(cls, id):
-        _type = type(id)
-
-        if _type == str or _type == int:
+        if type(id) in [str, int]:
             _query = cls.select().where(cls.uuid == int(id))
 
             return _query.first()
 
-        if _type == list:
+        if type(id) in [list]:
             res = []
             _query = cls.select().where(cls.uuid.in_(id))
 
@@ -23,10 +22,10 @@ class BaseModel(Model):
             return res
 
     @property
-    def id(self)->str:
+    def id(self) -> str:
         return self.uuid
 
-    def is_saved(self)->bool:
+    def is_saved(self) -> bool:
         return self.uuid != None
 
     def save(self, **kwargs):

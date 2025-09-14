@@ -28,17 +28,17 @@ class ServiceInstance(Model):
         return parse_json(__data) 
 
     def getStructure(self):
-        obj = {}
+        payload = {}
 
-        obj['id'] = self.id
-        obj['service_name'] = self.service_name
-        obj['display_name'] = self.display_name
-        obj['data'] = self.data_json()
-        obj['frontend_data'] = self.frontend_data_json()
-        obj['interval'] = self.interval
-        obj['created_at'] = int(self.created_at)
+        payload['id'] = self.id
+        payload['service_name'] = self.service_name
+        payload['display_name'] = self.display_name
+        payload['data'] = self.data_json()
+        payload['frontend_data'] = self.frontend_data_json()
+        payload['interval'] = self.interval
+        payload['created_at'] = int(self.created_at)
 
-        return obj
+        return payload
 
     @staticmethod
     def get(id):
