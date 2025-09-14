@@ -1,12 +1,11 @@
-from db.Models.Content.Mixin.ThumbnailState import ThumbnailState
 from db.Models.Content.ContentModel import BaseModel
-from thumbnails import ThumbnailMethod
+from executables.templates.thumbnail import ThumbnailMethod
 from PIL import Image as PILImage
 from app.App import config
 from pathlib import Path
 import os
 
-class ImageMethod(ThumbnailMethod):
+class Implementation(ThumbnailMethod):
     def create(self, item: BaseModel, params)->list:
         su = None
         if item.short_name == "su":

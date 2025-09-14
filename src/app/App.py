@@ -2,17 +2,35 @@ from db.DbConnection import DbConnection
 from storage.Storage import Storage
 from app.Config import Config
 from app.Logger import Logger
-from utils.MainUtils import parse_args
 from utils.Hookable import Hookable
-import asyncio
+import asyncio, sys
 
 class App(Hookable):
     events = ["progress"]
 
+    def _parse_argv(self):
+        args = sys.argv
+        parsed_args = {}
+        key = None
+        for arg in args[1:]:
+            if arg.startswith('--'):
+                if key:
+                    parsed_args[key] = True
+                key = arg[2:]
+                parsed_args[key] = True
+            else:
+                if key:
+                    parsed_args[key] = arg
+                    key = None
+                else:
+                    pass
+
+        return parsed_args
+
     def __init__(self):
         super().__init__()
 
-        self.argv = parse_args()
+        self.argv = self._parse_argv()
         self.loop = asyncio.get_event_loop()
 
     def setup(self):

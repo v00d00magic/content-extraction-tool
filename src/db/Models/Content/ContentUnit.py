@@ -1,10 +1,10 @@
-from db.Models.Content.Mixin.ThumbnailState import ThumbnailState
 from db.Models.Content.Mixin.ThumbnailMixin import ThumbnailMixin
-from peewee import TextField, CharField, BooleanField, FloatField
+from peewee import TextField, BooleanField, FloatField
 from db.Models.Content.ContentModel import BaseModel
 from db.Models.Content.StorageUnit import StorageUnit
-from utils.MainUtils import timestamp_or_float, now_timestamp, parse_json, dump_json
+from utils.MainUtils import timestamp_or_float, now_timestamp, parse_json
 from functools import cached_property
+from app.App import logger
 
 class ContentUnit(BaseModel, ThumbnailMixin):
     # Display
@@ -18,7 +18,7 @@ class ContentUnit(BaseModel, ThumbnailMixin):
     saved = TextField(null=True,default=None)
 
     # Links
-    storage_unit = CharField(null=True,max_length=100)
+    # storage_unit = CharField(null=True,max_length=100)
 
     # Dates
     declared_created_at = FloatField()
@@ -35,6 +35,8 @@ class ContentUnit(BaseModel, ThumbnailMixin):
     short_name = 'cu'
 
     def __init__(self):
+        super().__init__()
+
         class ContentContainer():
             _cached = None
 
@@ -126,34 +128,15 @@ class ContentUnit(BaseModel, ThumbnailMixin):
 
         self.link_queue = []
         self.via_method = None
+        self.common_link = None
 
         _now = now_timestamp()
+
         self.created_at = float(_now)
         self.declared_created_at = float(_now)
 
-        return super().__init__()
-
-    @cached_property
-    def thumbnail_list(self):
-        _thumb = self.outer.get("thumbnail")
-        if _thumb == None:
-            return []
-
-        _list = []
-
-        for thmb in _thumb:
-            _list.append(ThumbnailState(thmb))
-
-        return _list
-
-    @cached_property
-    def common_link(self):
-        if self.storage_unit != None:
-            su = StorageUnit.ids(self.storage_unit)
-
-            return su
-
-        return None
+    def markCommon(self, common_link: StorageUnit):
+        self.common_link = common_link
 
     @cached_property
     def linked_list(self):
@@ -188,10 +171,8 @@ class ContentUnit(BaseModel, ThumbnailMixin):
 
     # it will be saved later
     def link(self, item, is_common: bool = False):
-        if self.link_queue is None:
-            self.link_queue = []
         if is_common == True:
-            self.storage_unit = item.uuid
+            self.markCommon(item)
 
         self.link_queue.append(item)
 
@@ -201,31 +182,26 @@ class ContentUnit(BaseModel, ThumbnailMixin):
         link_manager = LinkManager(self)
         link_manager.writeQueue(self.link_queue)
 
-        self.link_queue = None
+        self.link_queue = []
 
-    def markSavedJson(self, method):
+    def signRepresentation(self, method):
         self.via_method = method
         self.SavedVia.update({
             "method": method.full_name(),
             "representation": method.outer.full_name()
         })
 
-    def save(self, **kwargs):
-        kwargs["force_insert"] = True
-        make_thumbnail = True
-
-        '''
-        if getattr(self, "content", None) != None and type(self.content) != str:
-            self.JSONContent.update(self.content)
-
-        if getattr(self, "source", None) != None and type(self.source) != str:
-            self.Source.update(self.source)
-        '''
-
-        if self.via_method != None and make_thumbnail == True:
-            self.setThumbnail(self.saveThumbnail(self.via_method))
-
-        super().save(**kwargs)
+    def postSave(self):
+        logger.log(f"Saved ContentUnit, saved id: {self.uuid}, trying to link {len(self.link_queue)}",section="Saveable")
 
         if self.link_queue != None:
             self.writeLinkQueue()
+
+    def save(self, **kwargs):
+        kwargs["force_insert"] = True
+
+        if self.via_method != None and kwargs.get("save_thumbnail", True) == True:
+            self.setThumbnail(self.saveThumbnail(self.via_method))
+
+        super().save(**kwargs)
+        self.postSave()

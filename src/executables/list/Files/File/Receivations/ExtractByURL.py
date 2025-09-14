@@ -1,8 +1,8 @@
 from declarable.Arguments import CsvArgument, StringArgument
 from .. import Implementation as File
 from utils.WebUtils import is_generated_ext
-from utils.MainUtils import name_from_url
 from pathlib import Path
+from submodules.Web.classes.URL import URL
 
 locale_keys = {
     "url.name": {
@@ -28,16 +28,15 @@ class Implementation(File.AbstractReceivation):
         from submodules.Web.DownloadManager import download_manager
         import mimetypes, os
 
-        urls = i.get('url')
         outs = []
 
-        for url in urls:
-            name, ext = name_from_url(url)
+        for _url in i.get('url'):
+            url = URL(_url)
 
             out = self.ContentUnit()
-            su = self.StorageUnit()
+            out_file = self.StorageUnit()
 
-            tmp_dir = su.temp_dir
+            tmp_dir = out_file.temp_dir
             tmp_path = Path(os.path.join(tmp_dir, "download.tmp"))
             result_name = '.'.join([name, ext])
             result_path = Path(os.path.join(tmp_dir, result_name))
@@ -59,19 +58,19 @@ class Implementation(File.AbstractReceivation):
             result_path = Path(os.path.join(tmp_dir, result_name))
             tmp_path.rename(os.path.join(tmp_dir, result_path))
 
-            su.writeData({
+            out_file.writeData({
                 "extension": ext,
                 "upload_name": result_name,
                 "filesize": result_path.stat().st_size,
             })
 
-            out.link(su, True)
+            out.link(out_file, True)
             out.display_name = result_name
-            out.source = {
+            out.Source.update({
                 'type': 'url',
                 'content': url
-            }
-            out.content = {}
+            })
+            out.JSONContent.update({})
             out = await self.outer.process_item(out)
 
             outs.append(out)

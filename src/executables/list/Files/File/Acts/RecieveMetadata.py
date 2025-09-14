@@ -1,7 +1,7 @@
 from .. import Implementation as File
-from utils.MainUtils import extract_metadata_to_dict
 from declarable.Arguments import StringArgument, BooleanArgument, StorageUnitArgument
 from utils.ClassProperty import classproperty
+from collections import defaultdict
 from app.App import logger
 
 class Implementation(File.AbstractAct):
@@ -48,6 +48,17 @@ class Implementation(File.AbstractAct):
         _metadata = None
         if not __PARSER:
             return []
+
+        def extract_metadata_to_dict(mtdd):
+            metadata_dict = defaultdict(list)
+
+            for line in mtdd:
+                key_value = line.split(": ", 1)
+                if key_value[0].startswith('- '):
+                    key = key_value[0][2:]
+                    metadata_dict[key].append(key_value[1])
+
+            return dict(metadata_dict)
 
         with __PARSER:
             try:

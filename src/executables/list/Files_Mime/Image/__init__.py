@@ -1,5 +1,5 @@
 from executables.list.Files.File import Implementation as FileImplementation
-from thumbnails.ImageMethod import ImageMethod
+from db.Models.Content.ContentUnit import ContentUnit
 
 keys = {
     "image.name": {
@@ -18,21 +18,16 @@ class Implementation(FileImplementation):
         }
 
     @staticmethod
-    async def process_item(item):
+    async def process_item(item: ContentUnit):
         from PIL import Image as PILImage
 
         new_data = {}
         common_link = item.common_link
 
         with PILImage.open(str(common_link.path())) as img:
-            new_data = {
+            item.Outer.update({
                 "width": img.size[0],
                 "height": img.size[1],
-            }
-
-        item.updateData(new_data)
+            })
 
         return item
-
-    class Thumbnail(ImageMethod):
-        pass

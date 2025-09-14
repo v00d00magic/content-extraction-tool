@@ -1,5 +1,4 @@
 from resources.Exceptions import AbstractClassException, SuitableExtractMethodNotFound
-from thumbnails import ThumbnailMethod
 from declarable.ArgsComparer import ArgsComparer
 from declarable.Arguments import BooleanArgument
 from executables.templates.Executable import Executable
@@ -105,6 +104,3 @@ class Representation(Executable, metaclass=RepresentationMeta):
 
     #class ContentUnit(ContentUnit):
     #   pass
-
-    class Thumbnail(ThumbnailMethod):
-        pass

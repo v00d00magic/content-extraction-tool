@@ -59,45 +59,39 @@ class Implementation(File.AbstractReceivation):
         return params
 
     async def implementation(self, i = {}):
-        pathes = i.get('path')
         outs = []
 
-        for _path in pathes:
+        for _path in i.get('path'):
             path = Path(_path)
-            move_type = i.get("type")
-            link = None
+            file_name = path.name
 
             assert path.exists(), 'path does not exists'
             assert path.is_dir() == False, 'path is dir'
-            assert move_type in ['copy', 'move', 'link'], 'invalid type'
+            assert i.get("type") in ['copy', 'move', 'link'], 'invalid type'
 
             out = self.ContentUnit()
-            su = self.StorageUnit()
+            file = self.StorageUnit()
 
-            file_name = path.name
-            move_to = Path(os.path.join(su.temp_dir, file_name))
+            move_to = Path(os.path.join(file.temp_dir, file_name))
 
-            match(move_type):
+            match(i.get("type")):
                 case "copy":
                     file_manager.copyFile(path, move_to)
-                    su.setMainFile(move_to)
+                    file.setMainFile(move_to)
                 case "move":
                     file_manager.moveFile(path, move_to)
-                    su.setMainFile(move_to)
-                case "link":
-                    su.setLink(link)
-                    #file_manager.symlinkFile(INPUT_PATH, MOVE_TO)
+                    file.setMainFile(move_to)
 
-            out.link(su, True)
+            out.link(file, True)
             out.display_name = file_name
-            out.content = {
-                "export_as": str(move_type),
+            out.JSONContent.update({
+                "exported": str(i.get("type")),
                 "format": str(path.suffix[1:]),
-            }
-            out.source = {
+            })
+            out.Source.update({
                 "type": "path",
                 "content": str(path)
-            }
+            })
             out = await self.outer.process_item(out)
 
             outs.append(out)

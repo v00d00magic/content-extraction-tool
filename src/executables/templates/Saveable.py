@@ -1,42 +1,21 @@
-from app.App import logger
-import asyncio, datetime
 from db.Models.Content.ContentUnit import ContentUnit
 from db.Models.Content.StorageUnit import StorageUnit
+from app.App import logger
 
 class Saveable:
-    async def gatherList(self, items, method_name, is_gather = True):
-        return None
-
-        __list = []
-        __tasks = []
-
-        if is_gather == True:
-            for item in items:
-                __task = asyncio.create_task(method_name(item, __list))
-                __tasks.append(__task)
-
-            await asyncio.gather(*__tasks, return_exceptions=False)
-        else:
-            try:
-                for item in items:
-                    await method_name(item, __list)
-            except Exception as _exc:
-                logger.log(_exc, section=logger.SECTION_EXECUTABLES)
-
-        return __list
-
-    # signed
-
     @classmethod
     def ContentUnit(cls):
+        logger.log("Created new ContentUnit", section="Saveable")
+
         out = ContentUnit()
-        out.created_at = float(datetime.datetime.now().timestamp())
         cls.selfInsert(out)
 
         return out
 
     @classmethod
     def StorageUnit(cls):
+        logger.log("Created new StorageUnit", section="Saveable")
+
         out = StorageUnit()
 
         return out

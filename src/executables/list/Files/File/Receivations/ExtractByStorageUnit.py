@@ -21,10 +21,9 @@ class Implementation(File.AbstractReceivation):
         return params
 
     async def implementation(self, i = {}):
-        su = i.get('storage_unit')
         outs = []
 
-        for item in su:
+        for item in i.get('storage_unit'):
             if item == None:
                 continue
 

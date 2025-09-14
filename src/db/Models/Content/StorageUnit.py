@@ -11,24 +11,30 @@ class StorageUnit(BaseModel):
     table_name = 'storage_units'
     self_name = 'StorageUnit'
     short_name = 'su'
-    temp_dir = None
-    path_link = None
 
-    # Identification
     hash = TextField(null=True)
-    attached_path = TextField(null=True)
+    # attached_path = TextField(null=True) i will not probaly add this
 
-    upload_name = TextField(default='N/A') # Upload name (with extension)
+    upload_name = TextField(default="N/A") # Upload name (with extension)
     extension = TextField(default="json") # File extension
     mime = TextField(null=True,default="N/A")
-    is_thumbnail = BooleanField(index=True,default=0)
 
-    # Sizes
     filesize = BigIntegerField(default=0) # Size of main file
 
-    # Probaly
     lists = TextField(default="")
     metadata = TextField(default="")
+
+    is_thumbnail = BooleanField(index=True,default=0)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        self.temp_dir = None
+        self.path_link = None
+        self.hash = get_random_hash(32)
+
+        if self.is_saved() == False:
+            self.temp_dir = storage.sub('tmp_files').allocateTemp()
 
     @property
     def dir_filesize(self):
@@ -40,19 +46,10 @@ class StorageUnit(BaseModel):
 
         return common_filesize
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-        if self.is_saved() == False:
-            self.temp_dir = storage.sub('tmp_files').allocateTemp()
-
     def removeTemp(self):
         # get cursed
         if self.temp_dir != None:
             file_manager.rmdir(self.temp_dir)
-
-    def generateHash(self):
-        self.hash = get_random_hash(32)
 
     def flush(self):
         self.generateFilesList()
@@ -88,14 +85,10 @@ class StorageUnit(BaseModel):
 
     def setMainFile(self, path: Path):
         self.path_link = Path(path)
-        self.generateHash()
+        # self.generateHash()
         self.setAbout()
         self.setMime()
         self.flush()
-
-    def setLink(self, link):
-        self.path_link = Path(link)
-        self.link = str(link)
 
     def markAsPreview(self):
         self.is_thumbnail = 1
@@ -103,18 +96,9 @@ class StorageUnit(BaseModel):
     def writeData(self, json_data):
         self.extension = json_data.get("extension")
 
-        if json_data.get("hash") == None:
-            self.hash = get_random_hash(32)
-        else:
-            self.hash = json_data.get("hash")
-
         self.upload_name = json_data.get("upload_name")
         self.filesize = json_data.get("filesize")
         self.setMime()
-
-        # broken function
-        if json_data.get("link") != None:
-            self.link = json_data.get("link")
 
         ''' TODO handle async
         if json_data.get("take_metadata", False) == True:
@@ -167,9 +151,6 @@ class StorageUnit(BaseModel):
         return payload
 
     def path(self):
-        if getattr(self, "attached_path", None) != None:
-            return self.attached_path
-
         __path = os.path.join(storage.sub('files').path(), self.hash[0:2])
         __end_dir = os.path.join(__path, self.hash)
         if self.temp_dir != None:
