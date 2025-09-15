@@ -10,7 +10,7 @@ def _load_classes():
         'declarable.Arguments', 
         type(sys)('declarable.Arguments')
     )
-    arguments_dir = Path(consts.get('arguments'))
+    arguments_dir = consts.get('cwd').joinpath("declarable").joinpath("Arguments")
 
     for argument_item in arguments_dir.rglob('*Argument.py'):
         # no ideas for variable names

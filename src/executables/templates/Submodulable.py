@@ -1,7 +1,10 @@
 from utils.ClassProperty import classproperty
 
 class Submodulable():
-    inherit_from = ["self"]
+    @classmethod
+    def inherit_from(cls):
+        return ["self"]
+
     # submodules = []
 
     def __init_subclass__(cls, **kwargs):
@@ -29,7 +32,7 @@ class Submodulable():
     def get_submodules_by_type(cls, type=None):
         _items = []
 
-        for inherit_item in cls.inherit_from:
+        for inherit_item in cls.inherit_from():
             if inherit_item == "self":
                 inherit_item = cls
 

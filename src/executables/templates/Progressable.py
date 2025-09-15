@@ -1,4 +1,3 @@
-from utils.MainUtils import random_int
 from app.App import logger, app
 
 class ProgressMessage():
@@ -11,11 +10,8 @@ class Progressable:
     events = ["error", "progress"]
     index = 0
 
-    def __init__(self, executable_index = None):
+    def __init__(self):
         super().__init__()
-        self.index = executable_index
-        if self.index == None:
-            self.index = random_int(0, 10000)
 
         # it doesnt makes sense to trigger submodules so we calling app
         def __progress_hook(message):

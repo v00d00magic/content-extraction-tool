@@ -1,7 +1,6 @@
 from declarable.ArgsComparer import ArgsComparer
 from utils.ClassProperty import classproperty
 from importlib.metadata import distributions
-from app.App import logger
 
 class Runnable:
     base_categories = ["template", "base"]
@@ -12,17 +11,12 @@ class Runnable:
     def required_modules(cls):
         return []
 
-    @classproperty
-    def category(self)->str:
-        class_full_name = self.__module__
-        _ = class_full_name.split('.')
-
-        return _[-2]
-
     # Comparisons
 
     @classmethod
     def isAbstract(cls):
+        return False
+        # FIXME rewrite
         return cls.category.lower() in cls.base_categories
 
     @classmethod
@@ -31,9 +25,6 @@ class Runnable:
 
     @classmethod
     def canBeExecuted(cls):
-        '''
-        Is this Executable can be runned or it's technical
-        '''
         return cls.isAbstract() == False and cls.isHidden() == False
 
     @classmethod
@@ -65,7 +56,7 @@ class Runnable:
         return ".".join(cls.__module__.split('.')[2:])
 
     async def execute(self, i):
-        logger.log(message=f"Executed {self.full_name()}",section=logger.SECTION_EXECUTABLES,kind=logger.KIND_MESSAGE)
+        self.log(message=f"Executed {self.full_name()}")
 
         return await self.implementation(i)
 
@@ -81,7 +72,6 @@ class Runnable:
                             missing_args_inclusion=self.executable_configuration.is_free_args(), 
                             default_sub=self._default_sub)
         _args = decl.dict()
-
 
         if getattr(self, "beforeExecute", None) != None:
             self.beforeExecute(_args)

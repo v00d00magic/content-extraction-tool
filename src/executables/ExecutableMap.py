@@ -26,10 +26,10 @@ class ExecutableMap:
             "submodules": 0,
             "errors": 0
         }
+        executables_dir = consts.get('cwd').joinpath("executables")
 
-        list = self.scanDirectory(Path(f"{consts.get('executables')}\\list"))
         # for some reason it goes backwards LOOOL
-        for item in list: # iterating
+        for item in self.scanDirectory(executables_dir.joinpath("list")): # iterating
             start_time = time.time()
 
             module = None

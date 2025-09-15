@@ -6,6 +6,8 @@ from utils.Hookable import Hookable
 import asyncio, sys
 
 class App(Hookable):
+    incremental_executable_index = 0
+    context = "cli"
     events = ["progress"]
 
     def _parse_argv(self):
@@ -37,6 +39,11 @@ class App(Hookable):
         from executables.ExecutableMap import ExecutableMap
 
         self.indexated_scripts = ExecutableMap()
+
+    def getIndex(self):
+        self.incremental_executable_index += 1
+
+        return self.incremental_executable_index
 
 app = App()
 

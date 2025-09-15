@@ -60,6 +60,7 @@ class Implementation(Act):
         def __progress_hook(message):
             self.trigger("progress", message=message)
 
+        assert executable.canBeExecuted(), "sorry!"
         executable.add_hook("progress", __progress_hook)
 
         if i.get("dump") == True:

@@ -33,7 +33,7 @@ class Logger(Hookable):
     SECTION_ACTS = 'Acts'
     SECTION_WEB = 'Web'
 
-    def log(self, message, section: str = "App", kind: str = "message", silent: bool = False, prefix: str = ""):
+    def log(self, message, section: str = "App", kind: str = "message", silent: bool = False, prefix: str = "", id: int = 0):
         write_message = message
         if isinstance(message, BaseException):
             __exp = traceback.format_exc()
@@ -43,7 +43,8 @@ class Logger(Hookable):
             "message": write_message,
             "section": section,
             "kind": kind,
-            "silent": silent
+            "silent": silent,
+            "id": id,
         })
 
     def log_(self, data):
@@ -62,6 +63,7 @@ class Logger(Hookable):
             "section": data.get("section"),
             "message": data.get("message"),
             "kind": data.get("kind"),
+            "id": data.get("id"),
             "should": should,
         })
         self.__log_file_check()
@@ -191,20 +193,27 @@ class LogMessage():
         section = self.data.get("section")
         message = self.data.get("message")
         kind = self.data.get("kind")
+        id = self.data.get("id")
         date = datetime.fromtimestamp(self.data.get("time"))
 
-        write_message = f"{date.strftime("%Y-%m-%d %H:%M:%S")} [{section}] {message}\n"
+        write_message = f"{date.strftime("%Y-%m-%d %H:%M:%S")} [{section}] {message}"
+
+        if id != None:
+            write_message = write_message + f" ID->{id}"
+
+        write_message += "\n"
         write_message = write_message.replace("\\n", "\n")
         write_colored_message = ""
 
-        if kind == Logger.KIND_ERROR:
-            write_colored_message = "\033[91m" + write_message + "\033[0m"
-        elif kind == Logger.KIND_SUCCESS:
-            write_colored_message = "\033[92m" + write_message + "\033[0m"
-        elif kind == Logger.KIND_DEPRECATED:
-            write_colored_message = "\033[93m" + write_message + "\033[0m"
-        else:
-            write_colored_message = write_message
+        match(kind):
+            case Logger.KIND_ERROR:
+                write_colored_message = "\033[91m" + write_message + "\033[0m"
+            case Logger.KIND_SUCCESS:
+                write_colored_message = "\033[92m" + write_message + "\033[0m"
+            case Logger.KIND_DEPRECATED:
+                write_colored_message = "\033[93m" + write_message + "\033[0m"
+            case _:
+                write_colored_message = write_message
 
         print(write_colored_message, end='')
 

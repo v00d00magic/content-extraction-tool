@@ -200,6 +200,14 @@ class ContentUnit(BaseModel, ThumbnailMixin):
             "representation": method.outer.full_name()
         })
 
+    def beforeSave(self):
+        if self.via_method:
+            print(self.via_method.outer)
+            for outer in self.via_method.outer.outer_list():
+                _outer = outer()
+                print(_outer)
+                _outer.execute_with_validation({})
+
     def postSave(self):
         logger.log(f"Saved ContentUnit, saved id: {self.uuid}, trying to link {len(self.link_queue)} items",section="Saveable")
 
@@ -209,8 +217,6 @@ class ContentUnit(BaseModel, ThumbnailMixin):
     def save(self, **kwargs):
         kwargs["force_insert"] = True
 
-        if self.via_method != None and kwargs.get("save_thumbnail", True) == True:
-            self.setThumbnail(self.saveThumbnail(self.via_method))
-
+        self.beforeSave()
         super().save(**kwargs)
         self.postSave()

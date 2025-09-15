@@ -13,7 +13,7 @@ from app.App import app as mainApp
 
 mainApp.setup()
 
-consts["context"] = "web"
+mainApp.context = "web"
 
 def check_node_modules():
     cwd = Path.cwd()

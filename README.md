@@ -10,6 +10,7 @@ Todo:
 - [x] Class sections
 - [ ] Open variables of the class
 - [x] Move `response` to class
+- [ ] Store executable threads
 
 #### Outer
 
@@ -41,7 +42,7 @@ Todo:
 #### Contentunit
 
 - [ ] Search inside json
-- [ ] Connection of alternate db
+- [x] Alternate db connection
 - [x] Unsaved contentunits
 - [ ] Obvious description of `source`
 

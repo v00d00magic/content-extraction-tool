@@ -1,10 +1,10 @@
 from app.App import logger
 
 class Sectionable():
-    section_name = "App"
+    section_name = "Executables"
 
     def log(self, message, kind = "message"):
-        return logger.log(message, section=self.section_name, kind=kind)
+        return logger.log(message + f" [{self.index}]", section=self.section_name, kind=kind, id=self.index)
 
     def log_error(self, message):
         return self.log(message, kind=logger.KIND_ERROR)

@@ -5,7 +5,7 @@ class Argument:
     cache_results = True
 
     def __init__(self, configuration):
-        if configuration.get('name') in consts.get('forbidden_argument_names'):
+        if configuration.get('name') in consts.get('arguments.forbidden'):
             raise InvalidArgumentName(f"{configuration.get('name')} is invalid argument name")
 
         self.configuration = configuration

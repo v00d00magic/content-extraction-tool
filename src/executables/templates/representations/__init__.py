@@ -15,6 +15,10 @@ class Representation(Executable, metaclass=RepresentationMeta):
     _default_sub = False
 
     @classmethod
+    def outer_list(cls):
+        return []
+
+    @classmethod
     def declare(cls):
         params = {}
         params["do_collections"] = BooleanArgument({
@@ -101,6 +105,3 @@ class Representation(Executable, metaclass=RepresentationMeta):
             ps.get("acts").append(item.describe())
 
         return ps
-
-    #class ContentUnit(ContentUnit):
-    #   pass

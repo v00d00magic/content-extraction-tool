@@ -1,7 +1,9 @@
 from executables.list.Files.File import Implementation as FileImplementation
 from db.Models.Content.ContentUnit import ContentUnit
+from .Outer.Image import Implementation as Image
+from .Outer.ImageThumbnail import Implementation as ImageThumbnail
 
-keys = {
+locale_keys = {
     "image.name": {
         "en_US": "Image",
         "ru_RU": "Изображение"
@@ -9,25 +11,16 @@ keys = {
 }
 
 class Implementation(FileImplementation):
-    inherit_from = [FileImplementation]
+    @classmethod
+    def inherit_from(cls):
+        return [FileImplementation]
+
+    @classmethod
+    def outer_list(cls):
+        return [Image, ImageThumbnail]
 
     @classmethod
     def define_meta(cls):
         return {
             "name": cls.key("image.name"),
         }
-
-    @staticmethod
-    async def process_item(item: ContentUnit):
-        from PIL import Image as PILImage
-
-        new_data = {}
-        common_link = item.common_link
-
-        with PILImage.open(str(common_link.path())) as img:
-            item.Outer.update({
-                "width": img.size[0],
-                "height": img.size[1],
-            })
-
-        return item

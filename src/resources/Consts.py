@@ -3,23 +3,18 @@ import platform, os
 
 consts = {}
 
-# Context
-consts["context"] = "cli"
-
 # OS
-consts["os_name"] = platform.system()
-consts["pc_name"] = os.getenv("COMPUTERNAME", "NoName-PC")
-consts["pc_user"] = os.getlogin()
-consts["pc_fullname"] = consts["pc_name"] + ", " + consts["pc_user"]
+consts["os.name"] = platform.system()
+consts["pc.name"] = os.getenv("COMPUTERNAME", "NoName-PC")
+consts["pc.user"] = os.getlogin()
+consts["pc.fullname"] = consts["pc.name"] + ", " + consts["pc.user"]
 
 # Runtime
 consts["cwd"] = Path(os.getcwd())
-consts["executables"] = Path(os.path.join(consts.get('cwd'), "executables"))
-consts["arguments"] = Path(os.path.join(consts.get('cwd'), "declarable", "Arguments"))
 
 # Config
 consts["config.hidden"] = 1
 consts["config.hidden_values_spaces"] = ["db.", "web."]
 
 # Args
-consts["forbidden_argument_names"] = ["i", "name", "confirm"]
+consts["arguments.forbidden"] = ["i", "name", "confirm"]
