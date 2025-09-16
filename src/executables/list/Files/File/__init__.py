@@ -2,11 +2,9 @@ from executables.templates.representations import Representation
 
 locale_keys = {
     "name": {
-        "ru_RU": "Файл",
         "en_US": "File"
     },
     "definition": {
-        "ru_RU": "Файл по пути на диске или URL",
         "en_US": "File by path or URL",
     },
 }

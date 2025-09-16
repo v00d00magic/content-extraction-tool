@@ -1,6 +1,5 @@
 from declarable.Arguments import CsvArgument, ContentUnitArgument, ExecutableArgument, BooleanArgument
 from executables.responses.Response import Response
-from executables.list.Executables.Dump import Implementation as Dump
 from executables.templates.acts import Act
 from db.Models.Content.ContentUnit import ContentUnit
 from declarable.ExecutableConfig import ExecutableConfig
@@ -8,7 +7,6 @@ from declarable.ExecutableConfig import ExecutableConfig
 locale_keys = {
     "name": {
         "en_US": "Link to",
-        "ru_RU": "Привязать к",
     }
 }
 
@@ -51,7 +49,7 @@ class Implementation(Act):
         return params
 
     async def implementation(self, i = {}):
-        executable = i.get('i')(self.index)
+        executable = i.get('i')()
         links = i.get('link')
         link_to = []
         _pass = i.__dict__()
@@ -64,10 +62,7 @@ class Implementation(Act):
         executable.add_hook("progress", __progress_hook)
 
         if i.get("dump") == True:
-            await Dump().execute({
-                "executable": executable,
-                "data": _pass
-            })
+            self.wrapper.dump()
 
         if i.get("ignore_requirements") == False:
             assert executable.isModulesInstalled(), f"requirements not installed. run 'Executables.InstallRequirements'"
@@ -92,10 +87,7 @@ class Implementation(Act):
         for link_item in link_to:
             executable.addLink(link_item)
 
-        if getattr(executable, "beforeExecute", None) != None:
-            executable.beforeExecute(i)
-
-        result = Response.convert(await executable.execute_with_validation(_pass))
+        result = Response.convert(await executable.execute(_pass))
         if hasattr(result, "items") == True:
             for item in result.items():
                 if i.get('is_save') == True:

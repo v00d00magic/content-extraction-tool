@@ -4,66 +4,51 @@ from declarable.Documentation import documentation
 locale_keys = {
     "ui.lang.name": {
         "en_US": "Language",
-        "ru_RU": "Язык",
     },
     "ui.name.name": {
         "en_US": "Server name",
-        "ru_RU": "Название сервера",
     },
     "web.host.name": {
         "en_US": "Host name",
-        "ru_RU": "Название хоста",
     },
     "web.port.name": {
         "en_US": "Port",
-        "ru_RU": "Порт",
     },
     "storage.root_path.name": {
         "en_US": "Storage location",
-        "ru_RU": "Расположение хранилища"
     },
     "storage.root_path.definition": {
         "en_US": "Internal storage location. «?cwd?» is replaced with the startup directory. Edit with caution.",
-        "ru_RU": "Расположение внутреннего хранилища. «?cwd?» заменяется на директорию запуска. Редактировать с осторожностью."
     },
     "net.max_speed.name": {
         "en_US": "Max speed",
-        "ru_RU": "Ограничение соединения",
     },
     "net.useragent.name": {
         "en_US": "User-Agent",
     },
     "net.max_speed.definition": {
         "en_US": "Max speed for web operations (in Kbps)",
-        "ru_RU": "Максимальная скорость для веб-операций (в кб/с)",
     },
     "net.timeout.name": {
         "en_US": "Timeout",
-        "ru_RU": "Таймаут",
     },
     "net.timeout.definition": {
         "en_US": "Timeout for web operations",
-        "ru_RU": "Таймаут для веб-операций",
     },
     "logger.skip_categories.name": {
         "en_US": "Ignored categories",
-        "ru_RU": "Игнорируемые категории"
     },
     "logger.skip_categories.definition": {
         "en_US": "List of categories that will not be displayed from the logger",
-        "ru_RU": "Список категорий, которые не будут отображаться из логгера"
     },
     "logger.skip_file.name": {
         "en_US": "Do not write logs into the file",
-        "ru_RU": "Не записывать логи в файл"
     },
     "thumbnail.width.name": {
         "en_US": "Thumbnail width",
-        "ru_RU": "Ширина превью"
     },
     "thumbnail.height.name": {
         "en_US": "Thumbnail height",
-        "ru_RU": "Высота превью"
     }
 }
 

@@ -3,7 +3,6 @@ from executables.templates.representations import Representation
 locale_keys = {
     "arguments.name": {
         "en_US": "Passed data",
-        "ru_RU": "Переданные данные"
     }
 }
 

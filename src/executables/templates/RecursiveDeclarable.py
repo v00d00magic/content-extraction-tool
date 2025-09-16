@@ -1,4 +1,5 @@
 from declarable.ExecutableConfig import ExecutableConfig
+from declarable.ArgsComparer import ArgsComparer
 from utils.ClassProperty import classproperty
 
 class RecursiveDeclarable:
@@ -32,6 +33,18 @@ class RecursiveDeclarable:
         params = {}
 
         return params
+
+    def comparer_shortcut(self, declare_with, args):
+        if declare_with == None:
+            declare_with = self.__class__.declare_recursive()
+
+        self.executable_configuration.check()
+
+        return ArgsComparer(compare=declare_with, 
+                            args=args,
+                            exc='assert', 
+                            missing_args_inclusion=self.executable_configuration.is_free_args(), 
+                            default_sub=self._default_sub)
 
     @classmethod
     def declare_recursive(cls):

@@ -8,15 +8,7 @@ from executables.templates.Linkable import Linkable
 from executables.templates.Sectionable import Sectionable
 from executables.templates.Submodulable import Submodulable
 from utils.Hookable import Hookable
-from app.App import app
 
 class Executable(Documentable, EnvContainable, RecursiveDeclarable, Progressable, Linkable, Runnable, Saveable, Sectionable, Submodulable, Hookable):
-    def __init__(self, index: int = None):
-        super().__init__()
-
-        self.preStart(index)
-
-    def preStart(self, index: int = None):
-        self.index = index
-        if self.index == None:
-            self.index = app.getIndex()
+    def defineWrapper(self, wrapper):
+        self.call = wrapper

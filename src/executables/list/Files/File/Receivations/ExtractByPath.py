@@ -7,23 +7,18 @@ import os
 locale_keys = {
     "path.name": {
         "en_US": "Path to file",
-        "ru_RU": "Путь к файлу"
     },
     "type.name": {
         "en_US": "Text",
-        "ru_RU": "Текст"
     },
     "type.copy.name": {
         "en_US": "Copy",
-        "ru_RU": "Копирование",
     },
     "type.move.name": {
         "en_US": "Move",
-        "ru_RU": "Перемещение",
     },
     "type.link.name": {
         "en_US": "Link",
-        "ru_RU": "Ссылка",
     }
 }
 

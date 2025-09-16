@@ -7,7 +7,6 @@ import operator
 locale_keys = {
     "order.name": {
         "en_US": "Order",
-        "ru_RU": "Порядок"
     }
 }
 

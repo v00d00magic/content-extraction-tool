@@ -3,7 +3,6 @@ from executables.templates.representations import Representation
 locale_keys = {
     "collection.name": {
         "en_US": "Collection",
-        "ru_RU": "Коллекция"
     },
 }
 

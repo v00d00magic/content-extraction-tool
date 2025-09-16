@@ -1,4 +1,3 @@
-from declarable.ArgsComparer import ArgsComparer
 from utils.ClassProperty import classproperty
 from importlib.metadata import distributions
 
@@ -53,27 +52,14 @@ class Runnable:
 
     @classmethod
     def full_name(cls):
-        return ".".join(cls.__module__.split('.')[2:])
+        _parts = cls.__module__.split('.')
+        if _parts[-1] == _parts[-2]:
+            return ".".join(_parts[2:-1])
+
+        return ".".join(_parts[2:])
 
     async def execute(self, i):
-        self.log(message=f"Executed {self.full_name()}")
+        if hasattr(self, "beforeExecute") == True:
+            self.beforeExecute(i)
 
         return await self.implementation(i)
-
-    async def execute_with_validation(self, args: dict, declare_with = None):
-        if declare_with == None:
-            declare_with = self.__class__.declare_recursive()
-
-        self.executable_configuration.check()
-
-        decl = ArgsComparer(compare=declare_with, 
-                            args=args, 
-                            exc='assert', 
-                            missing_args_inclusion=self.executable_configuration.is_free_args(), 
-                            default_sub=self._default_sub)
-        _args = decl.dict()
-
-        if getattr(self, "beforeExecute", None) != None:
-            self.beforeExecute(_args)
-
-        return await self.execute(_args)

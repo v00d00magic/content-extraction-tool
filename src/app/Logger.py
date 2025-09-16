@@ -77,10 +77,10 @@ class Logger(Hookable):
 
         ColoramaInit()
 
-        self.write_mode = self.MODE_PER_STARTUP
+        self.write_mode: int = self.MODE_PER_STARTUP
         self.logs_storage = storage.sub('logs')
-        self.skip_categories = config.get("logger.skip_categories")
-        self.skip_file = config.get("logger.skip_file") == 1
+        self.skip_categories: list = config.get("logger.skip_categories")
+        self.skip_file: bool = config.get("logger.skip_file") == 1
 
         self.add_hook("log", self.__console_hook)
         self.add_hook("log", self.__write_to_file_hook)
@@ -126,9 +126,9 @@ class Logger(Hookable):
         now = datetime.now()
         match(self.write_mode):
             case self.MODE_PER_STARTUP:
-                self.path = Path(f"{self.logs_storage.dir}/{now.strftime('%Y-%m-%d_%H-%M-%S')}.json")
+                self.path = self.logs_storage.dir.joinpath(f"{now.strftime('%Y-%m-%d_%H-%M-%S')}.json")
             case self.MODE_PER_DAY:
-                self.path = Path(f"{self.logs_storage.dir}/{now.strftime('%Y-%m-%d')}.json")
+                self.path = self.logs_storage.dir.joinpath(f"{now.strftime('%Y-%m-%d')}.json")
 
         if self.path.exists() == False:
             _not_exists = open(self.path, 'w', encoding='utf-8')
@@ -197,7 +197,6 @@ class LogMessage():
         date = datetime.fromtimestamp(self.data.get("time"))
 
         write_message = f"{date.strftime("%Y-%m-%d %H:%M:%S")} [{section}] {message}"
-
         if id != None:
             write_message = write_message + f" ID->{id}"
 

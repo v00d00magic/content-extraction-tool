@@ -3,8 +3,7 @@ from app.App import app
 
 locale_keys = {
     "name": {
-        "ru_RU": "Отображение информации",
-        "en_US": "App info display",
+        "en_US": "Display app info",
     },
 }
 

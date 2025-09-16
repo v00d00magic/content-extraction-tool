@@ -1,8 +1,8 @@
 from db.DbConnection import DbConnection
 from storage.Storage import Storage
+from utils.Hookable import Hookable
 from app.Config import Config
 from app.Logger import Logger
-from utils.Hookable import Hookable
 import asyncio, sys
 
 class App(Hookable):

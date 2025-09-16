@@ -1,4 +1,4 @@
-from app.Views.CLI import cli
 from app.App import app
+from app.AppConsole import call
 
-app.loop.run_until_complete(cli.act())
+app.loop.run_until_complete(call())

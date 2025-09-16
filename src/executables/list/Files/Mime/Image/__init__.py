@@ -6,7 +6,6 @@ from .Outer.ImageThumbnail import Implementation as ImageThumbnail
 locale_keys = {
     "image.name": {
         "en_US": "Image",
-        "ru_RU": "Изображение"
     }
 }
 
