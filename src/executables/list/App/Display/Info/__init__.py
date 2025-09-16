@@ -9,7 +9,7 @@ locale_keys = {
 
 class Implementation(Act):
     @classmethod
-    def define_meta(cls):
+    def defineMeta(cls):
         return {
             'name': cls.key("name")
         }

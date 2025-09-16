@@ -1,25 +1,23 @@
-from utils.ClassProperty import classproperty
-
 class EnvContainable:
     '''
     Class that contains env variables
     '''
-    @classproperty
-    def env_vars(cls):
+    @classmethod
+    def getEnvVars(cls):
         res = {}
         for __sub_class in cls.__mro__:
-            if getattr(__sub_class, "declare_env", None) != None:
-                res.update(__sub_class.declare_env())
+            if getattr(__sub_class, "declareEnv", None) != None:
+                res.update(__sub_class.declareEnv())
 
         return res
 
     @classmethod
-    def declare_env(cls):
+    def declareEnv(cls):
         return {}
 
     @classmethod
     def env(cls, name):
-        arg = cls.env_vars.get(name)
+        arg = cls.getEnvVars().get(name)
         arg.configuration["name"] = name
 
         return arg

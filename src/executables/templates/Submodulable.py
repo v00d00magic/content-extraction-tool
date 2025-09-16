@@ -37,8 +37,11 @@ class Submodulable():
                 inherit_item = cls
 
             for sub in inherit_item.submodules:
-                if type != None and sub.self_name == type:
+                if type == None:
                     _items.append(sub)
+                else:
+                    if sub.self_name == type:
+                        _items.append(sub)
 
         return _items
 
@@ -53,12 +56,12 @@ class Submodulable():
 
         class AbstractAct(Act):
             self_name = "Act"
-            section_name = "Act!" + cls.full_name()
+            section_name = ["Act", cls.getName()]
             outer = cls
 
         class AbstractReceivation(Extractor):
             self_name = "Receivation"
-            section_name = "Receivation!" + cls.full_name()
+            section_name = ["Receivation", cls.getName()]
             outer = cls
 
             @classmethod
@@ -67,7 +70,7 @@ class Submodulable():
 
         class AbstractExternalExtractor(Extractor):
             self_name = "ExternalExtractor"
-            section_name = "ExternalExtractor!" + cls.full_name()
+            section_name = ["ExternalExtractor", cls.getName()]
             outer = cls
 
             @classmethod
@@ -76,7 +79,7 @@ class Submodulable():
 
         class AbstractConfirmation(Extractor):
             self_name = "Confirmation"
-            section_name = "Confirmation!" + cls.full_name()
+            section_name = ["Confirmation", cls.getName()]
             outer = cls
 
         cls.AbstractAct = AbstractAct

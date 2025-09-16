@@ -14,4 +14,4 @@ class Implementation(Act):
         return params
 
     async def implementation(self, i = {}):
-        return i.get('class').describe()
+        return i.get('class').getStructure()

@@ -11,7 +11,7 @@ locale_keys = {
 
 class Implementation(Representation):
     @classmethod
-    def define_meta(cls):
+    def defineMeta(cls):
         return {
             "definition": cls.key("hyperlink.definition"),
             "name": cls.key("hyperlink.name"),

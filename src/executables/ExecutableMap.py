@@ -43,7 +43,7 @@ class ExecutableMap:
                         module = self.doImport(parts)
                         end_time = time.time()
 
-                        logger.log(f"Imported module {module.full_name()} in {round(end_time - start_time, 3)}s", section="ExecutableMap!Initialization")
+                        logger.log(f"Imported module {module.getName()} in {round(end_time - start_time, 3)}s", section="ExecutableMap!Initialization")
 
                         _item = self.register(module)
 
@@ -59,7 +59,7 @@ class ExecutableMap:
                 counters["errors"] += 1
                 logger.log(e, section="ExecutableMap!Initialization", prefix=f"Did not imported module: ")
 
-        logger.log(f"Found total {counters["total"]} scripts, {counters["success"]} successfully, {counters["submodules"]} submodules, {counters["errors"]} errors", section="ExecutableMap!Initialization")
+        logger.log(f"Found total {counters["total"]} scripts, {counters["success"]} successfully, {counters["submodules"]} submodules, {counters["errors"]} errors", section=["ExecutableMap", "Initialization"])
 
     def scanDirectory(self, executables_dir):
         list = []
@@ -133,7 +133,7 @@ class ExecutableMap:
         if hasattr(module, "locale_keys") == True:
             common_object.loadKeys(getattr(module, "locale_keys"))
 
-        common_object.docs = common_object.define_meta()
+        common_object.docs = common_object.defineMeta()
 
         return common_object
 
@@ -141,13 +141,13 @@ class ExecutableMap:
         main_module = module.main_module
 
         if main_module == None:
-            self.items[module.full_name()] = module # adding to common list
+            self.items[module.getName()] = module # adding to common list
 
             return ExecutableMap.RESULT_MODULE
         else:
-            logger.log(f"Injected module {module.full_name()} to {main_module.full_name()}", section="ExecutableMap!Initialization")
+            logger.log(f"Injected module {module.getName()} to {main_module.getName()}", section="ExecutableMap!Initialization")
 
-            self.items[main_module.full_name()].add_submodule(module) # registering to main module
-            self.items[module.full_name()] = module
+            self.items[main_module.getName()].add_submodule(module) # registering to main module
+            self.items[module.getName()] = module
 
             return ExecutableMap.RESULT_SUBMODULE

@@ -3,6 +3,7 @@ from executables.responses.Response import Response
 from executables.templates.acts import Act
 from db.Models.Content.ContentUnit import ContentUnit
 from declarable.ExecutableConfig import ExecutableConfig
+from executables.ExecutableCall import ExecutableCall
 
 locale_keys = {
     "name": {
@@ -49,23 +50,18 @@ class Implementation(Act):
         return params
 
     async def implementation(self, i = {}):
-        executable = i.get('i')()
-        links = i.get('link')
-        link_to = []
-        _pass = i.__dict__()
-        _pass.pop("i")
+        executable = i.get('i')
+
+        assert executable.canBeExecuted(), "sorry!"
+
+        if i.get("dump") == True:
+            self.call.dump()
+
+        if i.get("ignore_requirements") == False:
+            assert executable.isModulesInstalled(), "requirements not installed"
 
         def __progress_hook(message):
             self.trigger("progress", message=message)
-
-        assert executable.canBeExecuted(), "sorry!"
-        executable.add_hook("progress", __progress_hook)
-
-        if i.get("dump") == True:
-            self.wrapper.dump()
-
-        if i.get("ignore_requirements") == False:
-            assert executable.isModulesInstalled(), f"requirements not installed. run 'Executables.InstallRequirements'"
 
         if len(executable.confirmations) > 0:
             if int(i.get("confirm")) == 1 == False:
@@ -77,21 +73,30 @@ class Implementation(Act):
                 }
                 _out["data"] = res.get("data")
                 for item_name, item in res.get("args").items():
-                    _out["args"][item_name] = item.describe()
+                    _out["args"][item_name] = item.getStructure()
 
                 return _out
 
+        link_to = []
+        links = i.get('link')
         if links != None and len(links) > 0:
             link_to = ContentUnit.ids(links)
 
-        for link_item in link_to:
-            executable.addLink(link_item)
+        _pass = i.__dict__()
+        _pass.pop("i")
 
-        result = Response.convert(await executable.execute(_pass))
+        call = ExecutableCall(executable=executable)
+        #call.add_hook("progress", __progress_hook)
+        for link_item in link_to:
+            call.addLink(link_item)
+
+        call.passArgs(_pass)
+        result = await call.run_asyncely()
+
         if hasattr(result, "items") == True:
             for item in result.items():
                 if i.get('is_save') == True:
                     item.save()
-                    executable.doLink(item)
+                    call.doLink(item)
 
         return result

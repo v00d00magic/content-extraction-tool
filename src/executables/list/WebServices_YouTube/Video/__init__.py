@@ -4,7 +4,7 @@ from utils.ClassProperty import classproperty
 
 class Implementation(Representation):
     @classproperty
-    def required_modules(cls):
+    def getRequiredModules(cls):
         return ["yt-dlp"]
 
     @classmethod

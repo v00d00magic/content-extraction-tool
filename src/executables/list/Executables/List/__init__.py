@@ -16,7 +16,7 @@ class Implementation(Act):
         fnl = []
         for item in app.indexated_scripts.listByClass(i.get("type")):
             try:
-                fnl.append(item.describe())
+                fnl.append(item.getStructure())
             except ModuleNotFoundError:
                 pass
 

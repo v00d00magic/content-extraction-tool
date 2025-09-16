@@ -32,10 +32,10 @@ class CsvArgument(Argument):
 
         return list_conversation(end_vals)
 
-    def describe(self):
-        orig_out = super().describe()
+    def getStructure(self):
+        orig_out = super().getStructure()
         if orig_out.get("orig") != None and type(orig_out.get("orig")) != str:
-            orig_out["orig"] = orig_out.get("orig").describe()
+            orig_out["orig"] = orig_out.get("orig").getStructure()
 
         return orig_out
 

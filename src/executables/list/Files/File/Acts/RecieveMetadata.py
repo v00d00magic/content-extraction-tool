@@ -6,7 +6,7 @@ from app.App import logger
 
 class Implementation(File.AbstractAct):
     @classproperty
-    def required_modules(cls):
+    def getRequiredModules(cls):
         return ["hachoir"]
 
     @classmethod

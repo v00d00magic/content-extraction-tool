@@ -52,10 +52,10 @@ env = Config(file_name="env.json",fallback=None)
 storage = Storage(config)
 logger = Logger(config, storage)
 
-from utils.Web.DownloadManager import DownloadManager
-
-download_manager = DownloadManager(max_concurrent_downloads = 2)
-
 db_connection = DbConnection()
 db_connection.attachDb(config, env)
 db_connection.createTables()
+
+from utils.Web.DownloadManager import DownloadManager
+
+download_manager = DownloadManager(max_concurrent_downloads = 2)

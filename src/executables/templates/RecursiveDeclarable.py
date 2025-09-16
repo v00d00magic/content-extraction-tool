@@ -34,9 +34,9 @@ class RecursiveDeclarable:
 
         return params
 
-    def comparer_shortcut(self, declare_with, args):
+    def comparerShortcut(self, declare_with, args):
         if declare_with == None:
-            declare_with = self.__class__.declare_recursive()
+            declare_with = self.__class__.declareRecursive()
 
         self.executable_configuration.check()
 
@@ -44,10 +44,10 @@ class RecursiveDeclarable:
                             args=args,
                             exc='assert', 
                             missing_args_inclusion=self.executable_configuration.is_free_args(), 
-                            default_sub=self._default_sub)
+                            default_sub=self.doDefaultAppending())
 
     @classmethod
-    def declare_recursive(cls):
+    def declareRecursive(cls):
         '''
         Brings all params from parent classes to one dict
         '''

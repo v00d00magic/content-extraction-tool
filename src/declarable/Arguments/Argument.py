@@ -40,16 +40,16 @@ class Argument:
     def manual(self):
         return self.configuration.get("docs")
 
-    def describe(self):
-        ps = self.configuration.copy()
-        ps.update({
+    def getStructure(self):
+        payload = self.configuration.copy()
+        payload.update({
             'type': self.__class__.__name__,
             'docs': self.manual()
         })
 
-        ps['default'] = self.sensitive_default()
+        payload['default'] = self.sensitive_default()
 
-        return ps
+        return payload
 
     def val(self, default_sub = True):
         if self.cache_results == True:

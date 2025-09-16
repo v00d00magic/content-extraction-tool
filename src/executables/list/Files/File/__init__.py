@@ -13,7 +13,7 @@ class Implementation(Representation):
     # Class for testing purposes
 
     @classmethod
-    def define_meta(cls):
+    def defineMeta(cls):
         return {
             "name": cls.key("name"),
             "definition": cls.key("definition"),

@@ -11,6 +11,7 @@ Todo:
 - [ ] Open variables of the class
 - [x] Move `response` to class
 - [x] Store executable threads
+- [ ] Recursion protection
 
 #### Outer
 

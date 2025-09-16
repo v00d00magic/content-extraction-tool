@@ -33,7 +33,7 @@ class Logger(Hookable):
     SECTION_ACTS = 'Acts'
     SECTION_WEB = 'Web'
 
-    def log(self, message, section: str = "App", kind: str = "message", silent: bool = False, prefix: str = "", id: int = 0):
+    def log(self, message, section: str = "App", kind: str = "message", silent: bool = False, prefix: str = "", id: int = None):
         write_message = message
         if isinstance(message, BaseException):
             __exp = traceback.format_exc()
@@ -54,10 +54,6 @@ class Logger(Hookable):
             "file": self.skip_file == False
         }
 
-        for item in self.skip_categories:
-            category = LoggerCategory(item)
-            should = category.check(data.get("section"), data.get("kind"))
-
         message = LogMessage({
             "time": (datetime.now()).timestamp(),
             "section": data.get("section"),
@@ -66,6 +62,10 @@ class Logger(Hookable):
             "id": data.get("id"),
             "should": should,
         })
+        for item in self.skip_categories:
+            category = LoggerCategory(item)
+            should = category.check(message.getSection(True), message.getKind())
+
         self.__log_file_check()
 
         self.trigger("log", message=message)
@@ -73,7 +73,7 @@ class Logger(Hookable):
         return message
 
     def __init__(self, config, storage):
-        super().__init__() # for hookable
+        super().__init__()
 
         ColoramaInit()
 
@@ -149,6 +149,7 @@ class LoggerCategory():
         else:
             self.data = data
 
+    # TODO refactor
     def check(self, section, kind = None):
         name = self.data.get("name")
         wildcard = self.data.get("wildcard", False)
@@ -186,6 +187,21 @@ class LogMessage():
     def __init__(self, data):
         self.data = data
 
+    def getKind(self):
+        return self.data.get("kind")
+
+    def getSection(self, as_string = False):
+        _section = self.data.get("section")
+        _section_list = _section
+
+        if type(_section) == str:
+            _section_list = _section.split("!")
+
+        if as_string == True:
+            return "!".join(_section_list)
+        else:
+            return _section_list
+
     def out(self):
         return self.data
 
@@ -196,9 +212,9 @@ class LogMessage():
         id = self.data.get("id")
         date = datetime.fromtimestamp(self.data.get("time"))
 
-        write_message = f"{date.strftime("%Y-%m-%d %H:%M:%S")} [{section}] {message}"
+        write_message = f"{date.strftime("%H:%M:%S")} [{self.getSection(True)}] {message}"
         if id != None:
-            write_message = write_message + f" ID->{id}"
+            write_message = f"ID->{id} " + write_message
 
         write_message += "\n"
         write_message = write_message.replace("\\n", "\n")

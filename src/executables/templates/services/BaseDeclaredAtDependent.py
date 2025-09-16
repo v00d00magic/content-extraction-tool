@@ -7,7 +7,6 @@ from db.LinkManager import LinkManager
 class BaseDeclaredAtDependent(Service):
     pass_params = {}
     add_after = None
-    colls_list = []
 
     @classmethod
     def declare(cls):
@@ -44,7 +43,7 @@ class BaseDeclaredAtDependent(Service):
 
         await extractor_instance.execute_with_validation(self.pass_params)
 
-        logger.log(message=f"Got total {len(linked_dict)} items",kind='message',section='Services!RegularDeclaredAtChecker')
+        logger.log(message=f"Got total {len(linked_dict)} items",section=["Services", "RegularDeclaredAtChecker"])
 
         list_items = []
         check_dates = []
@@ -61,12 +60,12 @@ class BaseDeclaredAtDependent(Service):
 
                 check_dates.append(int(item_created))
 
-        logger.log(message=f"Totally {len(list_items)} new items",kind='success',section='Services!RegularDeclaredAtChecker')
+        logger.log(message=f"Totally {len(list_items)} new items",section=["Services", "RegularDeclaredAtChecker"])
 
         if len(list_items) > 0:
             new_offset = max(check_dates)
 
-            logger.log(message=f"Changed date offset {date_offset}->{new_offset}",kind='message',section='Services!RegularDeclaredAtChecker')
+            logger.log(message=f"Changed date offset {date_offset}->{new_offset}",section=["Services", "RegularDeclaredAtChecker"])
 
             self.config['date_offset'] = new_offset
             self.service_object.updateData(self.config)

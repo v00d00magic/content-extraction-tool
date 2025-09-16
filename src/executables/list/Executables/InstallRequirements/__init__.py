@@ -16,7 +16,7 @@ class Implementation(Act):
 
     async def implementation(self, i = {}):
         _class = i.get("class")
-        _need_modules = _class.required_modules
+        _need_modules = _class.getRequiredModules()
 
         if len(_need_modules) > 0:
             _pars = [sys.executable, '-m', 'pip', 'install']

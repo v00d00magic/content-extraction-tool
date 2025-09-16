@@ -27,6 +27,6 @@ class Implementation(Act):
             val.configuration["name"] = name
             val.configuration["current"] = config.options.get(name)
 
-            result.append(val.describe())
+            result.append(val.getStructure())
 
         return result

@@ -39,7 +39,7 @@ class Implementation(Act):
         assert service_class != None, "invalid service"
 
         new_service = ServiceInstance()
-        new_service.service_name = service_class.full_name()
+        new_service.service_name = service_class.getName()
         new_service.display_name = display_name
         new_service.data = "{}"
 

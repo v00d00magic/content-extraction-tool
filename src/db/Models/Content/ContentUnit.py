@@ -196,14 +196,14 @@ class ContentUnit(BaseModel, ThumbnailMixin):
     def signRepresentation(self, method):
         self.via_method = method
         self.SavedVia.update({
-            "method": method.full_name(),
-            "representation": method.outer.full_name()
+            "method": method.getName(),
+            "representation": method.outer.getName()
         })
 
     def beforeSave(self):
         if self.via_method:
             print(self.via_method.outer)
-            for outer in self.via_method.outer.outer_list():
+            for outer in self.via_method.outer.outerList():
                 _outer = outer()
                 print(_outer)
                 _outer.execute_with_validation({})

@@ -19,7 +19,7 @@ class Implementation(Act):
     async def implementation(self, i):
         dump = ArgumentsDump()
         if i.get("executable") != None:
-            dump.executable = i.get("executable").full_name()
+            dump.executable = i.get("executable").getName()
 
         dump.data = dump_json(i.get("data"))
         dump.save()

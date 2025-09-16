@@ -15,11 +15,11 @@ class Implementation(FileImplementation):
         return [FileImplementation]
 
     @classmethod
-    def outer_list(cls):
+    def outerList(cls):
         return [Image, ImageThumbnail]
 
     @classmethod
-    def define_meta(cls):
+    def defineMeta(cls):
         return {
             "name": cls.key("image.name"),
         }

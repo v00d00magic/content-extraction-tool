@@ -11,7 +11,7 @@ class Documentable:
         return super().__init_subclass__(**kwargs)
 
     @classmethod
-    def define_meta(cls):
+    def defineMeta(cls):
         return {
             "definition": {
                 "en_US": "No description"
@@ -27,28 +27,32 @@ class Documentable:
         cls.documentation.loadKeys(keys)
 
     @classmethod
-    def describe(cls):
+    def getStructure(cls):
         module_name = cls.__module__.split('.')[2:]
-
-        ts = {
-            'type': cls.self_name,
-            'category': module_name[0],
-            'class': cls.full_name(),
-            'name': module_name[-1],
+        payload = {
+            'class': {
+                'type': cls.self_name,
+                'name': cls.getName(),
+                'short': module_name[-1],
+                'category': module_name[0]
+            },
             'docs': cls.docs,
+            'submodules': [],
             'args': [],
         }
 
-        _args = cls.declare_recursive()
-        for _name, _item in _args.items():
-            _p = _args.get(_name).describe()
+        for name, item in cls.declareRecursive().items():
+            _arg = item.getStructure()
+            _arg["name"] = name
 
-            _p['name'] = _name
-            ts['args'].append(_p)
+            payload.get("args").append(_arg)
+
+        for item in cls.get_submodules_by_type(None):
+            payload.get("submodules").append(item.getStructure())
 
         if getattr(cls, "PreExecute", None) != None:
             pre_exec = cls.PreExecute
 
-            ts["confirmation"] = pre_exec.args_list
+            payload["confirmation"] = pre_exec.args_list
 
-        return ts
+        return payload

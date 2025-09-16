@@ -15,7 +15,7 @@ class Implementation(Video.AbstractConfirmation):
     async def implementation(self, i = {}):
         from utils.Media.YTDlpWrapper import YTDlpWrapper
 
-        outer = self.outer.declare_recursive()
+        outer = self.outer.declareRecursive()
         with YTDlpWrapper({}).ydl as ydl:
             urls = i.get("url")
             for url in urls:

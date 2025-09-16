@@ -1,13 +1,13 @@
-from app.App import logger
-
 class Sectionable():
     section_name = "Executables"
 
-    def log(self, message, kind = "message"):
-        return logger.log(message + f" [{self.index}]", section=self.section_name, kind=kind, id=self.index)
+    def log(self, *args, **kwargs):
+        kwargs["section"] = self.section_name
 
-    def log_error(self, message):
-        return self.log(message, kind=logger.KIND_ERROR)
+        return self.call.log(*args, **kwargs)
+
+    def log_error(self, *args, **kwargs):
+        return self.log(*args, **kwargs)
 
     def log_success(self, message):
-        return self.log(message, kind=logger.KIND_SUCCESS)
+        return self.log(message, kind="success")

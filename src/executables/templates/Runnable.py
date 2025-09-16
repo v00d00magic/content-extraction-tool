@@ -2,12 +2,16 @@ from utils.ClassProperty import classproperty
 from importlib.metadata import distributions
 
 class Runnable:
-    base_categories = ["template", "base"]
-    available = ['web', 'cli']
-    _default_sub = True
+    @classmethod
+    def doDefaultAppending(cls):
+        return True
 
-    @classproperty
-    def required_modules(cls):
+    @classmethod
+    def getAvailableAt(cls):
+        return ['web', 'cli']
+
+    @classmethod
+    def getRequiredModules(cls):
         return []
 
     # Comparisons
@@ -35,11 +39,11 @@ class Runnable:
         all_installed = {dist.metadata["Name"].lower() for dist in distributions()}
         satisf_libs = []
 
-        for required_module in cls.required_modules:
+        for required_module in cls.getRequiredModules():
             if required_module in all_installed:
                 satisf_libs.append(required_module)
 
-        return len(satisf_libs) == len(cls.required_modules)
+        return len(satisf_libs) == len(cls.getRequiredModules())
 
     @classproperty
     def main_module(cls):
@@ -51,7 +55,7 @@ class Runnable:
                 return item.outer
 
     @classmethod
-    def full_name(cls):
+    def getName(cls):
         _parts = cls.__module__.split('.')
         if _parts[-1] == _parts[-2]:
             return ".".join(_parts[2:-1])
