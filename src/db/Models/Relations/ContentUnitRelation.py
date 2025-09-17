@@ -1,6 +1,7 @@
 from peewee import BigIntegerField, CharField, AutoField, Model, BooleanField
+from db.Models.BaseModel import BaseModel
 
-class ContentUnitRelation(Model):
+class ContentUnitRelation(BaseModel):
     table_name = 'content_relations'
 
     parent = CharField(max_length=100, null=True)

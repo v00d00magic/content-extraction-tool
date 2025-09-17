@@ -12,7 +12,6 @@ Todo:
 - [x] Move `response` to class
 - [x] Store executable threads
 - [ ] Recursion protection
-- [ ] Temp DB and storage
 
 #### Outer
 
@@ -20,7 +19,8 @@ Todo:
 
 #### Models
 
-- [ ] Db connection config should be dict
+- [x] Db connection config should be dict
+- [ ] Temp DB and storage
 
 #### Representations
 

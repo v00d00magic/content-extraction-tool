@@ -42,7 +42,7 @@ def override_db(classes = [], db = None):
     '''
     Overrides db for a time
     '''
-    
+
     db.bind(classes)
     old_db = None
     for __class in classes:

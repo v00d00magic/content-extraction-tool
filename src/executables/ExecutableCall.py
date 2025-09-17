@@ -79,7 +79,7 @@ class ExecutableCall(Hookable):
             self.linking_queue = []
 
         for item in self.linking_queue:
-            if item.is_saved() == False:
+            if item.isSaved() == False:
                 item.save()
 
             link_manager = LinkManager(item)

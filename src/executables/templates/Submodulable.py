@@ -49,9 +49,8 @@ class Submodulable():
     def addSubmodule(cls, submodule):
         cls.submodules.append(submodule)
 
-    @classmethod
-    def setOuter(cls, outer):
-        cls.outer = outer
+    def setOuter(self, outer):
+        self.outer = outer
 
     @classmethod
     def _build_submodules(cls):

@@ -1,4 +1,4 @@
-from declarable.Arguments import Argument, StringArgument, IntArgument, BooleanArgument, LimitedArgument, CsvArgument
+from declarable.Arguments import Argument, StringArgument, IntArgument, BooleanArgument, ObjectArgument, LimitedArgument, CsvArgument
 from declarable.Documentation import documentation
 
 locale_keys = {
@@ -98,11 +98,17 @@ DefaultSettings = {
             "definition": documentation.get("storage.root_path.definition"),
         },
     }),
-    "db.content.connection": StringArgument({
-        "default": "sqlite:///?cwd?/storage/dbs/content.db"
+    "db.content.connection": ObjectArgument({
+        "default": {
+            "protocol": "sqlite",
+            "path": "?cwd?/storage/dbs/content.db"
+        }
     }),
-    "db.instance.connection": StringArgument({
-        "default": "sqlite:///?cwd?/storage/dbs/instance.db"
+    "db.instance.connection": ObjectArgument({
+        "default": {
+            "protocol": "sqlite",
+            "path": "?cwd?/storage/dbs/instance.db"
+        }
     }),
     "net.max_speed": IntArgument({
         "default": 2000, # kbs

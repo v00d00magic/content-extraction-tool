@@ -1,8 +1,9 @@
-from peewee import SmallIntegerField, TextField, AutoField, TimestampField, Model
+from peewee import SmallIntegerField, TextField, AutoField, TimestampField
+from db.Models.BaseModel import BaseModel
 from utils.MainUtils import parse_json, dump_json
 import time
 
-class ServiceInstance(Model):
+class ServiceInstance(BaseModel):
     table_name = 'services'
     self_name = 'service'
 

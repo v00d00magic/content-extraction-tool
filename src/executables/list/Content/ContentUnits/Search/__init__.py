@@ -95,7 +95,7 @@ class Implementation(Act):
 
             for item in search_in:
                 if item:
-                    _linked = item.linked_list
+                    _linked = item.getLinkedList()
 
                     for _link in _linked:
                         if _link.short_name == "cu":

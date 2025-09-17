@@ -1,12 +1,10 @@
-from db.Models.Content.Mixin.ThumbnailMixin import ThumbnailMixin
-from peewee import TextField, BooleanField, FloatField, CharField
-from db.Models.Content.ContentModel import BaseModel
+from db.Models.Content.ContentModel import ContentModel
 from db.Models.Content.StorageUnit import StorageUnit
+from peewee import TextField, BooleanField, FloatField, CharField
 from utils.MainUtils import timestamp_or_float, now_timestamp, parse_json
-from functools import cached_property
-from app.App import logger
+from app.App import logger, db_connection
 
-class ContentUnit(BaseModel, ThumbnailMixin):
+class ContentUnit(ContentModel):
     # Display
     display_name = TextField(default='N/A')
     description = TextField(index=True, null=True)
@@ -54,6 +52,8 @@ class ContentUnit(BaseModel, ThumbnailMixin):
 
             @classmethod
             def getData(cls):
+                logger.log(f"getting {cls.__name__} property",section=["Saveable", "Container"])
+
                 if cls.get_cached() != None:
                     return cls.get_cached()
 
@@ -67,6 +67,8 @@ class ContentUnit(BaseModel, ThumbnailMixin):
             def update(cls, new_data):
                 _data = cls.getData()
                 _data.update(new_data)
+
+                logger.log(f"Updated container {cls.__name__}",section=["Saveable", "Container"])
 
                 cls.set_attr(_data)
 
@@ -130,7 +132,7 @@ class ContentUnit(BaseModel, ThumbnailMixin):
         self.via_method = None
         self.common_link = None
 
-        if self.is_saved() == False:
+        if self.isSaved() == False:
             _now = now_timestamp()
             if self.common_link_id != None:
                 self.common_link = StorageUnit.ids(int(self.common_link_id))
@@ -138,13 +140,10 @@ class ContentUnit(BaseModel, ThumbnailMixin):
             self.created_at = float(_now)
             self.declared_created_at = float(_now)
 
-    def markCommon(self, common_link: StorageUnit):
-        self.common_link = common_link
-        self.common_link_id = common_link.uuid
-
-    @cached_property
-    def linked_list(self):
+    def getLinkedList(self):
         from db.LinkManager import LinkManager
+
+        logger.log(f"Getting linked from {self.uuid}",section=["Saveable"])
 
         link_manager = LinkManager(self)
 
@@ -172,12 +171,24 @@ class ContentUnit(BaseModel, ThumbnailMixin):
 
         if return_linked == True:
             payload["linked"] = []
-            for linked_item in self.linked_list:
+            for linked_item in self.getLinkedList():
                 payload.get("linked").append(linked_item.getStructure())
 
         return payload
 
-    # it will be saved later
+    def markCommon(self, common_link: StorageUnit):
+        self.common_link = common_link
+        self.common_link_id = common_link.uuid
+
+    def signRepresentation(self, method):
+        self.via_method = method
+        self.SavedVia.update({
+            "method": method.getName(),
+            "representation": method.outer.getName()
+        })
+
+    # Links
+
     def link(self, item, is_common: bool = False):
         if is_common == True:
             self.markCommon(item)
@@ -193,39 +204,37 @@ class ContentUnit(BaseModel, ThumbnailMixin):
         self.link_queue = []
 
     def isQueued(self):
-        return self.is_saved()
+        return self.isSaved()
 
-    def signRepresentation(self, method):
-        self.via_method = method
-        self.SavedVia.update({
-            "method": method.getName(),
-            "representation": method.outer.getName()
-        })
+    # Hooks
 
     async def beforeSave(self):
         if self.via_method:
             for outer in self.via_method.outer.outerList():
                 _outer = outer(self.via_method.outer)
 
-                logger.log(f"beforesave: run {_outer.getName()}",section="Saveable")
+                logger.log(f"Beforesave: run {_outer.getName()}",section="Saveable")
 
                 await _outer.implementation({
                     "item": self
                 })
 
     def postSave(self):
-        logger.log(f"Saved ContentUnit, saved id: {self.uuid} to db common, trying to link {len(self.link_queue)} items",section="Saveable")
+        logger.log(f"Saved ContentUnit, saved id: {self.uuid} to db temp, trying to link {len(self.link_queue)} items",section="Saveable")
 
         if len(self.link_queue) > 0:
             self.writeLinkQueue()
 
-    # async (((((((
-    async def flush(self):
-        await self.beforeSave()
-        self.save()
-
+    # saving to temporary db
     def save(self, **kwargs):
         kwargs["force_insert"] = True
 
+        to_db = kwargs.get("db")
+        if to_db == None:
+            to_db = db_connection.temp_db
+
+        self.setDb(to_db)
+
         super().save(**kwargs)
         self.postSave()
+

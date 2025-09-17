@@ -1,8 +1,8 @@
-from peewee import Model
+from db.Models.BaseModel import BaseModel
 from peewee import AutoField, TextField
 from utils.MainUtils import parse_json
 
-class ArgumentsDump(Model):
+class ArgumentsDump(BaseModel):
     table_name = 'dumps'
     self_name = 'argument_dump'
 

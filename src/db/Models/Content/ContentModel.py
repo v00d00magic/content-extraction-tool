@@ -1,9 +1,10 @@
-from peewee import Model, IntegerField
+from peewee import IntegerField
+from db.Models.BaseModel import BaseModel
 from snowflake import SnowflakeGenerator
 from app.App import logger
 from playhouse.sqlite_ext import fn
 
-class BaseModel(Model):
+class ContentModel(BaseModel):
     uuid = IntegerField(unique=True, primary_key=True)
 
     @classmethod
@@ -28,7 +29,7 @@ class BaseModel(Model):
     def id(self) -> str:
         return self.uuid
 
-    def is_saved(self) -> bool:
+    def isSaved(self) -> bool:
         return self.uuid != None
 
     def save(self, **kwargs):
@@ -43,3 +44,13 @@ class BaseModel(Model):
     @classmethod
     def json_search(cls, query, property, key, value):
         return query.where(fn.json_extract(property, key) == value)
+
+    async def beforeSave(self):
+        pass
+
+    async def flush(self):
+        await self.beforeSave()
+        self.save()
+
+    def moveToDb(self):
+        pass

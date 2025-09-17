@@ -4,10 +4,10 @@ from pathlib import Path
 from peewee import TextField, BigIntegerField, IntegerField, BooleanField
 from utils.Files.DirItem import DirItem
 from utils.MainUtils import dump_json, parse_json, get_random_hash
-from db.Models.Content.ContentModel import BaseModel
+from db.Models.Content.ContentModel import ContentModel
 import shutil, mimetypes
 
-class StorageUnit(BaseModel):
+class StorageUnit(ContentModel):
     table_name = 'storage_units'
     self_name = 'StorageUnit'
     short_name = 'su'
@@ -135,7 +135,7 @@ class StorageUnit(BaseModel):
         self.Meta = Meta()
         self.Path = Path()
 
-        if self.is_saved() == False:
+        if self.isSaved() == False:
             self._temp_dir = self.Temp.allocate()
 
     def getCurrentDir(self):
