@@ -47,7 +47,7 @@ class Documentable:
 
             payload.get("args").append(_arg)
 
-        for item in cls.get_submodules_by_type(None):
+        for item in cls.getSubmodulesByType(None):
             payload.get("submodules").append(item.getStructure())
 
         if getattr(cls, "PreExecute", None) != None:

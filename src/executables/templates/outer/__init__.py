@@ -3,8 +3,9 @@ from executables.templates.Executable import Executable
 from app.App import logger
 
 class Outer(Executable):
-    def __init__(self, outer):
-        self.outer = outer
+    # must not return anything
+    def __init__(self, original):
+        self.original = original
 
     @classmethod
     def ThumbnailUnit(cls):

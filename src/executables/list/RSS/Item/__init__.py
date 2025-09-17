@@ -4,5 +4,5 @@ class Implementation(Json):
     section = "RSS"
 
     @classmethod
-    def inherit_from(cls):
+    def getInheritFrom(cls):
         return [Json]

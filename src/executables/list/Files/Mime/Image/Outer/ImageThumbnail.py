@@ -6,6 +6,9 @@ from pathlib import Path
 import os
 
 class Implementation(Outer):
+    async def implementation(self, i = {}):
+        pass
+
     def create(self, item: BaseModel, params)->list:
         su = None
         if item.short_name == "su":

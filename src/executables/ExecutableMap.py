@@ -147,7 +147,7 @@ class ExecutableMap:
         else:
             logger.log(f"Injected module {module.getName()} to {main_module.getName()}", section="ExecutableMap!Initialization")
 
-            self.items[main_module.getName()].add_submodule(module) # registering to main module
+            self.items[main_module.getName()].addSubmodule(module) # registering to main module
             self.items[module.getName()] = module
 
             return ExecutableMap.RESULT_SUBMODULE

@@ -1,5 +1,5 @@
 from db.Models.Content.Mixin.ThumbnailMixin import ThumbnailMixin
-from peewee import TextField, BooleanField, FloatField
+from peewee import TextField, BooleanField, FloatField, CharField
 from db.Models.Content.ContentModel import BaseModel
 from db.Models.Content.StorageUnit import StorageUnit
 from utils.MainUtils import timestamp_or_float, now_timestamp, parse_json
@@ -17,9 +17,6 @@ class ContentUnit(BaseModel, ThumbnailMixin):
     outer = TextField(null=True,default=None)
     saved = TextField(null=True,default=None)
 
-    # Links
-    # storage_unit = CharField(null=True,max_length=100)
-
     # Dates
     declared_created_at = FloatField()
     created_at = FloatField()
@@ -29,6 +26,9 @@ class ContentUnit(BaseModel, ThumbnailMixin):
     is_collection = BooleanField(index=True,default=0)
     is_unlisted = BooleanField(index=True,default=0)
     # is_deleted = BooleanField(index=True,default=0)
+
+    # Links
+    common_link_id = CharField(null=True,max_length=100)
 
     table_name = 'content_units'
     self_name = 'ContentUnit'
@@ -132,24 +132,23 @@ class ContentUnit(BaseModel, ThumbnailMixin):
 
         if self.is_saved() == False:
             _now = now_timestamp()
+            if self.common_link_id != None:
+                self.common_link = StorageUnit.ids(int(self.common_link_id))
 
             self.created_at = float(_now)
             self.declared_created_at = float(_now)
 
     def markCommon(self, common_link: StorageUnit):
         self.common_link = common_link
+        self.common_link_id = common_link.uuid
 
     @cached_property
     def linked_list(self):
         from db.LinkManager import LinkManager
 
         link_manager = LinkManager(self)
-        list = link_manager.linksList()
 
-        return list
-
-    def is_linked_queue(self):
-        return self.is_saved()
+        return link_manager.linksList()
 
     def getStructure(self, return_content = True, return_linked = True):
         payload = {}
@@ -193,6 +192,9 @@ class ContentUnit(BaseModel, ThumbnailMixin):
 
         self.link_queue = []
 
+    def isQueued(self):
+        return self.is_saved()
+
     def signRepresentation(self, method):
         self.via_method = method
         self.SavedVia.update({
@@ -200,23 +202,30 @@ class ContentUnit(BaseModel, ThumbnailMixin):
             "representation": method.outer.getName()
         })
 
-    def beforeSave(self):
+    async def beforeSave(self):
         if self.via_method:
-            print(self.via_method.outer)
             for outer in self.via_method.outer.outerList():
-                _outer = outer()
-                print(_outer)
-                _outer.execute_with_validation({})
+                _outer = outer(self.via_method.outer)
+
+                logger.log(f"beforesave: run {_outer.getName()}",section="Saveable")
+
+                await _outer.implementation({
+                    "item": self
+                })
 
     def postSave(self):
-        logger.log(f"Saved ContentUnit, saved id: {self.uuid}, trying to link {len(self.link_queue)} items",section="Saveable")
+        logger.log(f"Saved ContentUnit, saved id: {self.uuid} to db common, trying to link {len(self.link_queue)} items",section="Saveable")
 
         if len(self.link_queue) > 0:
             self.writeLinkQueue()
 
+    # async (((((((
+    async def flush(self):
+        await self.beforeSave()
+        self.save()
+
     def save(self, **kwargs):
         kwargs["force_insert"] = True
 
-        self.beforeSave()
         super().save(**kwargs)
         self.postSave()

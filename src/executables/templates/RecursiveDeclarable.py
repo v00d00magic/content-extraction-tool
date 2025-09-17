@@ -34,17 +34,18 @@ class RecursiveDeclarable:
 
         return params
 
-    def comparerShortcut(self, declare_with, args):
+    @classmethod
+    def comparerShortcut(cls, declare_with, args):
         if declare_with == None:
-            declare_with = self.__class__.declareRecursive()
+            declare_with = cls.declareRecursive()
 
-        self.executable_configuration.check()
+        cls.executable_configuration.check()
 
         return ArgsComparer(compare=declare_with, 
                             args=args,
                             exc='assert', 
-                            missing_args_inclusion=self.executable_configuration.is_free_args(), 
-                            default_sub=self.doDefaultAppending())
+                            missing_args_inclusion=cls.executable_configuration.is_free_args(), 
+                            default_sub=cls.doDefaultAppending())
 
     @classmethod
     def declareRecursive(cls):

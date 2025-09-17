@@ -11,7 +11,7 @@ locale_keys = {
 
 class Implementation(FileImplementation):
     @classmethod
-    def inherit_from(cls):
+    def getInheritFrom(cls):
         return [FileImplementation]
 
     @classmethod

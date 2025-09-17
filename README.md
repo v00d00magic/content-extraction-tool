@@ -12,6 +12,7 @@ Todo:
 - [x] Move `response` to class
 - [x] Store executable threads
 - [ ] Recursion protection
+- [ ] Temp DB and storage
 
 #### Outer
 

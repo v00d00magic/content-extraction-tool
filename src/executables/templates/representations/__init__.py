@@ -81,6 +81,10 @@ class Representation(Executable, metaclass=RepresentationMeta):
         assert strategy != None, "cant find correct extractor"
 
         strategy_class = strategy()
+        # на самом деле это ненастоящие модули (они от другого класса) поэтому приходится сделать так.
+        # FIXME
+
+        strategy_class.setOuter(self.__class__)
         compares = strategy_class.comparerShortcut(None, i)
 
         if getattr(self, "beforeExecute", None) != None:

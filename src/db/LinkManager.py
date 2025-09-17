@@ -112,7 +112,7 @@ class LinkManager:
         return _l.items_ids(_l.items(by_class, revision))
 
     def linksList(self, by_class = None, revision: bool = False):
-        if self.parent.is_linked_queue() == False:
+        if self.parent.isQueued() == False:
             return self.parent.link_queue
 
         _l = LinkItems(self.parent)

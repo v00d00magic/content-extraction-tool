@@ -2,7 +2,7 @@ from utils.ClassProperty import classproperty
 
 class Submodulable():
     @classmethod
-    def inherit_from(cls):
+    def getInheritFrom(cls):
         return ["self"]
 
     # submodules = []
@@ -14,25 +14,25 @@ class Submodulable():
 
     @classproperty
     def receivations(cls):
-        return cls.get_submodules_by_type("Receivation")
+        return cls.getSubmodulesByType("Receivation")
 
     @classproperty
     def external_extractors(cls):
-        return cls.get_submodules_by_type("ExternalExtractor")
+        return cls.getSubmodulesByType("ExternalExtractor")
 
     @classproperty
     def acts(cls):
-        return cls.get_submodules_by_type("Act")
+        return cls.getSubmodulesByType("Act")
 
     @classproperty
     def confirmations(cls):
-        return cls.get_submodules_by_type("Confirmation")
+        return cls.getSubmodulesByType("Confirmation")
 
     @classmethod
-    def get_submodules_by_type(cls, type=None):
+    def getSubmodulesByType(cls, type=None):
         _items = []
 
-        for inherit_item in cls.inherit_from():
+        for inherit_item in cls.getInheritFrom():
             if inherit_item == "self":
                 inherit_item = cls
 
@@ -46,8 +46,12 @@ class Submodulable():
         return _items
 
     @classmethod
-    def add_submodule(cls, submodule):
+    def addSubmodule(cls, submodule):
         cls.submodules.append(submodule)
+
+    @classmethod
+    def setOuter(cls, outer):
+        cls.outer = outer
 
     @classmethod
     def _build_submodules(cls):
