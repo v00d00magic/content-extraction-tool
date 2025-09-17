@@ -1,8 +1,8 @@
-from .. import Implementation as Text
+from .. import Implementation as TextImplementation
 from declarable.Arguments import StringArgument, CsvArgument
-from utils.MainUtils import proc_strtr
+from utils.Data.Text import Text
 
-class Implementation(Text.AbstractReceivation):
+class Implementation(TextImplementation.AbstractReceivation):
     @classmethod
     def declare(cls):
         params = {}
@@ -24,7 +24,7 @@ class Implementation(Text.AbstractReceivation):
 
         for text in texts:
             out = self.ContentUnit()
-            out.display_name = proc_strtr(text, 100)
+            out.display_name = Text(text).cut(100)
             out.content = {
                 'text': text
             }

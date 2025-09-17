@@ -1,5 +1,6 @@
 from declarable.Arguments.Argument import Argument
-from utils.MainUtils import is_valid_json, list_conversation
+from utils.Data.JSON import JSON
+from utils.Data.List import List
 import json
 
 class CsvArgument(Argument):
@@ -11,7 +12,7 @@ class CsvArgument(Argument):
             intrerm_val = self.passed_value
 
         if type(self.passed_value) == str:
-            is_json = is_valid_json(self.passed_value)
+            is_json = JSON.isValid(self.passed_value)
 
             if is_json == False:
                 intrerm_val = self.passed_value.split(",")
@@ -30,7 +31,7 @@ class CsvArgument(Argument):
             else:
                 end_vals.append(val)
 
-        return list_conversation(end_vals)
+        return List(end_vals).convert()
 
     def getStructure(self):
         orig_out = super().getStructure()

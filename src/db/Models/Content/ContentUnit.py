@@ -1,7 +1,8 @@
 from db.Models.Content.ContentModel import ContentModel
 from db.Models.Content.StorageUnit import StorageUnit
 from peewee import TextField, BooleanField, FloatField, CharField
-from utils.MainUtils import timestamp_or_float, now_timestamp, parse_json
+from utils.Data.Date import Date
+from utils.Data.JSON import JSON
 from app.App import logger, db_connection
 
 class ContentUnit(ContentModel):
@@ -60,7 +61,7 @@ class ContentUnit(ContentModel):
                 if cls.get_attr() == None:
                     return {}
 
-                cls._cached = parse_json(cls.get_attr())
+                cls._cached = JSON(cls.get_attr()).parse()
                 return cls._cached
 
             @classmethod
@@ -133,7 +134,7 @@ class ContentUnit(ContentModel):
         self.common_link = None
 
         if self.isSaved() == False:
-            _now = now_timestamp()
+            _now = Date().timestamp_or_float()
             if self.common_link_id != None:
                 self.common_link = StorageUnit.ids(int(self.common_link_id))
 
@@ -164,9 +165,9 @@ class ContentUnit(ContentModel):
             payload['content'] = self.JSONContent.getDataRecursively(recursive=True)
 
         payload["dates"] = {
-            "created": timestamp_or_float(self.created_at),
-            "edited": timestamp_or_float(self.edited_at),
-            "declared_created": timestamp_or_float(self.declared_created_at)
+            "created": Date(self.created_at).timestamp_or_float(),
+            "edited": Date(self.edited_at).timestamp_or_float(),
+            "declared_created": Date(self.declared_created_at).timestamp_or_float()
         }
 
         if return_linked == True:

@@ -1,6 +1,5 @@
 from declarable.Arguments import CsvArgument, StringArgument
 from .. import Implementation as File
-from utils.WebUtils import is_generated_ext
 from utils.Web.URL import URL
 from pathlib import Path
 

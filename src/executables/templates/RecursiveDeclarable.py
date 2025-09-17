@@ -1,6 +1,7 @@
 from declarable.ExecutableConfig import ExecutableConfig
 from declarable.ArgsComparer import ArgsComparer
 from utils.ClassProperty import classproperty
+from app.App import logger
 
 class RecursiveDeclarable:
     consts = {}
@@ -36,6 +37,7 @@ class RecursiveDeclarable:
 
     @classmethod
     def comparerShortcut(cls, declare_with, args):
+        logger.log(f"Called ArgsComparer to {cls.getName()}", section=logger.SECTION_EXECUTABLES)
         if declare_with == None:
             declare_with = cls.declareRecursive()
 
@@ -50,24 +52,27 @@ class RecursiveDeclarable:
     @classmethod
     def declareRecursive(cls):
         '''
-        Brings all params from parent classes to one dict
+        Brings all params from parent classes to single dict
         '''
         ignore_list = cls.executable_configuration.ignores() # params that will be ignored from current level
         output_params = {}
 
-        for __sub_class in cls.__mro__:
-            if hasattr(__sub_class, "define") == True:
-                _def = __sub_class.define()
+        logger.log("Called recursive declaration...", section=[logger.SECTION_EXECUTABLES, "Declaration"])
+
+        for _sub_class in cls.__mro__:
+            if hasattr(_sub_class, "define") == True:
+                _def = _sub_class.define()
 
                 if _def != None:
                     cls.consts.update(_def)
 
             # does not have declare function
-            if hasattr(__sub_class, "declare") == False:
+            if hasattr(_sub_class, "declare") == False:
                 continue
 
+            count = 0
             intermediate_dict = {}
-            current_level_declaration = __sub_class.declare()
+            current_level_declaration = _sub_class.declare()
             if current_level_declaration == None:
                 continue
 
@@ -75,7 +80,10 @@ class RecursiveDeclarable:
                 if name in ignore_list:
                     continue
 
+                count += 1
                 intermediate_dict[name] = current_level_declaration.get(name)
+
+            logger.log(f"Called declare at {_sub_class.__name__} with {count} arguments", section=[logger.SECTION_EXECUTABLES, "Declaration"])
 
             output_params.update(intermediate_dict)
 

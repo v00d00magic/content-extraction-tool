@@ -1,4 +1,3 @@
-from resources.Consts import consts
 from pathlib import Path
 import importlib, pkgutil, os
 import sys
@@ -10,10 +9,10 @@ def _load_classes():
         'declarable.Arguments', 
         type(sys)('declarable.Arguments')
     )
-    arguments_dir = consts.get('cwd').joinpath("declarable").joinpath("Arguments")
+    # app.cwd should be
+    arguments_dir = Path(os.getcwd()).joinpath("declarable").joinpath("Arguments")
 
     for argument_item in arguments_dir.rglob('*Argument.py'):
-        # no ideas for variable names
         class_path = argument_item.relative_to(arguments_dir)
         class_path = class_path.with_suffix("")
         class_name = ".".join(class_path.parts)

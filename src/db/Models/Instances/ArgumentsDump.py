@@ -1,6 +1,6 @@
 from db.Models.BaseModel import BaseModel
 from peewee import AutoField, TextField
-from utils.MainUtils import parse_json
+from utils.Data.JSON import JSON
 
 class ArgumentsDump(BaseModel):
     table_name = 'dumps'
@@ -12,7 +12,7 @@ class ArgumentsDump(BaseModel):
 
     @property
     def args(self):
-        return parse_json(self.data)
+        return JSON(self.data).parse()
 
     def getStructure(self):
         return {

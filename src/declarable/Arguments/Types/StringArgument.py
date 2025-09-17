@@ -1,5 +1,5 @@
 from declarable.Arguments.Argument import Argument
-from utils.MainUtils import proc_strtr
+from utils.Data.Text import Text
 
 class StringArgument(Argument):
     def get_maxlength(self):
@@ -12,6 +12,6 @@ class StringArgument(Argument):
                 return self.default()
 
         if self.get_maxlength() != None:
-            return proc_strtr(inp, int(self.configuration.get("maxlength")), multipoint=False)
+            return Text(inp).cut(int(self.configuration.get("maxlength")), multipoint=False)
         else:
             return inp

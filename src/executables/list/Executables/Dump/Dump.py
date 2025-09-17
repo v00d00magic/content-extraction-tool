@@ -1,7 +1,7 @@
 from executables.templates.acts import Act
 from declarable.Arguments import ExecutableArgument, ObjectArgument
 from db.Models.Instances.ArgumentsDump import ArgumentsDump
-from utils.MainUtils import dump_json
+from utils.Data.JSON import JSON
 
 class Implementation(Act):
     @classmethod
@@ -21,7 +21,7 @@ class Implementation(Act):
         if i.get("executable") != None:
             dump.executable = i.get("executable").getName()
 
-        dump.data = dump_json(i.get("data"))
+        dump.data = JSON(i.get("data")).dump()
         dump.save()
 
         return dump.getStructure()

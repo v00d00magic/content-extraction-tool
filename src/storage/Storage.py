@@ -1,4 +1,4 @@
-from utils.MainUtils import replace_cwd, replace_src
+from utils.Data.Text import Text
 from storage.StorageItem import StorageItem
 from storage.TempStorage import TempStorage
 
@@ -6,7 +6,7 @@ class Storage:
     __items = {}
 
     def __init__(self, config):
-        self.storage_dir = replace_src(replace_cwd(config.get("storage.root_path")))
+        self.storage_dir = Text(config.get("storage.root_path")).cwdReplacement().srcReplacement().get()
 
         temp_storage = TempStorage(self.storage_dir, "temp")
         self.__items["tmp"] = temp_storage

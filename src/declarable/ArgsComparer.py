@@ -1,4 +1,4 @@
-from declarable.ArgsHashTable import ArgsHashTable
+from declarable.ArgsDict import ArgsDict
 
 class ArgsComparer():
     def __init__(self, 
@@ -31,7 +31,7 @@ class ArgsComparer():
         if self.same_dict_mode == True:
             return self.args
 
-        table = ArgsHashTable()
+        table = ArgsDict()
 
         # Do the compare thing
 

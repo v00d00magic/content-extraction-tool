@@ -1,4 +1,3 @@
-from resources.Consts import consts
 from app.App import config, logger
 from aiohttp import web
 import os
@@ -7,7 +6,7 @@ import threading
 
 from executables.list.Executables.Execute import Implementation as Execute
 from db.Models.Content.StorageUnit import StorageUnit
-from utils.MainUtils import dump_json, parse_json
+from utils.Data.JSON import JSON
 from pathlib import Path
 from app.App import app as mainApp
 
@@ -59,7 +58,7 @@ async def index(request):
 async def act(request):
     act = Execute()
 
-    return web.json_response(text=dump_json({
+    return web.json_response(text=JSON.dump({
         "payload": await act.execute_with_validation(await request.post())
     }))
 
@@ -123,7 +122,7 @@ async def websocket_connection(request):
 
     async def __logger_hook(**kwargs):
         try:
-            await ws.send_str(dump_json({
+            await ws.send_str(JSON.dump({
                 "type": "log",
                 "event_index": 0,
                 "payload": {"result": kwargs.get("message").data}
@@ -133,7 +132,7 @@ async def websocket_connection(request):
 
     async def __progress_hook_outer(message):
         try:
-            await ws.send_str(dump_json({
+            await ws.send_str(JSON.dump({
                 "type": "progress",
                 "event_index": message.index,
                 "payload": {"message": message.message.out(), "percentage": message.percentage}
@@ -160,7 +159,7 @@ async def websocket_connection(request):
                 "message": str(e),
             }
 
-        await ws.send_str(dump_json({
+        await ws.send_str(JSON.dump({
             "type": data.get("type"),
             "event_index": data.get("event_index"),
             "payload": payload
@@ -171,7 +170,7 @@ async def websocket_connection(request):
             if msg.type != web.WSMsgType.TEXT:
                 continue
 
-            data = parse_json(msg.data)
+            data = JSON.parse(msg.data)
             match (data.get("type")):
                 case "act":
                     asyncio.get_event_loop().run_in_executor(

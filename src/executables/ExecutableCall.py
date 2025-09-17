@@ -2,7 +2,7 @@ from db.Models.Instances.ArgumentsDump import ArgumentsDump
 from executables.responses.Response import Response
 from utils.Hookable import Hookable
 from db.LinkManager import LinkManager
-from utils.MainUtils import dump_json
+from utils.Data.JSON import JSON
 from app.App import app, logger
 import asyncio
 
@@ -95,7 +95,7 @@ class ExecutableCall(Hookable):
         kwargs["id"] = self.index
         return logger.log(*args, **kwargs)
 
-    # Dump
+    # Others
 
     def dump(self):
         dump = ArgumentsDump()
@@ -105,7 +105,7 @@ class ExecutableCall(Hookable):
         for key, val in self.args.items():
             _data[key] = str(val)
 
-        dump.data = dump_json(_data)
+        dump.data = JSON(_data).dump()
         dump.save()
 
         self.log(f"Dumped {self.executable.getName()}, id {dump.id}", section=logger.SECTION_EXECUTABLES)

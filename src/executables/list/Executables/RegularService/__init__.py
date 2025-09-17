@@ -2,8 +2,10 @@ from executables.templates.services import Service
 from executables.templates.acts import Act
 from executables.templates.extractors import Extractor
 from app.App import logger
-from resources.Exceptions import FatalError
 from declarable.Arguments import LimitedArgument, StringArgument, ObjectArgument
+
+class FatalError(Exception):
+    pass
 
 class Implementation(Service):
     c_cached_executable = None

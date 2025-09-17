@@ -1,6 +1,6 @@
 from .. import Implementation as Json
 from declarable.Arguments import ObjectArgument
-from utils.MainUtils import list_conversation
+from utils.Data.List import List
 
 class Implementation(Json.AbstractReceivation):
     @classmethod
@@ -13,7 +13,7 @@ class Implementation(Json.AbstractReceivation):
         return params
 
     async def implementation(self, i = {}):
-        json_object = list_conversation(i.get('object'))
+        json_object = List(i.get('object')).convert()
         outs = []
         
         for i in json_object:

@@ -1,7 +1,6 @@
 from declarable.Arguments import StringArgument
-from utils.MainUtils import parse_json
+from utils.Data.JSON import JSON
 from executables.templates.acts import Act
-from resources.Consts import consts
 from app.App import logger, config
 
 class Implementation(Act):
@@ -39,7 +38,7 @@ class Implementation(Act):
 
         content = log_file.open().read()
         content_size = len(content)
-        content_json = parse_json(content)
+        content_json = JSON(content).parse()
 
         return {
             "size": content_size,

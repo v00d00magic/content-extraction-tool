@@ -2,6 +2,22 @@ from declarable.Arguments import StringArgument
 from .. import Implementation as RSS
 from executables.list.RSS.Item import Implementation as RSSItem
 from app.App import logger
+import datetime
+
+def rss_date_parse(date_string: str):
+    formats = [
+        "%Y-%m-%dT%H:%M:%SZ",
+        "%a, %d %b %Y %H:%M:%S %z",
+        "%a, %d %b %Y %H:%M:%S GMT",
+    ]
+
+    for fmt in formats:
+        try:
+            return datetime.strptime(date_string, fmt)
+        except:
+            continue
+
+    return None
 
 class Implementation(RSS.AbstractReceivation):
     @classmethod
@@ -17,7 +33,6 @@ class Implementation(RSS.AbstractReceivation):
 
     async def implementation(self, i = {}):
         import aiohttp, xmltodict
-        from utils.MediaUtils import rss_date_parse
 
         url = i.get("url")
         response_xml = None

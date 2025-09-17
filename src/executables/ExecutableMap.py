@@ -1,13 +1,11 @@
 from pathlib import Path
-from resources.Consts import consts
-from app.App import logger
+from app.App import app, logger
 import importlib
 import time
 
 class ExecutableMap:
-    '''
-    Dictionary with every found executable or related things
-    '''
+    section_name = ["ExecutableMap", "Initialization"]
+
     items = {}
     js_modules = {}
 
@@ -18,7 +16,7 @@ class ExecutableMap:
         self.putItems()
 
     def putItems(self):
-        logger.log("Getting executables list...", section="ExecutableMap!Initialization")
+        logger.log("Getting executables list...", section=self.section_name)
 
         counters = {
             "total": 0,
@@ -26,7 +24,7 @@ class ExecutableMap:
             "submodules": 0,
             "errors": 0
         }
-        executables_dir = consts.get('cwd').joinpath("executables")
+        executables_dir = app.cwd.joinpath("executables")
 
         # for some reason it goes backwards LOOOL
         for item in self.scanDirectory(executables_dir.joinpath("list")): # iterating
@@ -43,7 +41,7 @@ class ExecutableMap:
                         module = self.doImport(parts)
                         end_time = time.time()
 
-                        logger.log(f"Imported module {module.getName()} in {round(end_time - start_time, 3)}s", section="ExecutableMap!Initialization")
+                        logger.log(f"Imported module {module.getName()} in {round(end_time - start_time, 3)}s", section=self.section_name)
 
                         _item = self.register(module)
 
@@ -54,12 +52,12 @@ class ExecutableMap:
                         self.js_modules[".".join(parts.get("parts"))] = parts.get("name")
 
             except AssertionError as e:
-                logger.log(f"AssertionError when importing {".".join(parts.get("parts"))}: {str(e) }, probaly not an executable", section="ExecutableMap!Initialization")
+                logger.log(f"AssertionError when importing {".".join(parts.get("parts"))}: {str(e) }, probaly not an executable", section=self.section_name)
             except Exception as e:
                 counters["errors"] += 1
-                logger.log(e, section="ExecutableMap!Initialization", prefix=f"Did not imported module: ")
+                logger.log(e, section=self.section_name, prefix=f"Did not imported module {".".join(parts.get("parts"))}: ")
 
-        logger.log(f"Found total {counters["total"]} scripts, {counters["success"]} successfully, {counters["submodules"]} submodules, {counters["errors"]} errors", section=["ExecutableMap", "Initialization"])
+        logger.log(f"Found total {counters["total"]} scripts, {counters["success"]} successfully, {counters["submodules"]} submodules, {counters["errors"]} errors", section=self.section_name)
 
     def scanDirectory(self, executables_dir):
         list = []
@@ -145,7 +143,7 @@ class ExecutableMap:
 
             return ExecutableMap.RESULT_MODULE
         else:
-            logger.log(f"Injected module {module.getName()} to {main_module.getName()}", section="ExecutableMap!Initialization")
+            logger.log(f"Injected module {module.getName()} to {main_module.getName()}", section=self.section_name)
 
             self.items[main_module.getName()].addSubmodule(module) # registering to main module
             self.items[module.getName()] = module

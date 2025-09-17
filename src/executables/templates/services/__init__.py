@@ -1,6 +1,8 @@
 from app.App import logger
-from resources.Exceptions import EndOfCycleException
 from executables.templates.Executable import Executable
+
+class EndOfCycleException(Exception):
+    pass
 
 class Service(Executable):
     self_name = "Service"

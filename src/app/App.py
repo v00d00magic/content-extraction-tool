@@ -3,7 +3,10 @@ from storage.Storage import Storage
 from utils.Hookable import Hookable
 from app.Config import Config
 from app.Logger import Logger
+
+from pathlib import Path
 import asyncio, sys
+import platform, os
 
 class App(Hookable):
     incremental_executable_index = 0
@@ -34,6 +37,15 @@ class App(Hookable):
 
         self.argv = self._parse_argv()
         self.loop = asyncio.get_event_loop()
+        self.set_consts()
+
+    def set_consts(self):
+        self.consts = {}
+        self.cwd = Path(os.getcwd())
+        self.consts["os.name"] = platform.system()
+        self.consts["pc.name"] = os.getenv("COMPUTERNAME", "NoName-PC")
+        self.consts["pc.user"] = os.getlogin()
+        self.consts["pc.fullname"] = self.consts["pc.name"] + ", " + self.consts["pc.user"]
 
     def setup(self):
         from executables.ExecutableMap import ExecutableMap
@@ -47,8 +59,8 @@ class App(Hookable):
 
 app = App()
 
-config = Config()
-env = Config(file_name="env.json",fallback=None)
+config = Config(app.cwd.parent)
+env = Config(app.cwd.parent, file_name="env.json",fallback=None)
 storage = Storage(config)
 logger = Logger(config, storage)
 

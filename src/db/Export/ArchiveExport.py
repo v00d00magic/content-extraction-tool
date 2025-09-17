@@ -1,4 +1,4 @@
-from utils.MainUtils import get_random_hash, override_db
+from utils.Data.Random import Random
 from db.Models.Content.ContentModel import BaseModel
 from db.Models.Content.ContentUnit import ContentUnit
 from db.Models.Relations.ContentUnitRelation import ContentUnitRelation
@@ -37,7 +37,7 @@ class ArchiveExport:
         _storage = storage.sub("tmp_exports")
         storage_path = _storage.path()
 
-        self.tmp_path = storage_path.joinpath(get_random_hash(32))
+        self.tmp_path = storage_path.joinpath(Random().random_hash(32))
         self.tmp_path.mkdir()
 
         self.content_path = self.tmp_path.joinpath("content")

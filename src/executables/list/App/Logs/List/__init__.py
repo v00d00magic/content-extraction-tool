@@ -1,5 +1,4 @@
 from executables.templates.acts import Act
-from resources.Consts import consts
 from app.App import logger
 from app.App import config
 

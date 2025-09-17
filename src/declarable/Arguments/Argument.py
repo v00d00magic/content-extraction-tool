@@ -1,11 +1,12 @@
-from resources.Exceptions import InvalidArgumentName
-from resources.Consts import consts
+class InvalidArgumentName(Exception):
+    pass
 
 class Argument:
+    forbidden = ["i", "name", "confirm"]
     cache_results = True
 
     def __init__(self, configuration):
-        if configuration.get('name') in consts.get('arguments.forbidden'):
+        if configuration.get('name') in self.forbidden:
             raise InvalidArgumentName(f"{configuration.get('name')} is invalid argument name")
 
         self.configuration = configuration

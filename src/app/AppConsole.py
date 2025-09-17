@@ -1,6 +1,6 @@
 from executables.ExecutableCall import ExecutableCall
 from executables.list.Executables.Execute import Implementation as Execute
-from utils.MainUtils import dump_json
+from utils.Data.JSON import JSON
 from app.App import app
 
 app.context = "cli"
@@ -17,4 +17,4 @@ async def call():
     output = await call.run_asyncely()
 
     if is_silent == False:
-        print(dump_json(output.display(), indent=4))
+        print(JSON(output.display()).dump(indent=4))

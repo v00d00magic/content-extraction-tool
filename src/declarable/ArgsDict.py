@@ -1,4 +1,4 @@
-class ArgsHashTable:
+class ArgsDict:
     def __init__(self):
         self.items = {}
 

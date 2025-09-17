@@ -1,4 +1,5 @@
-from resources.Exceptions import DeclaredArgumentsException
+class DeclaredArgumentsException(Exception):
+    pass
 
 class ExecutableConfig:
     def __init__(self, content):

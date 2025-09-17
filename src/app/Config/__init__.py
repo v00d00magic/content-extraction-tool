@@ -1,27 +1,30 @@
-from resources.Consts import consts
-from resources.DefaultSettings import DefaultSettings
+from app.Config.DefaultSettings import DefaultSettings
 from pathlib import Path
 import json
 
 class Config():
     '''
-    Dict param->value comparer. Allows to recieve value by option name. Storages in %storage%/settings
+    param->value comparer
+    Allows to recieve value by option name
+    Stores in %storage%/settings
     '''
 
-    def __init__(self, file_name: str = 'config.json', fallback = DefaultSettings):
+    def __init__(self, cwd, file_name: str = 'config.json', fallback = DefaultSettings):
         '''
         file_name: name of the file
         fallback: params to compare
         '''
 
         self.compared_options = fallback
-        self.path = Path(f"{str(consts.get('cwd').parent)}/storage/settings/{file_name}")
+        self.path = Path(f"{str(cwd)}/storage/settings/{file_name}")
 
         self.__load_path(self.path)
         self.__pass_declarable()
 
+        # hardcode oh yeah
         if file_name == "config.json":
-            consts['ui.lang'] = self.get("ui.lang")
+            self.hidden_items = ["db.", "web."]
+            self.is_hidden = True
 
     def __pass_declarable(self):
         from declarable.ArgsComparer import ArgsComparer

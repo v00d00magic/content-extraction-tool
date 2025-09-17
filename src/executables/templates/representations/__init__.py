@@ -1,5 +1,3 @@
-from resources.Exceptions import AbstractClassException, SuitableExtractMethodNotFound
-from declarable.ArgsComparer import ArgsComparer
 from declarable.Arguments import BooleanArgument
 from executables.templates.Executable import Executable
 from executables.responses.ItemsResponse import ItemsResponse
@@ -69,6 +67,7 @@ class Representation(Executable, metaclass=RepresentationMeta):
             return cls.receivations[0]
 
         # dumb way
+        print(args.__dict__())
         for item in cls.receivations:
             decl = item.comparerShortcut(None, args)
 
@@ -83,7 +82,6 @@ class Representation(Executable, metaclass=RepresentationMeta):
         strategy_class = strategy()
         # на самом деле это ненастоящие модули (они от другого класса) поэтому приходится сделать так.
         # FIXME
-
         strategy_class.setOuter(self.__class__)
         compares = strategy_class.comparerShortcut(None, i)
 

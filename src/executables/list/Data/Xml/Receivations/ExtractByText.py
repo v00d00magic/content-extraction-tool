@@ -1,6 +1,6 @@
 from .. import Implementation as Text
 from declarable.Arguments import StringArgument
-from utils.MainUtils import parse_json
+from utils.Data.JSON import JSON
 
 class Implementation(Text.AbstractReceivation):
     @classmethod
@@ -12,7 +12,7 @@ class Implementation(Text.AbstractReceivation):
 
     async def implementation(self, i = {}):
         json_text = i.get('text')
-        __obj = parse_json(json_text)
+        __obj = JSON(json_text).parse()
 
         out = self.ContentUnit()
         out.content = __obj

@@ -5,6 +5,7 @@ class EnvContainable:
     @classmethod
     def getEnvVars(cls):
         res = {}
+
         for __sub_class in cls.__mro__:
             if getattr(__sub_class, "declareEnv", None) != None:
                 res.update(__sub_class.declareEnv())

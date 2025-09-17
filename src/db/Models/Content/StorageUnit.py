@@ -3,7 +3,8 @@ from app.App import logger, storage
 from pathlib import Path
 from peewee import TextField, BigIntegerField, IntegerField, BooleanField
 from utils.Files.DirItem import DirItem
-from utils.MainUtils import dump_json, parse_json, get_random_hash
+from utils.Data.JSON import JSON
+from utils.Data.Random import Random
 from db.Models.Content.ContentModel import ContentModel
 import shutil, mimetypes
 
@@ -13,16 +14,17 @@ class StorageUnit(ContentModel):
     short_name = 'su'
 
     hash = TextField(null=True)
-    # attached_path = TextField(null=True) i will not probaly add this
+    # attached_path = TextField(null=True) i dont will add dis
 
-    upload_name = TextField(default="N/A") # Upload name (with extension)
-    extension = TextField(default="json") # File extension
+    # it is about the main file!
+    upload_name = TextField(default="N/A")
+    extension = TextField(default="json")
     mime = TextField(null=True,default="N/A")
-
-    filesize = BigIntegerField(default=0) # Size of main file
-
-    lists = TextField(default="")
+    filesize = BigIntegerField(default=0)
     metadata = TextField(default="")
+
+    # it is about 
+    lists = TextField(default="")
 
     is_thumbnail = BooleanField(index=True,default=0)
 
@@ -77,7 +79,7 @@ class StorageUnit(ContentModel):
 
             @classmethod
             def getFilesList(cls):
-                return parse_json(self.lists)
+                return JSON.parse(self.lists)
 
             @classmethod
             def getFilesSize(cls):
@@ -129,7 +131,7 @@ class StorageUnit(ContentModel):
 
         self._temp_dir = None
         self._path_link = None
-        self.hash = get_random_hash(32)
+        self.hash = Random().random_hash(32)
 
         self.Temp = Temp()
         self.Meta = Meta()
@@ -143,7 +145,7 @@ class StorageUnit(ContentModel):
             return self._temp_dir
 
     def flush(self):
-        self.lists = dump_json(self.Meta.generateFilesList())
+        self.lists = JSON(self.Meta.generateFilesList()).dump()
         self.save(force_insert=True)
         self.Temp.detempize()
 

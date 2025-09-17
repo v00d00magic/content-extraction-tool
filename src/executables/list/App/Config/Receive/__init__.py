@@ -1,5 +1,4 @@
 from executables.templates.acts import Act
-from resources.Consts import consts
 from app.App import config
 
 class Implementation(Act):
@@ -17,7 +16,7 @@ class Implementation(Act):
             val = config.compared_options.get(name)
             no = False
 
-            for _name in consts.get("config.hidden_values_spaces"):
+            for _name in config.hidden_items:
                 if name.startswith(_name):
                     no = True
 

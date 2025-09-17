@@ -1,6 +1,5 @@
 from declarable.Arguments import ObjectArgument, LimitedArgument
 from executables.templates.acts import Act
-from resources.Consts import consts
 from app.App import config
 
 class Implementation(Act):
@@ -24,7 +23,7 @@ class Implementation(Act):
 
     async def implementation(self, args = {}):
         values = args.get("values")
-        tabu = consts.get("config.hidden_values_spaces")
+        tabu = config.hidden_items
 
         assert values != None, "new values not passed"
 

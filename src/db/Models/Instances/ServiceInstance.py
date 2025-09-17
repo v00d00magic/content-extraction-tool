@@ -1,6 +1,6 @@
 from peewee import SmallIntegerField, TextField, AutoField, TimestampField
 from db.Models.BaseModel import BaseModel
-from utils.MainUtils import parse_json, dump_json
+from utils.Data.JSON import JSON
 import time
 
 class ServiceInstance(BaseModel):
@@ -19,14 +19,14 @@ class ServiceInstance(BaseModel):
     def data_json(self):
         __data = self.data
 
-        return parse_json(__data)
+        return JSON(__data).parse()
 
     def frontend_data_json(self):
         __data = self.frontend_data
         if __data != None:
             return {}
 
-        return parse_json(__data) 
+        return JSON(__data).parse() 
 
     def getStructure(self):
         payload = {}
@@ -46,11 +46,11 @@ class ServiceInstance(BaseModel):
         return ServiceInstance.select().where(ServiceInstance.id == id).first()
 
     def setData(self, json):
-        self.data = dump_json(json)
+        self.data = JSON(json).dump()
         #self.save()
 
     def updateData(self, json):
         orig = self.data_json()
         orig.update(json)
 
-        self.data = dump_json(orig)
+        self.data = JSON.dump(orig)

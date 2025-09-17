@@ -83,7 +83,7 @@ DefaultSettings = {
         },
     }),
     "web.port": IntArgument({
-        "default": 26666,
+        "default": 12345,
         "docs": {
             "name": documentation.get("web.port.name"),
         },

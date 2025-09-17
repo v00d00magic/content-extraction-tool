@@ -1,20 +1,12 @@
 from colorama import init as ColoramaInit
-from utils.MainUtils import parse_json, dump_json
-from pathlib import Path
+from utils.Data.JSON import JSON
+from utils.Data.List import List
 from datetime import datetime
 from utils.Hookable import Hookable
 import traceback
 
 class Logger(Hookable):
-    '''
-    Module for logging of messages and printing them to terminal
-    '''
-
     events = ["log"]
-    file_checked = False
-    current_json = None
-
-    # CONSTS
 
     KIND_SUCCESS = 'success'
     KIND_ERROR = 'error'
@@ -33,13 +25,53 @@ class Logger(Hookable):
     SECTION_ACTS = 'Acts'
     SECTION_WEB = 'Web'
 
+    def __init__(self, config, storage):
+        super().__init__()
+
+        ColoramaInit()
+
+        self.file_checked = False
+        self.current_json = None
+        self.write_mode: int = self.MODE_PER_STARTUP
+        self.logs_storage = storage.sub('logs')
+        self.skip_categories: list = config.get("logger.skip_categories")
+        self.skip_file: bool = config.get("logger.skip_file") == 1
+
+        def console_hook(self, **kwargs):
+            message = kwargs.get("message")
+            if message.should("cli") == True:
+                message.print_self()
+
+        def write_to_file_hook(self, **kwargs):
+            if self.skip_file == True:
+                return False
+
+            message = kwargs.get("message")
+            if message.should("file") == True:
+                return
+
+            if self.current_json == None:
+                try:
+                    self.current_json = JSON(self.log_stream.read()).parse()
+                except:
+                    self.current_json = []
+
+            self.current_json.append(message.data)
+
+            self.log_stream.truncate(0)
+            self.log_stream.seek(0)
+            self.log_stream.write(JSON(self.current_json).dump(indent=4))
+
+        self.add_hook("log", console_hook)
+        self.add_hook("log", write_to_file_hook)
+
     def log(self, message, section: str = "App", kind: str = "message", silent: bool = False, prefix: str = "", id: int = None):
         write_message = message
         if isinstance(message, BaseException):
             __exp = traceback.format_exc()
             write_message = prefix + type(message).__name__ + " " + __exp
 
-        return self.log_({
+        return self.logObject({
             "message": write_message,
             "section": section,
             "kind": kind,
@@ -47,7 +79,7 @@ class Logger(Hookable):
             "id": id,
         })
 
-    def log_(self, data):
+    def logObject(self, data):
         should = {
             "web": True,
             "cli": data.get("silent") == False,
@@ -64,51 +96,13 @@ class Logger(Hookable):
         })
         for item in self.skip_categories:
             category = LoggerCategory(item)
-            should = category.check(message.getSection(True), message.getKind())
+            should = category.check(message.getSection(), message.getKind())
 
-        self.__log_file_check()
+        self.checkFile()
 
         self.trigger("log", message=message)
 
         return message
-
-    def __init__(self, config, storage):
-        super().__init__()
-
-        ColoramaInit()
-
-        self.write_mode: int = self.MODE_PER_STARTUP
-        self.logs_storage = storage.sub('logs')
-        self.skip_categories: list = config.get("logger.skip_categories")
-        self.skip_file: bool = config.get("logger.skip_file") == 1
-
-        self.add_hook("log", self.__console_hook)
-        self.add_hook("log", self.__write_to_file_hook)
-
-    def __console_hook(self, **kwargs):
-        message = kwargs.get("message")
-        if message.should("cli") == True:
-            message.print_self()
-
-    def __write_to_file_hook(self, **kwargs):
-        if self.skip_file == True:
-            return False
-
-        message = kwargs.get("message")
-        if message.should("file") == True:
-            return
-
-        if self.current_json == None:
-            try:
-                self.current_json = parse_json(self.log_stream.read())
-            except:
-                self.current_json = []
-
-        self.current_json.append(message.data)
-
-        self.log_stream.truncate(0)
-        self.log_stream.seek(0)
-        self.log_stream.write(dump_json(self.current_json, indent=4))
 
     def __del__(self):
         try:
@@ -117,7 +111,7 @@ class Logger(Hookable):
         except AttributeError:
             pass
 
-    def __log_file_check(self):
+    def checkFile(self):
         if self.skip_file == True:
             return True
         if self.file_checked == True:
@@ -163,11 +157,10 @@ class LoggerCategory():
             "file": True
         }
 
-        if name == section:
+        _name = ".".join(List(name).convert())
+        _compare = ".".join(List(section).convert())
+        if _name == _compare or (_compare.find(_name) != -1 and wildcard == True):
             should_ = False
-        else:
-            if section.find(name) != -1 and wildcard == True:
-                should_ = False
 
         if should_ == False:
             if kinda != None:
@@ -212,7 +205,7 @@ class LogMessage():
         id = self.data.get("id")
         date = datetime.fromtimestamp(self.data.get("time"))
 
-        write_message = f"{date.strftime("%H:%M:%S")} [{self.getSection(True)}] {message}"
+        write_message = f"{date.strftime("%H:%M:%S.%f")} [{self.getSection(True)}] {message}"
         if id != None:
             write_message = f"ID->{id} " + write_message
 
@@ -233,4 +226,5 @@ class LogMessage():
         print(write_colored_message, end='')
 
     def should(self, where):
+        print(self.data.get("should"))
         return self.data.get("should").get(where) == True

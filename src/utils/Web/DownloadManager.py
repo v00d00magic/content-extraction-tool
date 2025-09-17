@@ -1,5 +1,4 @@
 from app.App import logger
-from resources.Consts import consts
 from utils.Hookable import Hookable
 from app.App import config
 from pathlib import Path

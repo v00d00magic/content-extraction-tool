@@ -1,5 +1,5 @@
 from declarable.Arguments.Argument import Argument
-from utils.MainUtils import dump_json
+from utils.Data.JSON import JSON
 
 class LimitedArgument(Argument):
     def value(self):
@@ -13,4 +13,4 @@ class LimitedArgument(Argument):
     def special_assertions(self, inp):
         __allowed = self.data.get("values")
 
-        assert inp in __allowed, f"not valid value, {self.data.get('name')}={self.passed_value} (available: {dump_json(self.data.get('values'))})"
+        assert inp in __allowed, f"not valid value, {self.data.get('name')}={self.passed_value} (available: {JSON(self.data.get('values')).dump()})"

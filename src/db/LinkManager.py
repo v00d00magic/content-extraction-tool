@@ -1,8 +1,10 @@
-from resources.Exceptions import AlreadyLinkedException
 from db.Models.Content.ContentUnit import ContentUnit
 from db.Models.Content.StorageUnit import StorageUnit
 from db.Models.Relations.ContentUnitRelation import ContentUnitRelation
 from app.App import logger
+
+class AlreadyLinkedException(Exception):
+    pass
 
 class LinkItems:
     def __init__(self, parent):
