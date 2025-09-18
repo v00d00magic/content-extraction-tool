@@ -101,13 +101,13 @@ DefaultSettings = {
     "db.content.connection": ObjectArgument({
         "default": {
             "protocol": "sqlite",
-            "path": "?cwd?/storage/dbs/content.db"
+            "path": "?cwd?/storage/db/content.db"
         }
     }),
     "db.instance.connection": ObjectArgument({
         "default": {
             "protocol": "sqlite",
-            "path": "?cwd?/storage/dbs/instance.db"
+            "path": "?cwd?/storage/db/instance.db"
         }
     }),
     "net.max_speed": IntArgument({

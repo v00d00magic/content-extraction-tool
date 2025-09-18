@@ -1,6 +1,11 @@
 from declarable.ArgsDict import ArgsDict
 
 class ArgsComparer():
+    EXCEPT_PASS = "pass"
+    EXCEPT_ASSERT = "assert"
+
+    DEFAULT_ON_NONE = True
+
     def __init__(self, 
                  compare: dict, 
                  args: dict, 
@@ -10,7 +15,7 @@ class ArgsComparer():
                  same_dict_mode: bool = False):
         self.compare = compare # Argument class dict
         self.args = args # what we got at input
-        self.exc = exc # "assert": raise exceptions, "default": pass default on exception
+        self.exc = exc
         self.missing_args_inclusion = missing_args_inclusion # Return the same value if argument didnt found in compared
         self.same_dict_mode = same_dict_mode # Return input dict
         self.default_sub = default_sub # Pass default value insted of None if None
@@ -19,13 +24,13 @@ class ArgsComparer():
     def diff(self):
         self.missing_args_inclusion = False
         self.default_sub = False
-        _fin = 0
+        diff_value = 0
 
         for item_name, item_content in self.compare.items():
             if self.args.get(item_name) != None:
-                _fin += 1
+                diff_value += 1
 
-        return _fin > 0
+        return diff_value > 0
 
     def dict(self):
         if self.same_dict_mode == True:
@@ -62,7 +67,7 @@ class ArgsComparer():
                 if value == None and is_unexist == False:
                     continue
             except Exception as _y:
-                if self.exc == "assert":
+                if self.exc == ArgsComparer.EXCEPT_ASSERT:
                     raise _y
                 else:
                     if self.default_sub == True:

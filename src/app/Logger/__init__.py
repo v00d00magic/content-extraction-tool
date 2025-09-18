@@ -1,7 +1,7 @@
 from colorama import init as ColoramaInit
+from app.Logger.LogFile import LogFile
 from utils.Data.JSON import JSON
 from utils.Data.List import List
-from datetime import datetime
 from utils.Hookable import Hookable
 import traceback
 
@@ -13,16 +13,13 @@ class Logger(Hookable):
     KIND_DEPRECATED = 'deprecated'
     KIND_MESSAGE = 'message'
 
-    MODE_PER_DAY = 0
-    MODE_PER_STARTUP = 1
-
-    SECTION_SERVICES = 'Services'
-    SECTION_DB = 'DB'
-    SECTION_LINKAGE = 'Linkage'
-    SECTION_EXECUTABLES = 'Executables'
-    SECTION_SAVEABLE = 'Saveable'
-    SECTION_EXTRACTORS = 'Extractors'
     SECTION_ACTS = 'Acts'
+    SECTION_DB = 'DB'
+    SECTION_EXECUTABLES = 'Executables'
+    SECTION_EXTRACTORS = 'Extractors'
+    SECTION_LINKAGE = 'Linkage'
+    SECTION_SERVICES = 'Services'
+    SECTION_SAVEABLE = 'Saveable'
     SECTION_WEB = 'Web'
 
     def __init__(self, config, storage):
@@ -30,40 +27,46 @@ class Logger(Hookable):
 
         ColoramaInit()
 
-        self.file_checked = False
-        self.current_json = None
-        self.write_mode: int = self.MODE_PER_STARTUP
-        self.logs_storage = storage.sub('logs')
-        self.skip_categories: list = config.get("logger.skip_categories")
-        self.skip_file: bool = config.get("logger.skip_file") == 1
+        self.storage = storage.get('logs')
+        self.file = None
+        self.setFile()
 
-        def console_hook(self, **kwargs):
+        self.skip_categories = config.get("logger.skip_categories")
+        self.skip_file = config.get("logger.skip_file") == 1
+
+        def console_hook(**kwargs):
             message = kwargs.get("message")
             if message.should("cli") == True:
                 message.print_self()
 
-        def write_to_file_hook(self, **kwargs):
-            if self.skip_file == True:
-                return False
-
+        def write_to_file_hook(**kwargs):
             message = kwargs.get("message")
             if message.should("file") == True:
                 return
 
-            if self.current_json == None:
+            if self.logs == None:
                 try:
-                    self.current_json = JSON(self.log_stream.read()).parse()
+                    self.logs = JSON(self.log_stream.read()).parse()
                 except:
-                    self.current_json = []
+                    self.logs = []
 
-            self.current_json.append(message.data)
+            self.logs.append(message.data)
 
-            self.log_stream.truncate(0)
-            self.log_stream.seek(0)
-            self.log_stream.write(JSON(self.current_json).dump(indent=4))
+            self.file_stream.truncate(0)
+            self.file_stream.seek(0)
+            self.file_stream.write(JSON(self.logs).dump(indent=4))
 
         self.add_hook("log", console_hook)
         self.add_hook("log", write_to_file_hook)
+
+    def setFile(self):
+        if self.skip_file == True:
+            return None
+
+        file = LogFile()
+        file.create(0, self.storage)
+
+        self.file = file
 
     def log(self, message, section: str = "App", kind: str = "message", silent: bool = False, prefix: str = "", id: int = None):
         write_message = message
@@ -98,8 +101,6 @@ class Logger(Hookable):
             category = LoggerCategory(item)
             should = category.check(message.getSection(), message.getKind())
 
-        self.checkFile()
-
         self.trigger("log", message=message)
 
         return message
@@ -110,28 +111,6 @@ class Logger(Hookable):
             self.log_stream.close()
         except AttributeError:
             pass
-
-    def checkFile(self):
-        if self.skip_file == True:
-            return True
-        if self.file_checked == True:
-            return True
-
-        now = datetime.now()
-        match(self.write_mode):
-            case self.MODE_PER_STARTUP:
-                self.path = self.logs_storage.dir.joinpath(f"{now.strftime('%Y-%m-%d_%H-%M-%S')}.json")
-            case self.MODE_PER_DAY:
-                self.path = self.logs_storage.dir.joinpath(f"{now.strftime('%Y-%m-%d')}.json")
-
-        if self.path.exists() == False:
-            _not_exists = open(self.path, 'w', encoding='utf-8')
-            _not_exists.close()
-
-        self.log_stream = open(str(self.path), 'r+', encoding='utf-8')
-        self.file_checked = True
-
-        return True
 
     def save(self):
         self.log_stream.flush()

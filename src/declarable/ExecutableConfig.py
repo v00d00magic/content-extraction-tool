@@ -1,4 +1,4 @@
-class DeclaredArgumentsException(Exception):
+class ExecutableConfigError(Exception):
     pass
 
 class ExecutableConfig:
@@ -20,7 +20,7 @@ class ExecutableConfig:
         if MAIN_ARG_TYPE == "and":
             for _arg in self.content.get("list"):
                 if _arg not in self.args:
-                    raise DeclaredArgumentsException(f"Argument \"{_arg}\" not passed")
+                    raise ExecutableConfigError(f"Argument \"{_arg}\" not passed")
         elif MAIN_ARG_TYPE == "or" or MAIN_ARG_TYPE == "strict_or":
             passed_list_need = 0
             for _arg in self.content.get("list", []):
@@ -28,7 +28,7 @@ class ExecutableConfig:
                     passed_list_need += 1
 
             if passed_list_need == 0:
-                raise DeclaredArgumentsException(f"Need at least 1 required argument")
+                raise ExecutableConfigError(f"Need at least 1 required argument")
 
             if MAIN_ARG_TYPE == "strict_or" and passed_list_need > 1:
-                raise DeclaredArgumentsException(f"Pass only 1 required argument (cuz \"strict_or\")")
+                raise ExecutableConfigError(f"Pass only 1 required argument (cuz \"strict_or\")")

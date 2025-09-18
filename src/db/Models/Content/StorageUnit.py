@@ -38,7 +38,7 @@ class StorageUnit(ContentModel):
 
             @classmethod
             def allocate(cls):
-                return storage.sub('tmp_files').allocateTemp()
+                return storage.get('tmp_files').allocateTemp()
 
             @classmethod
             def remove(cls):
@@ -56,7 +56,7 @@ class StorageUnit(ContentModel):
 
                 current_path.rename(str(new_name))
 
-                new_storage_category = storage.sub('files').allocateHash(self.hash, only_return=True)
+                new_storage_category = storage.get('files').allocateHash(self.hash, only_return=True)
                 self._temp_dir.rename(str(new_storage_category))
 
                 self._temp_dir = None
@@ -93,7 +93,7 @@ class StorageUnit(ContentModel):
         class Path:
             @classmethod
             def getStorage(cls):
-                return storage.sub('files').path()
+                return storage.get('files').path()
 
             @classmethod
             def getUpper(cls):

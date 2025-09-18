@@ -1,5 +1,5 @@
 from db.DbConnection import DbConnection
-from storage.Storage import Storage
+from app.Storage import StorageContainer
 from utils.Hookable import Hookable
 from app.Config import Config
 from app.Logger import Logger
@@ -60,8 +60,10 @@ class App(Hookable):
 app = App()
 
 config = Config(app.cwd.parent)
-env = Config(app.cwd.parent, file_name="env.json",fallback=None)
-storage = Storage(config)
+config.setAsConf()
+env = Config(app.cwd.parent, file_name="env.json", fallback=None)
+
+storage = StorageContainer(config)
 logger = Logger(config, storage)
 
 db_connection = DbConnection()

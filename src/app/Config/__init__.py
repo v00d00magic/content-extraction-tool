@@ -3,40 +3,31 @@ from pathlib import Path
 import json
 
 class Config():
-    '''
-    param->value comparer
-    Allows to recieve value by option name
-    Stores in %storage%/settings
-    '''
-
     def __init__(self, cwd, file_name: str = 'config.json', fallback = DefaultSettings):
-        '''
-        file_name: name of the file
-        fallback: params to compare
-        '''
-
         self.compared_options = fallback
-        self.path = Path(f"{str(cwd)}/storage/settings/{file_name}")
 
-        self.__load_path(self.path)
-        self.__pass_declarable()
+        Path(cwd).joinpath("storage").joinpath("config").mkdir(parents=True,exist_ok=True)
 
-        # hardcode oh yeah
-        if file_name == "config.json":
-            self.hidden_items = ["db.", "web."]
-            self.is_hidden = True
+        self.path = Path(f"{str(cwd)}/storage/config/{file_name}")
 
-    def __pass_declarable(self):
+        self.loadPath(self.path)
+        self.passDeclarable()
+
+    def setAsConf(self):
+        self.hidden_items = ["db.", "web."]
+        self.is_hidden = True
+
+    def passDeclarable(self):
         from declarable.ArgsComparer import ArgsComparer
 
         self.declared_settings = ArgsComparer(compare=self.compared_options, 
                                               args=self.passed_options, 
-                                              exc="pass", 
+                                              exc=ArgsComparer.EXCEPT_PASS, 
                                               default_sub=True,
                                               same_dict_mode=self.compared_options == None)
         self.options = self.declared_settings.dict()
 
-    def __load_path(self, path):
+    def loadPath(self, path: Path):
         if path.exists() == False:
             __temp_config_write_stream = open(self.path, 'w', encoding='utf-8')
             json.dump({}, __temp_config_write_stream)
@@ -55,7 +46,7 @@ class Config():
         except AttributeError:
             pass
 
-    def __update_file(self):
+    def updateFile(self):
         self.config_stream.seek(0)
 
         json.dump(self.passed_options, self.config_stream, indent=4)
@@ -63,42 +54,18 @@ class Config():
         self.config_stream.truncate()
 
     def get(self, option: str, default: str = None):
-        '''
-        Recieves option value by name.
-
-        Params:
-
-        option: name of the option
-
-        default: value that will be returned if param value is \"None\"
-        '''
-
         return self.options.get(option, default)
 
     def set(self, option: str, value: str):
-        '''
-        Sets option in config file.
-
-        Params:
-
-        option: option name
-
-        value: value that will be set
-        '''
-
         if value == None:
             del self.passed_options[option]
         else:
             self.passed_options[option] = value
 
-        self.__update_file()
-        self.__pass_declarable()
+        self.updateFile()
+        self.passDeclarable()
 
     def reset(self):
-        '''
-        Clears config file.
-        '''
-
         self.config_stream.seek(0)
         self.config_stream.write("{}")
         self.config_stream.truncate()
