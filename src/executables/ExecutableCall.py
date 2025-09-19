@@ -4,6 +4,7 @@ from utils.Hookable import Hookable
 from db.LinkManager import LinkManager
 from utils.Data.JSON import JSON
 from app.App import app, logger
+from app.Logger.LogSection import LogSection
 import asyncio
 
 class ProgressMessage():
@@ -32,7 +33,7 @@ class ExecutableCall(Hookable):
         self.linking_queue = []
 
         def _run_hook():
-            self.log(f"Executed {self.executable.getName()}", section=logger.SECTION_EXECUTABLES)
+            self.log(f"Executed {self.executable.getName()}", section=LogSection.SECTION_EXECUTABLES)
 
         self.add_hook("run", _run_hook)
         # self.add_hook("progress", _progress_hook)
@@ -87,7 +88,7 @@ class ExecutableCall(Hookable):
             try:
                 link_manager.link(item, link_item)
             except AssertionError as _e:
-                logger.log(_e, section=logger.SECTION_LINKAGE)
+                logger.log(_e, section=LogSection.SECTION_LINKAGE)
 
     # Log
 
@@ -108,4 +109,4 @@ class ExecutableCall(Hookable):
         dump.data = JSON(_data).dump()
         dump.save()
 
-        self.log(f"Dumped {self.executable.getName()}, id {dump.id}", section=logger.SECTION_EXECUTABLES)
+        self.log(f"Dumped {self.executable.getName()}, id {dump.id}", section=LogSection.SECTION_EXECUTABLES)

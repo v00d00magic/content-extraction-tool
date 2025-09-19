@@ -1,5 +1,6 @@
-from declarable.Arguments import Argument, StringArgument, IntArgument, BooleanArgument, ObjectArgument, LimitedArgument, CsvArgument
+from declarable.Arguments import Argument, StringArgument, ClassArgument, IntArgument, BooleanArgument, ObjectArgument, LimitedArgument, CsvArgument
 from declarable.Documentation import documentation
+from app.Logger.LogSkipSection import LogSkipSection
 
 locale_keys = {
     "ui.lang.name": {
@@ -131,14 +132,14 @@ DefaultSettings = {
         },
     }),
     "logger.skip_categories": CsvArgument({
-        "default": [{
-            "name": "ExecutableMap",
-            "wildcard": True,
+        "default": [LogSkipSection({
+            "name": ["Executables", "Initialization"],
+            "wildcard": False,
             "kinda": "message",
-            "where": "cli"
-        }],
-        "orig": Argument({
-            "tip": ["name", "where", "wildcard", "kinda"]
+            "where": "console"
+        })],
+        "orig": ClassArgument({
+            "class": LogSkipSection
         }),
         "docs": {
             "name": documentation.get("logger.skip_categories.name"),

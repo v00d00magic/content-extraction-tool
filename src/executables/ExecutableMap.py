@@ -4,7 +4,7 @@ import importlib
 import time
 
 class ExecutableMap:
-    section_name = ["ExecutableMap", "Initialization"]
+    section_name = ["Executables", "Initialization"]
 
     items = {}
     js_modules = {}

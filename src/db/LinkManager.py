@@ -1,6 +1,8 @@
 from db.Models.Content.ContentUnit import ContentUnit
 from db.Models.Content.StorageUnit import StorageUnit
 from db.Models.Relations.ContentUnitRelation import ContentUnitRelation
+from app.Logger.LogSection import LogSection
+from app.Logger.LogKind import LogKind
 from app.App import logger
 
 class AlreadyLinkedException(Exception):
@@ -79,7 +81,7 @@ class LinkManager:
 
         self.ever_linked.append(f"{child.short_name}_{child.uuid}")
 
-        logger.log(message=f"Linked {self.parent.short_name}_{self.parent.uuid}<->{child.short_name}_{child.uuid}", section=logger.SECTION_LINKAGE, kind = logger.KIND_SUCCESS)
+        logger.log(message=f"Linked {self.parent.short_name}_{self.parent.uuid}<->{child.short_name}_{child.uuid}", section=LogSection.SECTION_LINKAGE, kind = LogKind.KIND_SUCCESS)
 
         return True
 
@@ -95,7 +97,7 @@ class LinkManager:
 
         _link.delete()
 
-        logger.log(message=f"Unlinked {self.parent.short_name}_{self.parent.uuid}<->{child.short_name}_{child.uuid}", section=logger.SECTION_LINKAGE, kind = logger.KIND_SUCCESS)
+        logger.log(message=f"Unlinked {self.parent.short_name}_{self.parent.uuid}<->{child.short_name}_{child.uuid}", section=LogSection.SECTION_LINKAGE, kind = LogKind.KIND_SUCCESS)
 
     def writeQueue(self, items):
         for item in items:
@@ -105,9 +107,9 @@ class LinkManager:
             try:
                 self.link(item)
             except AssertionError as _e:
-                logger.log(message=f"Failed to link: {str(_e)}", section=logger.SECTION_LINKAGE, kind = logger.KIND_ERROR)
+                logger.log(message=f"Failed to link: {str(_e)}", section=LogSection.SECTION_LINKAGE, kind = LogSection.KIND_ERROR)
             except AlreadyLinkedException as _e:
-                logger.log(message=f"Failed to link: {str(_e)}", section=logger.SECTION_LINKAGE, kind = logger.KIND_ERROR)
+                logger.log(message=f"Failed to link: {str(_e)}", section=LogSection.SECTION_LINKAGE, kind = LogSection.KIND_ERROR)
 
     def linksListId(self, by_class = None, revision: bool = False):
         _l = LinkItems(self.parent)

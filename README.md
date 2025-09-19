@@ -13,9 +13,12 @@ Todo:
 - [x] Store executable threads
 - [ ] Recursion protection
 
-#### Outer
+#### App
 
-- [ ] Outer executable type
+- [ ] Use pydantic
+- [ ] Max logfile size
+- [x] Logger refactor
+- [x] Outer executable type
 
 #### Models
 
@@ -26,10 +29,6 @@ Todo:
 
 - [ ] Data.Hyperlink
 - [x] Collections creation
-
-#### Logs
-
-- [ ] Max logfile size
 
 #### Export
 
@@ -51,6 +50,7 @@ Todo:
 #### Declared arguments
 
 - [ ] ObjectArgument: scheme (?)
+- [x] ClassArgument
 
 #### Web crawler
 

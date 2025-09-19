@@ -1,5 +1,6 @@
 import asyncio
 import threading
+import traceback
 
 def category_check(func):
     def wrapper(self, *args, **kwargs):
@@ -28,7 +29,7 @@ class Hookable:
                 hook_func(*args, **kwargs)
         except Exception as e:
             print(e)
-            pass
+            raise e
 
     @category_check
     def add_hook(self, category, hook):

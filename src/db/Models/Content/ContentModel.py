@@ -2,6 +2,7 @@ from peewee import IntegerField
 from db.Models.BaseModel import BaseModel
 from snowflake import SnowflakeGenerator
 from app.App import logger
+from app.Logger.LogSection import LogSection
 from playhouse.sqlite_ext import fn
 
 class ContentModel(BaseModel):
@@ -9,7 +10,7 @@ class ContentModel(BaseModel):
 
     @classmethod
     def ids(cls, id):
-        logger.log(f"Searching {cls.self_name} by ids {str(id)}", section=logger.SECTION_DB)
+        logger.log(f"Searching {cls.self_name} by ids {str(id)}", section=LogSection.SECTION_DB)
 
         if type(id) in [str, int]:
             _query = cls.select().where(cls.uuid == int(id))

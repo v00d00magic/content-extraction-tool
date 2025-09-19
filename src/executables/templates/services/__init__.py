@@ -1,5 +1,6 @@
 from app.App import logger
 from executables.templates.Executable import Executable
+from app.Logger.LogSection import LogSection
 
 class EndOfCycleException(Exception):
     pass
@@ -25,7 +26,7 @@ class Service(Executable):
 
             _symbol = self.max_iterations
 
-        self.log(message=f"Making run {self.current_iteration}/{_symbol}", section=logger.SECTION_SERVICES)
+        self.log(message=f"Making run {self.current_iteration}/{_symbol}", section=LogSection.SECTION_SERVICES)
 
         return await self.execute(i)
 

@@ -2,6 +2,7 @@ from executables.templates.services import Service
 from executables.templates.acts import Act
 from executables.templates.extractors import Extractor
 from app.App import logger
+from app.Logger.LogSection import LogSection
 from declarable.Arguments import LimitedArgument, StringArgument, ObjectArgument
 
 class FatalError(Exception):
@@ -55,7 +56,7 @@ class Implementation(Service):
 
         self.__get_executable(executable_name, executable_type)
 
-        logger.log(message=f"Called {executable_name}", kind="message", section=logger.SECTION_SERVICES)
+        logger.log(message=f"Called {executable_name}", kind="message", section=LogSection.SECTION_SERVICES)
 
         __exec = self.c_cached_executable()
 
