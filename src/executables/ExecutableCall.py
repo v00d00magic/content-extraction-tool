@@ -40,6 +40,7 @@ class ExecutableCall(Hookable):
 
     def passArgs(self, args = {}):
         self._orig_args = args
+        self.log(f"Executable {self.executable.getName()}: set args {JSON(self._orig_args).dump()}", section=LogSection.SECTION_EXECUTABLES)
 
         decls = self.executable.comparerShortcut(None, self._orig_args)
 
@@ -58,6 +59,11 @@ class ExecutableCall(Hookable):
 
     async def _execute(self):
         self.trigger("run")
+
+        try:
+            self.log(f"Calling execute() with args: {JSON(self.args.__dict__()).dump()}", section=LogSection.SECTION_EXECUTABLES)
+        except:
+            pass
 
         return Response.convert(await self.executable.execute(self.args))
 

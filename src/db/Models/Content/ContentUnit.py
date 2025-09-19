@@ -134,7 +134,7 @@ class ContentUnit(ContentModel):
         self.common_link = None
 
         if self.isSaved() == False:
-            _now = Date().timestamp_or_float()
+            _now = Date(Date().now()).timestamp_or_float()
             if self.common_link_id != None:
                 self.common_link = StorageUnit.ids(int(self.common_link_id))
 
@@ -238,4 +238,3 @@ class ContentUnit(ContentModel):
 
         super().save(**kwargs)
         self.postSave()
-

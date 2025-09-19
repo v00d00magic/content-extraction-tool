@@ -17,7 +17,7 @@ Todo:
 
 - [ ] Use pydantic
 - [ ] Max logfile size
-- [x] Logger refactor
+- [ ] Move logger to separate module
 - [x] Outer executable type
 
 #### Models

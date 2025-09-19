@@ -132,12 +132,21 @@ DefaultSettings = {
         },
     }),
     "logger.skip_categories": CsvArgument({
-        "default": [LogSkipSection({
-            "name": ["Executables", "Initialization"],
-            "wildcard": False,
-            "kinda": "message",
-            "where": "console"
-        })],
+        "default": [
+            LogSkipSection({
+                "name": ["Executables", "Initialization"],
+                "kinda": "message"
+            }), 
+            LogSkipSection({
+                "name": ["Executables", "Declaration"],
+                "kinda": "message",
+            }),
+            LogSkipSection({
+                "name": ["Saveable", "Container"],
+                "wildcard": False,
+                "kinda": "message"
+            })
+        ],
         "orig": ClassArgument({
             "class": LogSkipSection
         }),

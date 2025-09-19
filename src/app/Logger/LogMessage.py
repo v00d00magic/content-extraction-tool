@@ -20,18 +20,6 @@ class LogMessage(Wrap):
         "pink": "\u001b[35m"
     }
 
-    def getSection(self, as_string = False):
-        _section = self.data.get("section")
-        _section_list = _section
-
-        if type(_section) == str:
-            _section_list = _section.split("!")
-
-        if as_string == True:
-            return "!".join(_section_list)
-        else:
-            return _section_list
-
     def out(self):
         return {
             "message": self.message,
@@ -69,6 +57,3 @@ class LogMessage(Wrap):
         write_message = write_message.replace("\\n", "\n")
 
         print(write_message, end='\n')
-
-    def should(self, where):
-        return True

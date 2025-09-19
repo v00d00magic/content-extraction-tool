@@ -6,11 +6,15 @@ from typing import List
 class LogSkipSection(Wrap):
     name: str
     wildcard: bool = False
+    inactive: bool = False
     kinda: List = None
     where: List = "console"
 
     def isIt(self, section: LogSection, kind: LogKind = None):
         section_check = False
+
+        if self.inactive == True:
+            return False
 
         if self.wildcard == True:
             for _section in section.section:

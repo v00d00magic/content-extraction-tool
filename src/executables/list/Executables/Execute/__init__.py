@@ -82,21 +82,20 @@ class Implementation(Act):
         if links != None and len(links) > 0:
             link_to = ContentUnit.ids(links)
 
-        _pass = i.__dict__()
-        _pass.pop("i")
+        _pass = i.__dict__(self.__class__.declare().keys())
 
-        call = ExecutableCall(executable=executable)
-        #call.add_hook("progress", __progress_hook)
+        this_call = ExecutableCall(executable=executable)
+        #this_call.add_hook("progress", __progress_hook)
         for link_item in link_to:
-            call.addLink(link_item)
+            this_call.addLink(link_item)
 
-        call.passArgs(_pass)
-        result = await call.run_asyncely()
+        this_call.passArgs(_pass)
+        result = await this_call.run_asyncely()
 
         if hasattr(result, "items") == True:
             for item in result.items():
                 if i.get('is_save') == True:
                     await item.flush()
-                    call.doLink(item)
+                    this_call.doLink(item)
 
         return result

@@ -13,7 +13,7 @@ class JSON(Util):
 
     def isValid(self):
         try:
-            val = json.loads(self.data)
+            val = self.data
 
             return val != None and type(val) != int and type(val) != str
         except json.JSONDecodeError:

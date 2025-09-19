@@ -34,14 +34,6 @@ class Logger(Hookable):
             if message.should("file") == True:
                 return
 
-            if self.logs == None:
-                try:
-                    self.logs = JSON(self.log_stream.read()).parse()
-                except:
-                    self.logs = []
-
-            self.logs.append(message.data)
-
             self.file_stream.truncate(0)
             self.file_stream.seek(0)
             self.file_stream.write(JSON(self.logs).dump(indent=4))

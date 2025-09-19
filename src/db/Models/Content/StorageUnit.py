@@ -28,6 +28,11 @@ class StorageUnit(ContentModel):
 
     is_thumbnail = BooleanField(index=True,default=0)
 
+    def __init_subclass__(cls):
+        cls.storage = storage.get("storage_units")
+
+        return super().__init_subclass__()
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
@@ -38,7 +43,7 @@ class StorageUnit(ContentModel):
 
             @classmethod
             def allocate(cls):
-                return storage.get('tmp_files').allocateTemp()
+                return self.storage.allocateTemp()
 
             @classmethod
             def remove(cls):
@@ -63,8 +68,13 @@ class StorageUnit(ContentModel):
 
         class Meta:
             @classmethod
+            def getCurrentDir(self):
+                if self._temp_dir != None:
+                    return self._temp_dir
+
+            @classmethod
             def generateFilesList(cls):
-                current_dir = self.getCurrentDir()
+                current_dir = cls.getCurrentDir()
                 files_list = []
 
                 for file in current_dir.rglob('*'):
@@ -139,10 +149,6 @@ class StorageUnit(ContentModel):
 
         if self.isSaved() == False:
             self._temp_dir = self.Temp.allocate()
-
-    def getCurrentDir(self):
-        if self._temp_dir != None:
-            return self._temp_dir
 
     def flush(self):
         self.lists = JSON(self.Meta.generateFilesList()).dump()

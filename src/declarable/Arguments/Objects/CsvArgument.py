@@ -12,7 +12,7 @@ class CsvArgument(Argument):
             intrerm_val = self.passed_value
 
         if type(self.passed_value) == str:
-            is_json = JSON.isValid(self.passed_value)
+            is_json = JSON(self.passed_value).isValid()
 
             if is_json == False:
                 intrerm_val = self.passed_value.split(",")
@@ -27,7 +27,7 @@ class CsvArgument(Argument):
                 p = self.configuration.get("orig")
                 p.input_value(val)
 
-                end_vals.append(p.val())
+                end_vals.append(p.getResult())
             else:
                 end_vals.append(val)
 

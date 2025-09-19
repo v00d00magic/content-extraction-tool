@@ -52,7 +52,7 @@ class Argument:
 
         return payload
 
-    def val(self, default_sub = True):
+    def getResult(self, default_sub = True):
         if self.cache_results == True:
             if getattr(self, "recieved_value", None) != None:
                 return self.recieved_value
@@ -62,6 +62,13 @@ class Argument:
             try:
                 got = self.value()
             except Exception as e:
+                try:
+                    from app.App import logger
+
+                    logger.log(e, "Executables!Declaration")
+                except:
+                    print(e)
+
                 if default_sub == True:
                     got = self.default()
         else:

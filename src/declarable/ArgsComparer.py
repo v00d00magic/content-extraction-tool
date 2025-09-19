@@ -38,8 +38,6 @@ class ArgsComparer():
 
         table = ArgsDict()
 
-        # Do the compare thing
-
         hyb_options = {}
         if getattr(self.args, "__dict__", None) != None:
             hyb_options = self.args.__dict__()
@@ -59,16 +57,22 @@ class ArgsComparer():
 
             param_object.configuration['name'] = param_name
             param_object.input_value(self.args.get(param_name))
-            is_unexist = self.save_none_values
-            value = param_object.val(self.default_sub)
+            value = param_object.getResult(self.default_sub)
 
             try:
                 param_object.assertions()
-                if value == None and is_unexist == False:
+                if value == None and self.save_none_values == False:
                     continue
-            except Exception as _y:
+            except Exception as assertion:
+                try:
+                    from app.App import logger
+
+                    logger.log(assertion, "Executables!Declaration")
+                except:
+                    print(assertion)
+
                 if self.exc == ArgsComparer.EXCEPT_ASSERT:
-                    raise _y
+                    raise assertion
                 else:
                     if self.default_sub == True:
                         value = param_object.default()
