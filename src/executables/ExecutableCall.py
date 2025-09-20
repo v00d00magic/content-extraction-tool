@@ -99,7 +99,7 @@ class ExecutableCall(Hookable):
     # Log
 
     def log(self, *args, **kwargs):
-        kwargs["id"] = self.index
+        kwargs["id_prefix"] = "ExecutableCall->" + str(self.index)
         return logger.log(*args, **kwargs)
 
     # Others

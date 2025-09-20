@@ -95,7 +95,6 @@ class Implementation(Act):
         if hasattr(result, "items") == True:
             for item in result.items():
                 if i.get('is_save') == True:
-                    await item.flush()
                     this_call.doLink(item)
 
         return result

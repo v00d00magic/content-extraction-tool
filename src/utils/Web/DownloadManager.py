@@ -1,4 +1,5 @@
 from app.App import logger
+from app.Logger.LogKind import LogKind
 from utils.Hookable import Hookable
 from app.App import config
 from pathlib import Path
@@ -19,6 +20,8 @@ class DownloadManagerItem():
 
 # FIXME: rewrite
 class DownloadManager(Hookable):
+    section_name = "AsyncDownloadManager"
+
     def __init__(self, max_concurrent_downloads: int = 3, speed_limit_kbps: int = config.get("net.max_speed")):
         super().__init__()
         
@@ -56,7 +59,7 @@ class DownloadManager(Hookable):
         DOWNLOAD_URL = queue_element.url
         DOWNLOAD_DIR = queue_element.dir
 
-        logger.log(f"Downloading {DOWNLOAD_URL} ([X])",section="AsyncDownloadManager")
+        logger.log(f"Downloading {DOWNLOAD_URL}", section=self.section_name, id_prefix = f"DownloadItem->UNDEFINED")
         async with self.semaphore:
             async with session.get(DOWNLOAD_URL, allow_redirects=True, headers=self._headers) as response:
                 HTTP_REQUEST_STATUS = response.status
@@ -65,7 +68,7 @@ class DownloadManager(Hookable):
                     raise FileNotFoundError('File not found')
 
                 if DOWNLOAD_DIR != None and Path(DOWNLOAD_DIR).is_file():
-                    logger.log(f"{DOWNLOAD_URL} already downloaded",section="AsyncDownloadManager")
+                    logger.log(f"{DOWNLOAD_URL} already downloaded",section=self.section_name, id_prefix = f"DownloadItem->UNDEFINED")
                     return response
 
                 start_time = time.time()
@@ -75,7 +78,7 @@ class DownloadManager(Hookable):
                 if DOWNLOAD_DIR != None:
                     with open(DOWNLOAD_DIR, 'wb') as f:
                         async for chunk in response.content.iter_chunked(1024):
-                            #await queue_element["pause_flag"].wait() TODO FIX !!!!!!!!!!!
+                            #await queue_element["pause_flag"].wait() FIXME
                             f.write(chunk)
 
                             elapsed_time = time.time() - start_time
@@ -92,7 +95,7 @@ class DownloadManager(Hookable):
                                     hook(hook_dict)
                                 except:
                                     pass
-                            
+
                             if self.speed_limit_kbps:
                                 expected_time = expected_time / (self.speed_limit_kbps * 1024)
                                 if expected_time > elapsed_time:
@@ -107,7 +110,7 @@ class DownloadManager(Hookable):
                         except:
                             pass
 
-                    logger.log(f"Successfully downloaded [0]",section="AsyncDownloadManager",kind=logger.KIND_SUCCESS)
+                    logger.log(f"Loading complete", section=self.section_name, kind=LogKind.KIND_SUCCESS, id_prefix = f"DownloadItem->UNDEFINED")
 
                 return response
 

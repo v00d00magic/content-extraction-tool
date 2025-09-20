@@ -1,6 +1,5 @@
 from utils.Data.Text import Text
 from app.Storage.StorageItem import StorageItem
-from app.Storage.StorageItemHashList import StorageItemHashList
 
 class StorageContainer:
     def __init__(self, config):
@@ -10,8 +9,8 @@ class StorageContainer:
         self.items["config"] = StorageItem(self.common, "config")
         self.items["db"] = StorageItem(self.common, "db")
 
-        self.items["storage_units"] = StorageItemHashList(self.common, "storage_units")
-        self.items["temp_storage_units"] = StorageItemHashList(self.common, "temp_storage_units")
+        self.items["storage_units"] = StorageItem(self.common, "storage_units")
+        self.items["temp_storage_units"] = StorageItem(self.common, "temp_storage_units")
 
         self.items["exports"] = StorageItem(self.common, "exports")
         self.items["temp_exports"] = StorageItem(self.common, "temp_exports")

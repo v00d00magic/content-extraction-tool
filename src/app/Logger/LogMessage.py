@@ -9,7 +9,7 @@ class LogMessage(Wrap):
     time: int
     section: LogSection
     time: int
-    id: int
+    id_prefix: int
 
     colors = {
         "red": "\033[91m",
@@ -26,7 +26,7 @@ class LogMessage(Wrap):
             "kind": self.kind.kind,
             "time": self.time,
             "section": self.section,
-            "id": self.id,
+            "id_prefix": self.id_prefix,
         }
 
     def print(self):
@@ -46,14 +46,14 @@ class LogMessage(Wrap):
         print_parts.append(date.strftime("%H:%M:%S.%f"))        
         print_parts.append(self.colors.get("pink") + "[" + self.section.str() + "]" + self.colors.get('white'))
 
-        if self.id != None:
-            print_parts.append(self.colors.get('cyan') + f"ID->{self.id}" + self.colors.get('white'))
+        if self.id_prefix != None:
+            print_parts.append(self.colors.get('cyan') + self.id_prefix + self.colors.get('white'))
 
-        print_parts.append(self.message)
+        print_parts.append(color + self.message + self.colors.get('white'))
         #print_parts.append("\n")
         print_parts.append(self.colors.get('white'))
 
-        write_message = color + " ".join(print_parts) + self.colors.get('white')
+        write_message = " ".join(print_parts)
         write_message = write_message.replace("\\n", "\n")
 
         print(write_message, end='\n')

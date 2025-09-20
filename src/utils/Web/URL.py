@@ -11,7 +11,7 @@ class URL():
     async def download(self, download_to: str):
         return await download_manager.addDownload(DownloadManagerItem(self._orig, download_to))
 
-    def getNames(self, request):
+    def getNameAndExtensionByRequest(self, request):
         content_type = request.headers.get('Content-Type', '').lower()
         mime_ext = mimetypes.guess_extension(content_type)
 

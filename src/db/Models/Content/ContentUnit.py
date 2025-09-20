@@ -53,7 +53,7 @@ class ContentUnit(ContentModel):
 
             @classmethod
             def getData(cls):
-                logger.log(f"getting {cls.__name__} property",section=["Saveable", "Container"])
+                logger.log(f"Getting {cls.__name__} property",section=["Saveable", "Container"])
 
                 if cls.get_cached() != None:
                     return cls.get_cached()

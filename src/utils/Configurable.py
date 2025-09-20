@@ -1,0 +1,2 @@
+class Configurable:
+    pass

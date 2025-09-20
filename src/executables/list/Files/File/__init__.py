@@ -10,8 +10,6 @@ locale_keys = {
 }
 
 class Implementation(Representation):
-    # Class for testing purposes
-
     @classmethod
     def defineMeta(cls):
         return {
@@ -19,6 +17,16 @@ class Implementation(Representation):
             "definition": cls.key("definition"),
         }
 
-    @staticmethod
-    async def process_item(item):
+    @classmethod
+    async def processItem(cls, item):
         return item
+
+    @classmethod
+    async def createSelf(cls, item):
+        out = cls.ContentUnit()
+        out.display_name = item.getFileName()
+        out.JSONContent.update({})
+
+        out.link(item, True)
+
+        return out

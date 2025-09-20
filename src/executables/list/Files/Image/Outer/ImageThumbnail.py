@@ -33,7 +33,7 @@ class Implementation(Outer):
             new_prev = Path(os.path.join(new_su.temp_dir, f"{su.uuid}.jpg"))
             new_img.save(new_prev)
 
-            new_su.markAsPreview()
+            new_su.markAsThumbnail()
             new_su.setMainFile(new_prev)
 
             state = ThumbnailState({

@@ -1,16 +1,9 @@
-import os, sys
-
-correct_path = os.path.join(os.path.dirname(os.getcwd()), 'src')
-os.chdir(correct_path)
-sys.path.append(correct_path)
-
-from app.Views.CLI import cli
+from app.AppConsole import call
 from app.App import app
 
 app.argv = {
-    'i': 'Executables.RepresentationsExtract',
-    'representation': 'Abstract.Text',
+    'i': 'Abstract.Text',
     'text': '123456',
 }
 
-app.loop.run_until_complete(cli.act())
+app.loop.run_until_complete(call())

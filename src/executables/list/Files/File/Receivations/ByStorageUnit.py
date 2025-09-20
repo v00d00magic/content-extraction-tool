@@ -27,11 +27,8 @@ class Implementation(File.AbstractReceivation):
             if item == None:
                 continue
 
-            out = self.ContentUnit()
-
-            out.link(item, True)
-            out = await self.outer.process_item(out)
-
+            out = await self.outer.createSelf(item)
+            out.flush()
             outs.append(out)
 
         return outs

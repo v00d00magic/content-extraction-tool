@@ -32,28 +32,22 @@ class Implementation(File.AbstractReceivation):
             out = self.ContentUnit()
             out_file = self.StorageUnit()
 
-            tmp_dir = out_file.Temp.get()
-            common_file_path = tmp_dir.joinpath("download.tmp")
+            common_file = out_file.getDir().joinpath("download.tmp")
 
-            # Making HTTP request
-            request = await url.download(common_file_path)
+            request = await url.download(common_file)
 
-            result_name = '.'.join(url.getNames(request))
-            result_path = tmp_dir.joinpath(result_name)
-
-            common_file_path.rename(result_path)
-            out_file.fillByPath(result_path)
+            out_file.setCommonFile(common_file)
+            out_file.setName(url.getNameAndExtensionByRequest(request))
+            out_file.clearCommonFile()
             out_file.flush()
 
-            out.link(out_file, True)
-            out.display_name = result_name
+            out = await self.outer.createSelf(out_file)
             out.Source.update({
                 'type': 'url',
                 'content': _url
             })
-            out.JSONContent.update({})
-            out = await self.outer.process_item(out)
 
+            await out.flush()
             outs.append(out)
 
         return outs

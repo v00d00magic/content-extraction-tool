@@ -1,5 +1,7 @@
 from colorama import init as ColoramaInit
 from app.Logger.LogFile import LogFile
+
+# Maybe its better to create LogPart class?
 from app.Logger.LogMessage import LogMessage
 from app.Logger.LogKind import LogKind
 from app.Logger.LogSection import LogSection
@@ -57,7 +59,7 @@ class Logger(Hookable):
         self.file.add(msg)
         self.trigger("log", message=msg)
 
-    def log(self, message, section: str = "App", kind: str = "message", silent: bool = False, prefix: str = "", id: int = None):
+    def log(self, message, section: str = "App", kind: str = "message", silent: bool = False, prefix: str = "", id_prefix: int = None):
         write_message = message
         if isinstance(message, BaseException):
             exc = traceback.format_exc()
@@ -68,7 +70,7 @@ class Logger(Hookable):
             "message": write_message,
             "section": LogSection({"section": section}),
             "kind": LogKind({"kind": kind}),
-            "id": id,
+            "id_prefix": id_prefix,
         })
 
         self.logMessage(msg)
