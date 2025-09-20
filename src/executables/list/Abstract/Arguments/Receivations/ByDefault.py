@@ -11,6 +11,7 @@ class Implementation(Scratch.AbstractReceivation):
     async def implementation(self, i = {}):
         out = self.ContentUnit()
         out.content = i.__dict__()
+        await out.flush()
 
         self.log("Written arguments")
 

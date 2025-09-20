@@ -84,7 +84,7 @@ class RecursiveDeclarable:
                 count += 1
                 intermediate_dict[name] = current_level_declaration.get(name)
 
-            logger.log(f"Class {cls.getName()}: Called declare at {_sub_class.__name__} with {count} arguments", section=[LogSection.SECTION_EXECUTABLES, "Declaration"])
+            logger.log(f"Class {cls.getName()}: Called declare at {_sub_class.__name__} with {count} arguments", section=[LogSection.SECTION_EXECUTABLES, "Declaration", "MRODeclare"])
 
             output_params.update(intermediate_dict)
 

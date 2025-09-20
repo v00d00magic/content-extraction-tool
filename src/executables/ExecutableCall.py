@@ -22,6 +22,10 @@ class ExecutableCall(Hookable):
     events = ["run", "progress"]
 
     def __init__(self, index = None, executable: Executable = None):
+        """index (set as None): defined index of class
+
+        executable: class of executable
+        """
         super().__init__()
 
         self.index = index

@@ -12,7 +12,7 @@ class ExecutableConfig:
         return self.content.get("ignore", [])
 
     def is_free_args(self):
-        return self.content.get("free_args")
+        return self.content.get("free_args") == True
 
     def check(self):
         MAIN_ARG_TYPE = self.content.get("type")

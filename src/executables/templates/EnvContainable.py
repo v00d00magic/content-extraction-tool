@@ -2,6 +2,7 @@ class EnvContainable:
     '''
     Class that contains env variables
     '''
+
     @classmethod
     def getEnvVars(cls):
         res = {}

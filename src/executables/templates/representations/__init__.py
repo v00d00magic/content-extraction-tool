@@ -1,5 +1,6 @@
 from declarable.Arguments import BooleanArgument
 from executables.templates.Executable import Executable
+from executables.ExecutableCall import ExecutableCall
 from executables.responses.ItemsResponse import ItemsResponse
 
 class RepresentationMeta(type):
@@ -48,11 +49,11 @@ class Representation(Executable, metaclass=RepresentationMeta):
 
     @classmethod
     def findSuitableExtractor(cls, args):
-        if getattr(cls, "onlyTrueExtractor", None) != None:
-            return cls.only_true_extractor()
+        if getattr(cls, "singleExtractor", None) != None:
+            return cls.singleExtractor()
 
         if getattr(cls, "extractorWheel", None) != None:
-            return cls.extractor_wheel(args)
+            return cls.extractorWheel(args)
 
         if len(cls.receivations) == 1:
             return cls.receivations[0]
@@ -70,16 +71,17 @@ class Representation(Executable, metaclass=RepresentationMeta):
 
         assert strategy != None, "cant find correct extractor"
 
-        strategy_class = strategy()
+        strategy_class = ExecutableCall(None, strategy)
+
         # на самом деле это ненастоящие модули (они от другого класса) поэтому приходится сделать так.
         # FIXME
-        strategy_class.setOuter(self.__class__)
-        compares = strategy_class.comparerShortcut(None, i)
+        strategy_class.executable.setOuter(self.__class__)
+        compares = strategy_class.executable.comparerShortcut(None, i)
 
         if getattr(self, "beforeExecute", None) != None:
             self.beforeExecute(compares.dict())
 
-        return await strategy_class.execute(compares.dict())
+        return await strategy_class.executable.execute(compares.dict())
 
     async def implementation(self, i: dict = {}):
         return ItemsResponse(await self.optimalStrategy(i))
