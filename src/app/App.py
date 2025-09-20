@@ -1,6 +1,7 @@
 from db.DbConnection import DbConnection
 from app.Storage import StorageContainer
 from utils.Hookable import Hookable
+from utils.Increment import Increment
 from app.Config import Config
 from app.Logger import Logger
 
@@ -37,6 +38,7 @@ class App(Hookable):
 
         self.argv = self._parse_argv()
         self.loop = asyncio.get_event_loop()
+        self.executable_index = Increment()
         self.set_consts()
 
     def set_consts(self):
@@ -51,11 +53,6 @@ class App(Hookable):
         from executables.ExecutableMap import ExecutableMap
 
         self.indexated_scripts = ExecutableMap()
-
-    def getIndex(self):
-        self.incremental_executable_index += 1
-
-        return self.incremental_executable_index
 
 app = App()
 

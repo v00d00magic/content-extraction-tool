@@ -1,9 +1,12 @@
-from peewee import IntegerField
 from db.Models.BaseModel import BaseModel
-from snowflake import SnowflakeGenerator
-from app.App import logger
-from app.Logger.LogSection import LogSection
+from peewee import IntegerField
 from playhouse.sqlite_ext import fn
+
+from snowflake import SnowflakeGenerator
+
+from app.Logger.LogSection import LogSection
+from app.Logger.LogKind import LogKind
+from app.App import logger
 
 class ContentModel(BaseModel):
     uuid = IntegerField(unique=True, primary_key=True)
@@ -33,11 +36,15 @@ class ContentModel(BaseModel):
     def isSaved(self) -> bool:
         return self.uuid != None
 
-    def save(self, **kwargs):
+    def generateId(self):
         gen = SnowflakeGenerator(0)
-        self.uuid = str(next(gen))
+        return str(next(gen))
 
-        super().save(**kwargs)
+    def getDbName(self):
+        if self._meta.database.database == ":memory:":
+            return "temp"
+        else:
+            return "content"
 
     def sign(self)->str:
         return f"__$|{self.short_name}_{self.uuid}"
@@ -49,9 +56,12 @@ class ContentModel(BaseModel):
     async def beforeSave(self):
         pass
 
-    async def flush(self):
-        await self.beforeSave()
-        self.save()
+    async def postSave(self):
+        logger.log(f"Saved {self.__class__.self_name} to db temp, id: {self.uuid}", kind=LogKind.KIND_SUCCESS, section=LogSection.SECTION_SAVEABLE)
 
-    def moveToDb(self):
-        pass
+    async def flush(self, **kwargs):
+        await self.beforeSave()
+        kwargs["to_temp"] = True
+
+        self.save(**kwargs)
+        await self.postSave()

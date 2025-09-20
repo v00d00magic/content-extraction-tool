@@ -20,15 +20,6 @@ class Representation(Executable, metaclass=RepresentationMeta):
         return []
 
     @classmethod
-    def declare(cls):
-        params = {}
-        params["do_collections"] = BooleanArgument({
-            "default": False
-        })
-
-        return params
-
-    @classmethod
     def declareRecursive(cls):
         _extractors_args = cls.sumArguments(cls.receivations)
 

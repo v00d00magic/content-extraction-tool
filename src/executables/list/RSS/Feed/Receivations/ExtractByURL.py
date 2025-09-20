@@ -55,7 +55,7 @@ class Implementation(RSS.AbstractReceivation):
                 pass
 
         if i.get("do_collections") == True:
-            collection = self.ContentUnit()
+            collection = self.Collection()
             collection.display_name = channel.get('title', 'Untitled')
             collection.description = channel.get('description')
             collection.content = channel
@@ -64,8 +64,6 @@ class Implementation(RSS.AbstractReceivation):
                 'type': 'url',
                 'content': channel.get('link')
             }
-            collection.is_collection = True
-            self.addLink(collection)
 
         total = len(items)
         got = 0

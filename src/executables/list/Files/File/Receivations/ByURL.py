@@ -39,15 +39,16 @@ class Implementation(File.AbstractReceivation):
             out_file.setCommonFile(common_file)
             out_file.setName(url.getNameAndExtensionByRequest(request))
             out_file.clearCommonFile()
-            out_file.flush()
+            await out_file.flush()
 
             out = await self.outer.createSelf(out_file)
             out.Source.update({
                 'type': 'url',
                 'content': _url
             })
-
             await out.flush()
+            out.Links.link(out_file, True)
+
             outs.append(out)
 
         return outs

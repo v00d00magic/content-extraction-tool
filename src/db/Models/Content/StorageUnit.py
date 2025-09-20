@@ -5,6 +5,7 @@ from utils.Data.JSON import JSON
 from utils.Web.Mime import Mime
 from db.Models.Content.ContentModel import ContentModel
 from app.Storage.HashDirectory import HashDirectory
+from app.Logger.LogSection import LogSection
 
 class StorageUnit(ContentModel):
     table_name = 'storage_units'
@@ -32,7 +33,7 @@ class StorageUnit(ContentModel):
             self.hash = HashDirectory.getHash()
             self.hash_dir = HashDirectory(storage.get("temp_storage_units"), self.hash, True)
         else:
-            self.hash_dir = HashDirectory(storage.get("storage_units"), self.hash)
+            self.hash_dir = HashDirectory(storage.get("temp_storage_units"), self.hash)
             self.hash_dir.setCommonFile(self.hash_dir.getProbalyCommonFile())
 
     def getDir(self) -> Path:
@@ -70,13 +71,21 @@ class StorageUnit(ContentModel):
         self.lists = JSON(files_list).dump()
 
     def getFilesList(self):
-        self.lists = JSON(self.lists).parse()
+        return JSON(self.lists).parse()
 
-    def flush(self):
+    async def flush(self):
         assert self.hash_dir.common_file != None, "common_file not defined"
 
         self.setFilesList(self.hash_dir.generateFilesList())
+
+        await super().flush()
+
         self.save(force_insert=True)
+
+    def moveSelf(self):
+        logger.log(f"Moving HashDirectory of StorageUnit {self.uuid} to storage_units", section = LogSection.SECTION_SAVEABLE)
+
+        self.hash_dir.moveSelf(storage.get("storage_units"))
 
     def getFileName(self):
         return ".".join([self.upload_name, self.extension])
@@ -92,6 +101,7 @@ class StorageUnit(ContentModel):
     def getStructure(self):
         payload = {}
         payload['class_name'] = self.self_name
+        payload['db'] = self.getDbName()
         payload["id"] = str(self.uuid)
         payload["name"] = {
             "upload_name": self.upload_name,
@@ -99,7 +109,7 @@ class StorageUnit(ContentModel):
         }
         payload["sizes"] = {
             "main": self.filesize,
-            #"dir": self.hash_dir.getFilesSize()
+            "dir": self.getFilesSize()
         }
         payload["hash"] = {
             "main": self.hash,

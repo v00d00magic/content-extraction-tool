@@ -8,7 +8,6 @@ Todo:
 - [ ] Extend contentunit from representation
 - [x] Dump executable runs
 - [x] Class sections
-- [ ] Open variables of the class
 - [x] Move `response` to class
 - [x] Store executable threads
 - [ ] Recursion protection
@@ -19,11 +18,14 @@ Todo:
 - [ ] Max logfile size
 - [ ] Move logger to separate module
 - [x] Outer executable type
+- [ ] Configurable
+- [ ] Variables of the class
 
 #### Models
 
 - [x] Db connection config should be dict
-- [ ] Temp DB and storage
+- [x] Temp DB and storage
+- [x] Moving to common db
 
 #### Representations
 

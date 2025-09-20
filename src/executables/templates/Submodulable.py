@@ -69,7 +69,7 @@ class Submodulable():
 
             @classmethod
             def selfInsert(cls, item):
-                item.signRepresentation(cls)
+                item.SavedVia.sign(cls)
 
         class AbstractExternalExtractor(Extractor):
             self_name = "ExternalExtractor"
@@ -78,7 +78,7 @@ class Submodulable():
 
             @classmethod
             def selfInsert(cls, item):
-                item.signRepresentation(cls)
+                item.SavedVia.sign(cls)
 
         class AbstractConfirmation(Extractor):
             self_name = "Confirmation"

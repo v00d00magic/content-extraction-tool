@@ -25,9 +25,10 @@ class Implementation(TextImplementation.AbstractReceivation):
         for text in texts:
             out = self.ContentUnit()
             out.display_name = Text(text).cut(100)
-            out.content = {
+            out.JSONContent.update({
                 'text': text
-            }
+            })
+            await out.flush()
 
             output.append(out)
 

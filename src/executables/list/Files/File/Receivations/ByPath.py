@@ -74,7 +74,7 @@ class Implementation(File.AbstractReceivation):
                     FileItem(path).move(move_to)
 
             out_file.setCommonFile(move_to)
-            out_file.flush()
+            await out_file.flush()
 
             out = await self.outer.createSelf(out_file)
             out.JSONContent.update({
@@ -85,8 +85,8 @@ class Implementation(File.AbstractReceivation):
                 "type": "path",
                 "content": str(path)
             })
-
             await out.flush()
+
             outs.append(out)
 
         return outs

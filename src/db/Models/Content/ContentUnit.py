@@ -3,7 +3,7 @@ from db.Models.Content.StorageUnit import StorageUnit
 from peewee import TextField, BooleanField, FloatField, CharField
 from utils.Data.Date import Date
 from utils.Data.JSON import JSON
-from app.App import logger, db_connection
+from app.App import logger
 
 class ContentUnit(ContentModel):
     # Display
@@ -34,6 +34,8 @@ class ContentUnit(ContentModel):
     short_name = 'cu'
 
     def __init__(self):
+        from db.LinkManager import LinkManager
+
         super().__init__()
 
         class ContentContainer():
@@ -88,8 +90,6 @@ class ContentUnit(ContentModel):
 
             @classmethod
             def getDataRecursively(cls, recursive = False, recurse_level = 0):
-                from db.LinkManager import LinkManager
-
                 loaded_content = cls.getData()
                 if recursive == True and recurse_level < 3:
                     link_manager = LinkManager(self)
@@ -124,36 +124,78 @@ class ContentUnit(ContentModel):
             def set_attr(cls, new_data):
                 self.saved = new_data
 
+            @classmethod
+            def sign(cls, method):
+                self.via_method = method
+                self.SavedVia.update({
+                    "method": method.getName(),
+                    "representation": method.outer.getName()
+                })
+
+        class Links():
+            @classmethod
+            def checkManager(cls):
+                if self.link_manager == None:
+                    self.link_manager = LinkManager(self)
+
+            @classmethod
+            def getCommon(cls):
+                cls.checkManager()
+                for item in cls.getLinkedList():
+                    if item.uuid == self.common_link_id and item.self_name == "StorageUnit":
+                        return item
+
+            @classmethod
+            def getLinkedList(cls):
+                cls.checkManager()
+                logger.log(f"Getting linked from {self.uuid}",section=["Saveable"])
+
+                return self.link_manager.getItems()
+
+            @classmethod
+            def markCommon(cls, common_link: StorageUnit):
+                cls.checkManager()
+                self.common_link_id = common_link.uuid
+
+            @classmethod
+            def link(cls, item: ContentModel, is_common: bool = False):
+                cls.checkManager()
+                self.link_manager.link(item)
+
+                if is_common == True:
+                    cls.markCommon(item)
+
         self.JSONContent = JSONContent
         self.Source = Source
         self.Outer = Outer
         self.SavedVia = SavedVia
+        self.Links = Links
 
-        self.link_queue = []
+        self.link_manager = None
         self.via_method = None
-        self.common_link = None
 
         if self.isSaved() == False:
             _now = Date(Date().now()).timestamp_or_float()
-            if self.common_link_id != None:
-                self.common_link = StorageUnit.ids(int(self.common_link_id))
 
             self.created_at = float(_now)
             self.declared_created_at = float(_now)
 
-    def getLinkedList(self):
-        from db.LinkManager import LinkManager
+    async def beforeSave(self):
+        if self.via_method:
+            for outer in self.via_method.outer.outerList():
+                _outer = outer(self.via_method.outer)
 
-        logger.log(f"Getting linked from {self.uuid}",section=["Saveable"])
+                logger.log(f"Beforesave: run {_outer.getName()}",section="Saveable")
 
-        link_manager = LinkManager(self)
-
-        return link_manager.linksList()
+                await _outer.implementation({
+                    "item": self
+                })
 
     def getStructure(self, return_content = True, return_linked = True):
         payload = {}
         payload['id'] = str(self.uuid) # Converting to str cuz JSON.parse cannot convert it
         payload['class_name'] = self.self_name
+        payload['db'] = self.getDbName()
         payload['meta'] = {
             "display_name": self.display_name,
             "description": self.description
@@ -172,69 +214,7 @@ class ContentUnit(ContentModel):
 
         if return_linked == True:
             payload["linked"] = []
-            for linked_item in self.getLinkedList():
+            for linked_item in self.Links.getLinkedList():
                 payload.get("linked").append(linked_item.getStructure())
 
         return payload
-
-    def markCommon(self, common_link: StorageUnit):
-        self.common_link = common_link
-        self.common_link_id = common_link.uuid
-
-    def signRepresentation(self, method):
-        self.via_method = method
-        self.SavedVia.update({
-            "method": method.getName(),
-            "representation": method.outer.getName()
-        })
-
-    # Links
-
-    def link(self, item, is_common: bool = False):
-        if is_common == True:
-            self.markCommon(item)
-
-        self.link_queue.append(item)
-
-    def writeLinkQueue(self):
-        from db.LinkManager import LinkManager
-
-        link_manager = LinkManager(self)
-        link_manager.writeQueue(self.link_queue)
-
-        self.link_queue = []
-
-    def isQueued(self):
-        return self.isSaved()
-
-    # Hooks
-
-    async def beforeSave(self):
-        if self.via_method:
-            for outer in self.via_method.outer.outerList():
-                _outer = outer(self.via_method.outer)
-
-                logger.log(f"Beforesave: run {_outer.getName()}",section="Saveable")
-
-                await _outer.implementation({
-                    "item": self
-                })
-
-    def postSave(self):
-        logger.log(f"Saved ContentUnit, saved id: {self.uuid} to db temp, trying to link {len(self.link_queue)} items",section="Saveable")
-
-        if len(self.link_queue) > 0:
-            self.writeLinkQueue()
-
-    # saving to temporary db
-    def save(self, **kwargs):
-        kwargs["force_insert"] = True
-
-        to_db = kwargs.get("db")
-        if to_db == None:
-            to_db = db_connection.temp_db
-
-        self.setDb(to_db)
-
-        super().save(**kwargs)
-        self.postSave()

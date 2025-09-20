@@ -1,9 +1,11 @@
 from declarable.Arguments import CsvArgument, ContentUnitArgument, ExecutableArgument, BooleanArgument
 from executables.responses.Response import Response
+from executables.responses.ItemsResponse import ItemsResponse
 from executables.templates.acts import Act
 from db.Models.Content.ContentUnit import ContentUnit
 from declarable.ExecutableConfig import ExecutableConfig
 from executables.ExecutableCall import ExecutableCall
+from app.App import db_connection
 
 locale_keys = {
     "name": {
@@ -27,14 +29,17 @@ class Implementation(Act):
                 "can_be_executed": True
             }
         })
-        params["link_after"] = CsvArgument({
+        params["links"] = CsvArgument({
             "orig": ContentUnitArgument({}),
             "docs": {
                 "name": Act.key("name"),
             },
             "default": []
         })
-        params["is_save"] = BooleanArgument({
+        params["create_internal_collections"] = BooleanArgument({
+            "default": False
+        })
+        params["save_all"] = BooleanArgument({
             "default": True
         })
         params["confirm"] = BooleanArgument({
@@ -43,25 +48,24 @@ class Implementation(Act):
         params["dump"] = BooleanArgument({
             "default": False
         })
-        params["ignore_requirements"] = BooleanArgument({
-            'default': False,
+        params["check_requirements"] = BooleanArgument({
+            'default': True,
         })
 
         return params
 
     async def implementation(self, i = {}):
         executable = i.get('i')
+        is_save = i.get('save_all')
+        links = i.get('links')
 
         assert executable.canBeExecuted(), "sorry!"
 
         if i.get("dump") == True:
             self.call.dump()
 
-        if i.get("ignore_requirements") == False:
+        if i.get("check_requirements") == True:
             assert executable.isModulesInstalled(), "requirements not installed"
-
-        def __progress_hook(message):
-            self.trigger("progress", message=message)
 
         if len(executable.confirmations) > 0:
             if int(i.get("confirm")) == 1 == False:
@@ -78,23 +82,23 @@ class Implementation(Act):
                 return _out
 
         link_to = []
-        links = i.get('link')
         if links != None and len(links) > 0:
-            link_to = ContentUnit.ids(links)
-
-        _pass = i.__dict__(self.__class__.declare().keys())
+            for link in ContentUnit.ids(links):
+                link_to.append(link)
 
         this_call = ExecutableCall(executable=executable)
-        #this_call.add_hook("progress", __progress_hook)
-        for link_item in link_to:
-            this_call.addLink(link_item)
+        this_call.passArgs(i.__dict__(exclude=self.__class__.declare().keys()))
 
-        this_call.passArgs(_pass)
         result = await this_call.run_asyncely()
+        for link in this_call.getCollections():
+            link_to.append(link)
 
-        if hasattr(result, "items") == True:
+        # storage.get("storage_units")
+
+        if isinstance(result, ItemsResponse) == True:
             for item in result.items():
-                if i.get('is_save') == True:
-                    this_call.doLink(item)
+                if is_save == True:
+                    item.moveToDb(db_connection.db)
+                    #item.linkTo(link_to)
 
         return result

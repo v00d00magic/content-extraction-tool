@@ -1,4 +1,5 @@
 from db.Models.Instances.ArgumentsDump import ArgumentsDump
+from executables.templates.Executable import Executable
 from executables.responses.Response import Response
 from utils.Hookable import Hookable
 from db.LinkManager import LinkManager
@@ -20,17 +21,18 @@ class ExecutableCall(Hookable):
 
     events = ["run", "progress"]
 
-    def __init__(self, index = None, executable = None):
+    def __init__(self, index = None, executable: Executable = None):
         super().__init__()
 
         self.index = index
         if self.index == None:
-            self.index = app.getIndex()
+            self.index = app.executable_index.getIndex()
 
         self._executable_class = executable
         self.executable = executable()
         self.executable.defineWrapper(self)
         self.linking_queue = []
+        self.collections = []
 
         def _run_hook():
             self.log(f"Executed {self.executable.getName()}", section=LogSection.SECTION_EXECUTABLES)
@@ -67,34 +69,14 @@ class ExecutableCall(Hookable):
 
         return Response.convert(await self.executable.execute(self.args))
 
+    def getCollections(self):
+        return self.collections
+
     # Progress
 
     def notifyAboutProgress(self, message, percentage: float = 0.0):
         _message = ProgressMessage(message, percentage, self.index)
         self.trigger("progress", message=_message)
-
-    # Links
-
-    def addLink(self, item):
-        if getattr(self, "linking_queue", None) == None:
-            self.linking_queue = []
-
-        self.linking_queue.append(item)
-
-    def doLink(self, link_item):
-        if getattr(self, "linking_queue", None) == None:
-            self.linking_queue = []
-
-        for item in self.linking_queue:
-            if item.isSaved() == False:
-                item.save()
-
-            link_manager = LinkManager(item)
-
-            try:
-                link_manager.link(item, link_item)
-            except AssertionError as _e:
-                logger.log(_e, section=LogSection.SECTION_LINKAGE)
 
     # Log
 

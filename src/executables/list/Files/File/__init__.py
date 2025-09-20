@@ -27,6 +27,4 @@ class Implementation(Representation):
         out.display_name = item.getFileName()
         out.JSONContent.update({})
 
-        out.link(item, True)
-
         return out

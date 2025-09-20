@@ -24,7 +24,7 @@ class HashDirectory:
     def defineUpper(self) -> Path:
         _dir = self.path.joinpath(self.hash[0:2])
 
-        if (self.do_mkdir == True):
+        if self.do_mkdir == True:
             _dir.mkdir(exist_ok=True)
 
         return _dir
@@ -32,7 +32,7 @@ class HashDirectory:
     def defineCommon(self, upper: Path) -> Path:
         _dir = upper.joinpath(self.hash)
 
-        if (self.do_mkdir == True):
+        if self.do_mkdir == True:
             _dir.mkdir(exist_ok=True)
 
         return _dir
@@ -44,11 +44,23 @@ class HashDirectory:
         self.common_file = path
 
     def renameCommonFile(self, new_name: str):
-        self.common_file.rename(self.common.joinpath(new_name))
-        self.common_file = Path(self.common.joinpath(new_name))
+        new_name = Path(self.common.joinpath(new_name))
+        self.common_file.rename(new_name)
+        self.common_file = new_name
 
     def moveSelf(self, new_storage):
-        new_storage_path = self.storage.path()
+        _old = Path(self.common)
+
+        self.path = new_storage.path()
+        self.do_mkdir = True
+
+        _new_name = self.path.joinpath(self.hash[0:2]).joinpath(self.hash)
+
+        self.upper = self.defineUpper()
+        _old.rename(_new_name)
+
+        self.common = self.defineCommon(self.upper)
+        self.setCommonFile(_new_name)
 
     def generateFilesList(self):
         current_dir = self.common
