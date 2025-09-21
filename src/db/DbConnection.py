@@ -1,7 +1,11 @@
 from utils.Data.Text import Text
 from peewee import SqliteDatabase, MySQLDatabase, PostgresqlDatabase, DatabaseProxy
+from utils.Configurable import Configurable
 
-class DbConnection:
+class DbConnection(Configurable):
+    def __init__(self):
+        self.updateConfig()
+
     @classmethod
     def getByConfig(cls, connection_config):
         db = None
@@ -39,5 +43,24 @@ class DbConnection:
         DbConnection.create(self.temp_db, [ContentUnitRelation, ContentUnit, StorageUnit])
         DbConnection.create(self.db, [ContentUnitRelation, ContentUnit, StorageUnit])
         DbConnection.create(self.instance_db, [Stat, ServiceInstance, ArgumentsDump])
+
+    @classmethod
+    def declareSettings(cls):
+        from declarable.Arguments import ObjectArgument
+
+        items = {}
+        items["db.content.connection"] = ObjectArgument({
+            "default": {
+                "protocol": "sqlite",
+                "path": "?cwd?/storage/db/content.db"
+            }
+        })
+        items["db.instance.connection"] = ObjectArgument({
+            "default": {
+                "protocol": "sqlite",
+                "path": "?cwd?/storage/db/instance.db"
+            }
+        })
+        return items
 
 db_connection = DbConnection()

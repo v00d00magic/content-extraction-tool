@@ -1,9 +1,12 @@
 from utils.Data.Text import Text
 from app.Storage.StorageItem import StorageItem
+from utils.Configurable import Configurable
+from declarable.Documentation import global_documentation
 
-class StorageContainer:
+class StorageContainer(Configurable):
     def __init__(self, config):
-        self.common = Text(config.get("storage.root_path")).cwdReplacement().srcReplacement().get()
+        self.updateConfig()
+        self.common = Text(config.get("storage.path")).cwdReplacement().srcReplacement().get()
         self.items = {}
 
         self.items["config"] = StorageItem(self.common, "config")
@@ -19,3 +22,26 @@ class StorageContainer:
 
     def get(self, name):
         return self.items.get(name)
+
+    @classmethod
+    def declareSettings(cls):
+        from declarable.Arguments import StringArgument
+
+        global_documentation.loadKeys({
+            "storage.root_path.name": {
+                "en_US": "Storage location",
+            },
+            "storage.root_path.definition": {
+                "en_US": "Internal storage location. «?cwd?» is replaced with the startup directory. Edit with caution.",
+            },
+        })
+        items = {}
+        items["storage.path"] = StringArgument({
+            "default": "?cwd?/storage", # cwd -> /storage
+            "docs": {
+                "name": global_documentation.get("storage.root_path.name"),
+                "definition": global_documentation.get("storage.root_path.definition"),
+            },
+        })
+
+        return items

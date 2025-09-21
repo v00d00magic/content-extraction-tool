@@ -39,9 +39,9 @@ class App(Hookable):
         self.argv = self._parse_argv()
         self.loop = asyncio.get_event_loop()
         self.executable_index = Increment()
-        self.set_consts()
+        self.setConsts()
 
-    def set_consts(self):
+    def setConsts(self):
         self.consts = {}
         self.cwd = Path(os.getcwd())
         self.consts["os.name"] = platform.system()

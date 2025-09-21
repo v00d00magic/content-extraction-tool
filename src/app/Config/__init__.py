@@ -54,7 +54,11 @@ class Config():
         self.config_stream.truncate()
 
     def get(self, option: str, default: str = None):
-        return self.options.get(option, default)
+        got = self.declared_settings.getByName(option)
+        if got == None:
+            return default
+
+        return got
 
     def set(self, option: str, value: str):
         if value == None:

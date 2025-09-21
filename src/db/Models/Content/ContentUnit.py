@@ -2,7 +2,7 @@ from db.Models.Content.ContentModel import ContentModel
 from db.Models.Content.StorageUnit import StorageUnit
 from peewee import TextField, BooleanField, FloatField, CharField
 from utils.Data.Date import Date
-from utils.Data.JSON import JSON
+from utils.JSONContentContainer import JSONContentContainer
 from app.App import logger
 
 class ContentUnit(ContentModel):
@@ -33,60 +33,24 @@ class ContentUnit(ContentModel):
     self_name = 'ContentUnit'
     short_name = 'cu'
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         from db.LinkManager import LinkManager
 
-        super().__init__()
+        super().__init__(**kwargs)
 
-        class ContentContainer():
-            _cached = None
-
+        class JSONContentUnitContainer(JSONContentContainer):
             @classmethod
-            def get_attr(cls):
-                pass
+            def get_description(cls):
+                return f"{cls.__name__} uuid: {self.uuid}"
 
-            @classmethod
-            def set_attr(cls, new_data):
-                pass
-
-            @classmethod
-            def get_cached(cls):
-                return cls._cached
-
-            @classmethod
-            def getData(cls):
-                logger.log(f"Getting {cls.__name__} property",section=["Saveable", "Container"])
-
-                if cls.get_cached() != None:
-                    return cls.get_cached()
-
-                if cls.get_attr() == None:
-                    return {}
-
-                cls._cached = JSON(cls.get_attr()).parse()
-                return cls._cached
-
-            @classmethod
-            def update(cls, new_data):
-                _data = cls.getData()
-                _data.update(new_data)
-
-                logger.log(f"Updated container {cls.__name__}",section=["Saveable", "Container"])
-
-                cls.set_attr(_data)
-
-            @classmethod
-            def get(cls, key, default = None):
-                return cls.getData().get(key, default)
-
-        class JSONContent(ContentContainer):
+        class JSONContent(JSONContentUnitContainer):
             @classmethod
             def get_attr(cls):
                 return self.content
 
             @classmethod
             def set_attr(cls, new_data):
-                self.content = new_data
+                self.content = cls.attr_json(new_data)
 
             @classmethod
             def getDataRecursively(cls, recursive = False, recurse_level = 0):
@@ -97,32 +61,32 @@ class ContentUnit(ContentModel):
 
                 return loaded_content
 
-        class Source(ContentContainer):
+        class Source(JSONContentUnitContainer):
             @classmethod
             def get_attr(cls):
                 return self.source
             
             @classmethod
             def set_attr(cls, new_data):
-                self.source = new_data
+                self.source = cls.attr_json(new_data)
 
-        class Outer(ContentContainer):
+        class Outer(JSONContentUnitContainer):
             @classmethod
             def get_attr(cls):
                 return self.outer
 
             @classmethod
             def set_attr(cls, new_data):
-                self.outer = new_data
+                self.outer = cls.attr_json(new_data)
 
-        class SavedVia(ContentContainer):
+        class SavedVia(JSONContentUnitContainer):
             @classmethod
             def get_attr(cls):
                 return self.saved
 
             @classmethod
             def set_attr(cls, new_data):
-                self.saved = new_data
+                self.saved = cls.attr_json(new_data)
 
             @classmethod
             def sign(cls, method):

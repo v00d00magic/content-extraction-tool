@@ -18,4 +18,4 @@ class Documentation:
 
         return _key
 
-documentation = Documentation()
+global_documentation = Documentation()

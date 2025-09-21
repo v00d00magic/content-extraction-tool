@@ -6,12 +6,19 @@ from app.Logger.LogMessage import LogMessage
 from app.Logger.LogKind import LogKind
 from app.Logger.LogSection import LogSection
 from app.Logger.LogLimiter import LogLimiter
+
+from utils.Configurable import Configurable
 from utils.Data.JSON import JSON
 from utils.Hookable import Hookable
 from datetime import datetime
+
+from declarable.Arguments import Argument, StringArgument, ClassArgument, CsvArgument, BooleanArgument
+from app.Logger.LogSkipSection import LogSkipSection
+from declarable.Documentation import global_documentation
+
 import traceback
 
-class Logger(Hookable):
+class Logger(Hookable, Configurable):
     events = ["log"]
 
     def __init__(self, config, storage):
@@ -19,6 +26,7 @@ class Logger(Hookable):
 
         ColoramaInit()
 
+        self.__class__.updateConfig()
         self._skip_file = config.get("logger.skip_file") == 1
 
         self.limiter = LogLimiter(config.get("logger.skip_categories"))
@@ -74,3 +82,51 @@ class Logger(Hookable):
         })
 
         self.logMessage(msg)
+
+    @classmethod
+    def declareSettings(cls):
+        locale_keys = {
+            "logger.skip_categories.name": {
+                "en_US": "Ignored categories",
+            },
+            "logger.skip_categories.definition": {
+                "en_US": "List of categories that will not be displayed from the logger",
+            },
+            "logger.skip_file.name": {
+                "en_US": "Do not write logs into the file",
+            },
+        }
+        global_documentation.loadKeys(locale_keys)
+
+        items = {}
+        items["logger.skip_categories"] = CsvArgument({
+            "default": [
+                LogSkipSection({
+                    "name": ["Executables", "Initialization"],
+                    "kinda": "message"
+                }), 
+                LogSkipSection({
+                    "name": ["Executables", "Declaration"],
+                    "kinda": "message",
+                }),
+                LogSkipSection({
+                    "name": ["Saveable", "Container"],
+                    "wildcard": False,
+                })
+            ],
+            "orig": ClassArgument({
+                "class": LogSkipSection
+            }),
+            "docs": {
+                "name": global_documentation.get("logger.skip_categories.name"),
+                "definition": global_documentation.get("logger.skip_categories.definition"),
+            },
+        })
+        items["logger.skip_file"] = BooleanArgument({
+            "default": 0,
+            "docs": {
+                "name": global_documentation.get("logger.skip_file.name"),
+            },
+        })
+
+        return items

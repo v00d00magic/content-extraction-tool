@@ -4,6 +4,7 @@ from utils.Hookable import Hookable
 from app.App import config
 from pathlib import Path
 import asyncio, aiohttp, os, time
+from utils.Configurable import Configurable
 
 class DownloadManagerItem():
     def __init__(self, url: str, dir: str):
@@ -19,8 +20,55 @@ class DownloadManagerItem():
         }
 
 # FIXME: rewrite
-class DownloadManager(Hookable):
+class DownloadManager(Hookable, Configurable):
     section_name = "AsyncDownloadManager"
+
+    @classmethod
+    def declareSettings():
+        from declarable.Documentation import global_documentation
+        from declarable.Arguments import IntArgument, StringArgument
+
+        global_documentation.loadKeys({
+            "net.max_speed.name": {
+                "en_US": "Max speed",
+            },
+            "net.useragent.name": {
+                "en_US": "User-Agent",
+            },
+            "net.max_speed.definition": {
+                "en_US": "Max speed for web operations (in Kbps)",
+            },
+            "net.timeout.name": {
+                "en_US": "Timeout",
+            },
+            "net.timeout.definition": {
+                "en_US": "Timeout for web operations",
+            }
+        })
+
+        items = {}
+        items["net.max_speed"] = IntArgument({
+            "default": 2000, # kbs
+            "docs": {
+                "name": global_documentation.get("net.max_speed.name"),
+                "definition": global_documentation.get("net.max_speed.definition"),
+            },
+        })
+        items["net.useragent"] = StringArgument({
+            "default": 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:47.0) Gecko/20100101 Firefox/47.0',
+            "docs": {
+                "name": global_documentation.get("net.useragent.name"),
+            },
+        })
+        items["net.timeout"] = IntArgument({
+            "default": 100,
+            "docs": {
+                "name": global_documentation.get("net.timeout.name"),
+                "definition": global_documentation.get("net.timeout.definition"),
+            },
+        })
+
+        return items
 
     def __init__(self, max_concurrent_downloads: int = 3, speed_limit_kbps: int = config.get("net.max_speed")):
         super().__init__()

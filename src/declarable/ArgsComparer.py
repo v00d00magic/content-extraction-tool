@@ -38,31 +38,44 @@ class ArgsComparer():
 
         table = ArgsDict()
 
-        hyb_options = {}
+        options = {}
         if getattr(self.args, "__dict__", None) != None:
-            hyb_options = self.args.__dict__()
+            options = self.args.__dict__()
         else:
-            hyb_options = dict(self.args)
+            options = dict(self.args)
 
-        hyb_options.update(self.compare)
+        options.update(self.compare)
 
-        # it just asks the names so we dont need to care about values
-        for param_name, param_item in hyb_options.items():
-            param_object = self.compare.get(param_name)
-            if param_object == None:
-                if self.missing_args_inclusion == True:
-                    table.add(param_name, self.args.get(param_name))
-
+        for param_name, param_item in options.items():
+            got_value = self.getByName(param_name)
+            if got_value == None and self.save_none_values == False:
                 continue
 
-            param_object.configuration['name'] = param_name
-            param_object.input_value(self.args.get(param_name))
-            value = param_object.getResult(self.default_sub)
+            table.add(param_name, got_value)
 
+        return table
+
+    def getByName(self, name, assertions = True):
+        inputs_value = self.args.get(name)
+        param_object = self.compare.get(name)
+
+        if param_object == None:
+            if self.missing_args_inclusion == True:
+                return inputs_value
+            else:
+                return None
+
+        fallback = param_object.default()
+        set_default = self.default_sub
+
+        param_object.configuration['name'] = name
+        param_object.input_value(inputs_value)
+
+        value = param_object.getResult(set_default)
+
+        if assertions == True:
             try:
                 param_object.assertions()
-                if value == None and self.save_none_values == False:
-                    continue
             except Exception as assertion:
                 try:
                     from app.App import logger
@@ -74,9 +87,7 @@ class ArgsComparer():
                 if self.exc == ArgsComparer.EXCEPT_ASSERT:
                     raise assertion
                 else:
-                    if self.default_sub == True:
-                        value = param_object.default()
+                    if set_default == True:
+                        value = fallback
 
-            table.add(param_name, value)
-
-        return table
+        return value

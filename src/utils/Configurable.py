@@ -1,2 +1,10 @@
+from app.Config.DefaultSettings import DefaultSettings
+
 class Configurable:
-    pass
+    @classmethod
+    def updateConfig(cls):
+        DefaultSettings.update(cls.declareSettings())
+
+    @classmethod
+    def declareSettings(cls):
+        pass

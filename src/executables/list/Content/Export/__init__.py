@@ -1,44 +1,37 @@
 from executables.templates.acts import Act
-from declarable.Arguments import LimitedArgument, JsonArgument, StringArgument
+from declarable.Arguments import LimitedArgument, StringArgument, ClassArgument, CsvArgument
 from db.Export.ArchiveExport import ArchiveExport
+from db.Export.ExportItem import ExportItem
 
 class Implementation(Act):
     @classmethod
     def declare(cls):
         params = {}
-        params["items"] = JsonArgument({
+        params["items"] = CsvArgument({
+            "orig": ClassArgument({
+                "class": ExportItem
+            }),
             "assertion": {
                 "not_null": True
-            },
-            "docs": {
-                "name": "acts.export.export.items.name",
             }
         })
         params["type"] = LimitedArgument({
             "default": "archive",
             "values": ["archive", "readable"],
-            "docs": {
-                "name": "acts.export.export.type.name",
-            }
         })
 
         return params
-    
-    async def implementation(self, i = {}):
-        # Array of objects:
-        # class — cu | su
-        # id — id of item
-        # flags:
-        # Linked_depth (def: 0)
 
+    async def implementation(self, i = {}):
         items = i.get("items")
         assert type(items) == list, "this is not a list"
 
+        print(items)
         # type:
         # archive - can be imported later
         # readable - cannot be imported, but can be seen by human eye
 
-        export_type = i.get("type")
+        '''export_type = i.get("type")
         to_export = []
 
         export_manager = ArchiveExport.create_manager()
@@ -58,4 +51,4 @@ class Implementation(Act):
 
         export_manager.end()
 
-        return {}
+        return {}'''

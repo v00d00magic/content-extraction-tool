@@ -4,15 +4,81 @@ import os
 import asyncio
 import threading
 
+from utils.Configurable import Configurable
 from executables.list.Executables.Execute import Implementation as Execute
 from db.Models.Content.StorageUnit import StorageUnit
 from utils.Data.JSON import JSON
 from pathlib import Path
+from declarable.Documentation import global_documentation
 from app.App import app as mainApp
 
 mainApp.setup()
 
 mainApp.context = "web"
+
+class WebApp(Configurable):
+    @classmethod
+    def declareSettings(cls):
+        from declarable.Arguments import StringArgument, IntArgument, BooleanArgument
+
+        locale_keys = {
+            "ui.lang.name": {
+                "en_US": "Language",
+            },
+            "ui.name.name": {
+                "en_US": "Server name",
+            },
+            "web.host.name": {
+                "en_US": "Host name",
+            },
+            "web.port.name": {
+                "en_US": "Port",
+            },
+        }
+        global_documentation.loadKeys(locale_keys)
+
+        items = {}
+        items["ui.lang"] = StringArgument({
+            "default": 'en_US',
+            "docs": {
+                "name": global_documentation.get("ui.lang.name"),
+            },
+        })
+        items["ui.name"] = StringArgument({
+            "default": "Content extraction tool",
+            "docs": {
+                "name": global_documentation.get("ui.name.name"),
+            },
+        })
+        items["web.config_editing.allow"] = BooleanArgument({
+            "default": True,
+        })
+        items["web.env_editing.allow"] = BooleanArgument({
+            "default": False,
+        })
+        items["web.logs_watching.allow"] = BooleanArgument({
+            "default": True,
+        })
+        items["web.host"] = StringArgument({
+            "default": "127.0.0.1",
+            "docs": {
+                "name": global_documentation.get("web.host.name"),
+            },
+        })
+        items["web.port"] = IntArgument({
+            "default": 12345,
+            "docs": {
+                "name": global_documentation.get("web.port.name"),
+            },
+        })
+        items["web.debug"] = BooleanArgument({
+            "default": True,
+        })
+
+        return items
+    
+    def __init__(self):
+        self.updateConfig()
 
 def check_node_modules():
     cwd = Path.cwd()
