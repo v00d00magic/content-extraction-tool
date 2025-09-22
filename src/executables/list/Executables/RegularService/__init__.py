@@ -56,7 +56,7 @@ class Implementation(Service):
 
         self.__get_executable(executable_name, executable_type)
 
-        logger.log(message=f"Called {executable_name}", kind="message", section=LogSection.SECTION_SERVICES)
+        logger.log(message=f"Called {executable_name}", kind="message", section="Service")
 
         __exec = self.c_cached_executable()
 

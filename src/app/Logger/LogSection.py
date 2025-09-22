@@ -2,15 +2,6 @@ from utils.Data.List import List
 from utils.Wrap import Wrap
 
 class LogSection(Wrap):
-    SECTION_ACTS = 'Acts'
-    SECTION_DB = 'DB'
-    SECTION_EXECUTABLES = 'Executables'
-    SECTION_EXTRACTORS = 'Extractors'
-    SECTION_LINKAGE = 'Linkage'
-    SECTION_SERVICES = 'Services'
-    SECTION_SAVEABLE = 'Saveable'
-    SECTION_WEB = 'Web'
-
     section: list
 
     def __init__(self, data):

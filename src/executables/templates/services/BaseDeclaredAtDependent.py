@@ -2,7 +2,7 @@ from executables.templates.services import Service
 from app.App import logger
 from db.Models.Content.ContentUnit import ContentUnit
 from declarable.Arguments import CsvArgument, StringArgument, BooleanArgument
-from db.LinkManager import LinkManager
+from db.Links.LinkManager import LinkManager
 
 class BaseDeclaredAtDependent(Service):
     pass_params = {}

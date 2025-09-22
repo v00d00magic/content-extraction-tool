@@ -2,7 +2,6 @@ from db.Models.Instances.ArgumentsDump import ArgumentsDump
 from executables.templates.Executable import Executable
 from executables.responses.Response import Response
 from utils.Hookable import Hookable
-from db.LinkManager import LinkManager
 from utils.Data.JSON import JSON
 from app.App import app, logger
 from app.Logger.LogSection import LogSection
@@ -19,6 +18,7 @@ class ExecutableCall(Hookable):
     Wrapper of executable
     '''
 
+    section_name = ["Executables", "ExecutableCall"]
     events = ["run", "progress"]
 
     def __init__(self, index = None, executable: Executable = None):
@@ -39,14 +39,14 @@ class ExecutableCall(Hookable):
         self.collections = []
 
         def _run_hook():
-            self.log(f"Executed {self.executable.getName()}", section=LogSection.SECTION_EXECUTABLES)
+            self.log(f"Executed {self.executable.getName()}", section = self.section_name)
 
         self.add_hook("run", _run_hook)
         # self.add_hook("progress", _progress_hook)
 
     def passArgs(self, args = {}):
         self._orig_args = args
-        self.log(f"Executable {self.executable.getName()}: set args {JSON(self._orig_args).dump()}", section=LogSection.SECTION_EXECUTABLES)
+        self.log(f"Executable {self.executable.getName()}: set args {JSON(self._orig_args).dump()}", section = self.section_name)
 
         decls = self.executable.comparerShortcut(None, self._orig_args)
 
@@ -67,7 +67,7 @@ class ExecutableCall(Hookable):
         self.trigger("run")
 
         try:
-            self.log(f"Calling execute() with args: {JSON(self.args.__dict__()).dump()}", section=LogSection.SECTION_EXECUTABLES)
+            self.log(f"Calling execute() with args: {JSON(self.args.__dict__()).dump()}", section = self.section_name)
         except:
             pass
 
@@ -101,4 +101,4 @@ class ExecutableCall(Hookable):
         dump.data = JSON(_data).dump()
         dump.save()
 
-        self.log(f"Dumped {self.executable.getName()}, id {dump.id}", section=LogSection.SECTION_EXECUTABLES)
+        self.log(f"Dumped {self.executable.getName()}, id {dump.id}", section = self.section_name)

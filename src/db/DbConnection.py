@@ -34,7 +34,7 @@ class DbConnection(Configurable):
 
     def createTables(self):
         from db.Models.Content.ContentUnit import ContentUnit
-        from db.Models.Relations.ContentUnitRelation import ContentUnitRelation
+        from db.Links.ContentUnitRelation import ContentUnitRelation
         from db.Models.Instances.Stat import Stat
         from db.Models.Content.StorageUnit import StorageUnit
         from db.Models.Instances.ServiceInstance import ServiceInstance

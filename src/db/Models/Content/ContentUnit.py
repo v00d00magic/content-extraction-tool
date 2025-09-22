@@ -1,8 +1,7 @@
 from db.Models.Content.ContentModel import ContentModel
-from db.Models.Content.StorageUnit import StorageUnit
 from peewee import TextField, BooleanField, FloatField, CharField
-from utils.Data.Date import Date
 from utils.JSONContentContainer import JSONContentContainer
+from utils.Data.Date import Date
 from app.App import logger
 
 class ContentUnit(ContentModel):
@@ -34,7 +33,7 @@ class ContentUnit(ContentModel):
     short_name = 'cu'
 
     def __init__(self, **kwargs):
-        from db.LinkManager import LinkManager
+        from db.Links.LinkManager import LinkManager
 
         super().__init__(**kwargs)
 
@@ -56,8 +55,7 @@ class ContentUnit(ContentModel):
             def getDataRecursively(cls, recursive = False, recurse_level = 0):
                 loaded_content = cls.getData()
                 if recursive == True and recurse_level < 3:
-                    link_manager = LinkManager(self)
-                    loaded_content = link_manager.injectLinksToJsonFromInstance(recurse_level)
+                    loaded_content = self.LinkManager.injectLinksToJsonFromInstance(recurse_level)
 
                 return loaded_content
 
@@ -96,46 +94,11 @@ class ContentUnit(ContentModel):
                     "representation": method.outer.getName()
                 })
 
-        class Links():
-            @classmethod
-            def checkManager(cls):
-                if self.link_manager == None:
-                    self.link_manager = LinkManager(self)
-
-            @classmethod
-            def getCommon(cls):
-                cls.checkManager()
-                for item in cls.getLinkedList():
-                    if item.uuid == self.common_link_id and item.self_name == "StorageUnit":
-                        return item
-
-            @classmethod
-            def getLinkedList(cls):
-                cls.checkManager()
-                logger.log(f"Getting linked from {self.uuid}",section=["Saveable"])
-
-                return self.link_manager.getItems()
-
-            @classmethod
-            def markCommon(cls, common_link: StorageUnit):
-                cls.checkManager()
-                self.common_link_id = common_link.uuid
-
-            @classmethod
-            def link(cls, item: ContentModel, is_common: bool = False):
-                cls.checkManager()
-                self.link_manager.link(item)
-
-                if is_common == True:
-                    cls.markCommon(item)
-
         self.JSONContent = JSONContent
         self.Source = Source
         self.Outer = Outer
         self.SavedVia = SavedVia
-        self.Links = Links
-
-        self.link_manager = None
+        self.LinkManager = LinkManager(self)
         self.via_method = None
 
         if self.isSaved() == False:
@@ -178,7 +141,7 @@ class ContentUnit(ContentModel):
 
         if return_linked == True:
             payload["linked"] = []
-            for linked_item in self.Links.getLinkedList():
+            for linked_item in self.LinkManager.getItems():
                 payload.get("linked").append(linked_item.getStructure())
 
         return payload

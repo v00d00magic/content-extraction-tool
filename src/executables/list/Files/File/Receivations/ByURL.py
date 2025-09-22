@@ -47,7 +47,7 @@ class Implementation(File.AbstractReceivation):
                 'content': _url
             })
             await out.flush()
-            out.Links.link(out_file, True)
+            out.LinkManager.link(out_file, True)
 
             outs.append(out)
 

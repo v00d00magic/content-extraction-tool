@@ -1,7 +1,7 @@
 from executables.templates.acts import Act
 from declarable.Arguments import JsonArgument
 from db.Models.Content.ContentUnit import ContentUnit
-from db.LinkManager import LinkManager
+from db.Links.LinkManager import LinkManager
 
 class Implementation(Act):
     @classmethod

@@ -1,10 +1,9 @@
 from utils.Data.Random import Random
 from db.Models.Content.ContentModel import BaseModel
 from db.Models.Content.ContentUnit import ContentUnit
-from db.Models.Relations.ContentUnitRelation import ContentUnitRelation
 from db.Models.Content.StorageUnit import StorageUnit
 from peewee import Model, SqliteDatabase
-from db.LinkManager import LinkManager
+from db.Links.LinkManager import LinkManager
 from app.App import storage
 
 class ExportItem():
@@ -51,7 +50,7 @@ class ArchiveExport:
 
     def define_db(self):
         self.db = SqliteDatabase(self.tmp_path.joinpath("items.db"))
-        _models = [ContentUnit, StorageUnit, ContentUnitRelation]
+        _models = [ContentUnit, StorageUnit]
 
         with override_db(_models, self.db):
             self.db.connect()

@@ -15,10 +15,12 @@ Todo:
 #### App
 
 - [ ] Use pydantic
+- [ ] Save logs to file
 - [ ] Max logfile size
 - [ ] Move logger to separate module
 - [x] Outer executable type
-- [ ] Configurable
+- [x] "Configurable"
+- [ ] Extend declarable args functionality
 - [ ] Variables of the class
 
 #### Models
@@ -48,6 +50,7 @@ Todo:
 - [x] Alternate db connection
 - [x] Unsaved contentunits
 - [ ] Obvious description of `source`
+- [ ] Store links in json
 
 #### Declared arguments
 

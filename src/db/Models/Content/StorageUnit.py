@@ -89,7 +89,7 @@ class StorageUnit(ContentModel):
         self.save(force_insert=True)
 
     def moveSelf(self):
-        logger.log(f"Moving HashDirectory of StorageUnit {self.uuid} to storage_units", section = LogSection.SECTION_SAVEABLE)
+        logger.log(f"Moving HashDirectory of StorageUnit {self.uuid} to storage_units", section = ["Saveable"])
 
         self.tears(False, False)
         self.hash_dir.moveSelf(storage.get("storage_units"))

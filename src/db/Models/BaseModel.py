@@ -28,7 +28,7 @@ class BaseModel(Model):
         if hasattr(self.__class__, "uuid") != None:
             to_message = f"Moving {self.__class__.__name__}_{self.uuid} to another db"
 
-        logger.log(to_message, section=LogSection.SECTION_DB)
+        logger.log(to_message, section = ["DB", "Moving"])
 
         movement = ModelDTO()
         movement.moveTo(self, db)

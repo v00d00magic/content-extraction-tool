@@ -24,7 +24,7 @@ class DownloadManager(Hookable, Configurable):
     section_name = "AsyncDownloadManager"
 
     @classmethod
-    def declareSettings():
+    def declareSettings(cls):
         from declarable.Documentation import global_documentation
         from declarable.Arguments import IntArgument, StringArgument
 
@@ -73,6 +73,7 @@ class DownloadManager(Hookable, Configurable):
     def __init__(self, max_concurrent_downloads: int = 3, speed_limit_kbps: int = config.get("net.max_speed")):
         super().__init__()
         
+        self.updateConfig()
         self.queue = []
         self.max_concurrent_downloads = max_concurrent_downloads
         self.speed_limit_kbps = speed_limit_kbps

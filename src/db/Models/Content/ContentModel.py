@@ -13,7 +13,7 @@ class ContentModel(BaseModel):
 
     @classmethod
     def ids(cls, id):
-        logger.log(f"Searching {cls.self_name} by ids {str(id)}", section=LogSection.SECTION_DB)
+        logger.log(f"Searching {cls.self_name} by ids {str(id)}", section = ["DB", "Models"])
 
         if type(id) in [str, int]:
             _query = cls.select().where(cls.uuid == int(id))
@@ -32,6 +32,10 @@ class ContentModel(BaseModel):
     @property
     def id(self) -> str:
         return self.uuid
+
+    @property
+    def name_id(self) -> str:
+        return f"{self.short_name}_{self.uuid}"
 
     def isSaved(self) -> bool:
         return self.uuid != None
@@ -57,7 +61,7 @@ class ContentModel(BaseModel):
         pass
 
     async def postSave(self):
-        logger.log(f"Saved {self.__class__.self_name} to db temp, id: {self.uuid}", kind=LogKind.KIND_SUCCESS, section=LogSection.SECTION_SAVEABLE)
+        logger.log(f"Saved {self.__class__.self_name} to db {self.getDbName()}, id: {self.uuid}", kind=LogKind.KIND_SUCCESS, section=["Saveable"])
 
     async def flush(self, **kwargs):
         await self.beforeSave()

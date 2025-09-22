@@ -26,7 +26,7 @@ class Service(Executable):
 
             _symbol = self.max_iterations
 
-        self.log(message=f"Making run {self.current_iteration}/{_symbol}", section=LogSection.SECTION_SERVICES)
+        self.log(message=f"Making run {self.current_iteration}/{_symbol}", section="Service")
 
         return await self.execute(i)
 
