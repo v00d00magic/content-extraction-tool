@@ -46,6 +46,9 @@ class StorageUnit(ContentModel):
     def getDir(self) -> Path:
         return self.hash_dir.common
 
+    def getCommonFile(self) -> Path:
+        return self.hash_dir.common_file
+
     def setDataFromPath(self, path: Path):
         self.filesize = path.stat().st_size
 
@@ -107,6 +110,8 @@ class StorageUnit(ContentModel):
         return common_filesize
 
     def getStructure(self):
+        logger.log(f"Getting API structure of {self.name_db_id}",section="Saveable")
+
         payload = {}
         payload['class_name'] = self.self_name
         payload['db'] = self.getDbName()

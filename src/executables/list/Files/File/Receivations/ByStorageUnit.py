@@ -27,8 +27,12 @@ class Implementation(File.AbstractReceivation):
             if item == None:
                 continue
 
-            out = await self.outer.createSelf(item)
+            out = self.ContentUnit()
+            out.display_name = item.getFileName()
+            out.JSONContent.update({})
             out.flush()
+            out.LinkManager.linkAsCommon(item)
+
             outs.append(out)
 
         return outs

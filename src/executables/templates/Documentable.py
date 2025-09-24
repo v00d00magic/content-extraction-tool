@@ -50,9 +50,4 @@ class Documentable:
         for item in cls.getSubmodulesByType(None):
             payload.get("submodules").append(item.getStructure())
 
-        if getattr(cls, "PreExecute", None) != None:
-            pre_exec = cls.PreExecute
-
-            payload["confirmation"] = pre_exec.args_list
-
         return payload

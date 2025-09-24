@@ -29,7 +29,6 @@ class Implementation(File.AbstractReceivation):
         for _url in i.get('url'):
             url = URL(_url)
 
-            out = self.ContentUnit()
             out_file = self.StorageUnit()
 
             common_file = out_file.getDir().joinpath("download.tmp")
@@ -41,13 +40,16 @@ class Implementation(File.AbstractReceivation):
             out_file.clearCommonFile()
             await out_file.flush()
 
-            out = await self.outer.createSelf(out_file)
+            out = self.ContentUnit()
+            out.display_name = out_file.getFileName()
+            out.JSONContent.update({})
             out.Source.update({
                 'type': 'url',
                 'content': _url
             })
+
             await out.flush()
-            out.LinkManager.link(out_file, True)
+            out.LinkManager.linkAsCommon(out_file)
 
             outs.append(out)
 

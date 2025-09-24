@@ -20,11 +20,3 @@ class Implementation(Representation):
     @classmethod
     async def processItem(cls, item):
         return item
-
-    @classmethod
-    async def createSelf(cls, item):
-        out = cls.ContentUnit()
-        out.display_name = item.getFileName()
-        out.JSONContent.update({})
-
-        return out

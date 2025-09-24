@@ -4,6 +4,7 @@ from utils.Data.JSON import JSON
 
 from db.Models.Content.ContentUnit import ContentUnit
 from db.Models.Content.StorageUnit import StorageUnit
+from db.Links.ContentUnitRelation import RelationEnum
 
 from db.Links.Relations import Relations
 from app.App import logger
@@ -24,21 +25,24 @@ class LinkManager:
                 raise AlreadyLinkedException(f"{relation.short_name}_{relation.uuid} already linked somewhere")
 
     def link(self, child, relation_type: int = None):
-        res = self.relations.create(self.parent, child, relation_type)
+        res = self.relations.create(child, relation_type)
 
         logger.log(message=f"Linked {self.parent.name_db_id}<->{child.name_db_id}, order {res.order}, db: {res.getDbName()}", section = self.section_name, kind = LogKind.KIND_SUCCESS)
 
         return res
 
+    def linkAsCommon(self, child):
+        return self.link(child, RelationEnum.RELATION_MAIN)
+
     def unlink(self, child, relation_type: int = None) -> bool:
-        res = self.relations.remove(self.parent, child, relation_type)
+        res = self.relations.remove(child, relation_type)
 
         logger.log(message=f"Unlinked {self.parent.name_db_id}<->{child.name_db_id}, db: {res.getDbName()}", section = self.section_name, kind = LogKind.KIND_SUCCESS)
 
         return res != None
 
     def ids(self, class_name = None, relation_type: int = None):
-        items = self.relations.getByParent(self.parent, class_name, relation_type)
+        items = self.getRelations(class_name, relation_type)
         ids = []
 
         for item in items:
@@ -46,25 +50,31 @@ class LinkManager:
 
         return ids
 
+    def getRelations(self, class_name = None, relation_type: int = None):
+        return self.relations.getByParent(class_name, relation_type)
+
     def getItems(self, class_name = None, relation_type: int = None):
-        content_units = []
-        storage_units = []
-        response = []
+        rels = self.getRelations(class_name, relation_type)
 
         logger.log(message=f"Getting linked from {self.parent.name_db_id}, db {self.parent.getDbName()}", section = self.section_name, kind = LogKind.KIND_SUCCESS)
 
-        for id in self.ids(class_name, relation_type):
-            if id[0] == 'ContentUnit':
-                content_units.append(id[1])
-            else:
-                storage_units.append(id[1])
+        return self.relations.relationsToModels(rels)
 
-        for unit in ContentUnit.select().where(ContentUnit.uuid << content_units):
-            response.append(unit)
-        for unit in StorageUnit.select().where(StorageUnit.uuid << storage_units):
-            response.append(unit)
+    def getItemsAndTypes(self, class_name = None, relation_type: int = None):
+        rels = self.getRelations(class_name, relation_type)
+        items = self.relations.relationsToModels(rels, True)
+        dicts = []
 
-        return response
+        for item in rels:
+            dicts.append({
+                "item": items[str(item.child)],
+                "type": item.relation_type
+            })
+
+        return dicts
+
+    def getCommon(self):
+        return self.getItems("StorageUnit", RelationEnum.RELATION_MAIN)
 
     def injectLinksToJson(self, to_check, linked_list, recurse_level = 0, recurse_limit = 10):
         if isinstance(to_check, dict):

@@ -141,6 +141,11 @@ class ExecutableMap:
         if main_module == None:
             self.items[module.getName()] = module # adding to common list
 
+            '''
+            for inh_module in module.getInheritFrom():
+                for inh_sub_module in inh_module.submodules:
+                    self.items.get(module.getName()).submodules.append(inh_sub_module)
+            '''
             return ExecutableMap.RESULT_MODULE
         else:
             logger.log(f"Injected module {module.getName()} to {main_module.getName()}", section=self.section_name)

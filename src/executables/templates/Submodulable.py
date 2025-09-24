@@ -67,18 +67,16 @@ class Submodulable():
             section_name = ["Receivation", cls.getName()]
             outer = cls
 
-            @classmethod
-            def selfInsert(cls, item):
-                item.SavedVia.sign(cls)
+            def selfInsert(self, item):
+                item.SavedVia.sign(self, self.outer)
 
         class AbstractExternalExtractor(Extractor):
             self_name = "ExternalExtractor"
             section_name = ["ExternalExtractor", cls.getName()]
             outer = cls
 
-            @classmethod
-            def selfInsert(cls, item):
-                item.SavedVia.sign(cls)
+            def selfInsert(self, item):
+                item.SavedVia.sign(self, self.outer)
 
         class AbstractConfirmation(Extractor):
             self_name = "Confirmation"

@@ -10,11 +10,11 @@ class ModelDTO:
         links = []
 
         if getattr(item, "LinkManager", None) != None:
-            linked_items = item.LinkManager.getItems()
+            relations = item.LinkManager.getItemsAndTypes()
 
-            logger.log(f"Found {len(linked_items)} linked at {item.name_db_id}", section=["Saveable"])
+            logger.log(f"Found {len(relations)} linked at {item.name_db_id}", section=["Saveable"])
 
-            for link_item in linked_items:
+            for link_item in relations:
                 links.append(link_item)
 
         item.setDb(db)
@@ -30,11 +30,12 @@ class ModelDTO:
             return
 
         for link_item in links:
+            so_item_to_link = link_item.get("item")
             movement = ModelDTO()
-            movement.moveTo(item = link_item, 
+            movement.moveTo(item = so_item_to_link, 
                             db = db, 
                             recursion_value = recursion_value + 1,
                             recursion_limit = recursion_limit)
-            item.LinkManager.link(link_item)
+            item.LinkManager.link(so_item_to_link, link_item.get("type"))
 
         return counts

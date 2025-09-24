@@ -25,9 +25,6 @@ class ContentUnit(ContentModel):
     is_unlisted = BooleanField(index=True,default=0)
     # is_deleted = BooleanField(index=True,default=0)
 
-    # Links
-    common_link_id = CharField(null=True,max_length=100)
-
     table_name = 'content_units'
     self_name = 'ContentUnit'
     short_name = 'cu'
@@ -88,11 +85,11 @@ class ContentUnit(ContentModel):
                 self.saved = cls.attr_json(new_data)
 
             @classmethod
-            def sign(cls, method):
+            def sign(cls, method, method_outer):
                 self.via_method = method
                 self.SavedVia.update({
                     "method": method.getName(),
-                    "representation": method.outer.getName()
+                    "representation": method_outer.getName()
                 })
 
         self.JSONContent = JSONContent
@@ -100,7 +97,6 @@ class ContentUnit(ContentModel):
         self.Outer = Outer
         self.SavedVia = SavedVia
         self.LinkManager = LinkManager(self)
-        self.via_method = None
 
         if self.isSaved() == False:
             _now = Date(Date().now()).timestamp_or_float()
@@ -109,15 +105,19 @@ class ContentUnit(ContentModel):
             self.declared_created_at = float(_now)
 
     async def beforeSave(self):
+        logger.log(f"Running beforesave of {self.name_db_id}",section=["Saveable", "Beforesave"])
+
         if self.via_method:
-            for outer in self.via_method.outer.outerList():
-                _outer = outer(self.via_method.outer)
+            for _outer in self.via_method.outer.outerList():
+                outer = _outer(self.via_method.outer)
+                logger.log(f"Beforesave: run {outer.getName()}",section=["Saveable", "Beforesave"])
 
-                logger.log(f"Beforesave: run {_outer.getName()}",section="Saveable")
-
-                await _outer.implementation({
-                    "item": self
-                })
+                try:
+                    await outer.implementation({
+                        "item": self
+                    })
+                except Exception as exc:
+                    logger.log(exc, section="Saveable")
 
     def getStructure(self, return_content = True, return_linked = True):
         logger.log(f"Getting API structure of {self.name_db_id}",section="Saveable")

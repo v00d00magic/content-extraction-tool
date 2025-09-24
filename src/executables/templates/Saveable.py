@@ -4,37 +4,33 @@ from db.Models.Content.ThumbnailUnit import ThumbnailUnit
 from app.App import logger
 
 class Saveable:
-    @classmethod
-    def ContentUnit(cls):
+    def ContentUnit(self):
         logger.log("Created new ContentUnit", section="Saveable")
 
         out = ContentUnit()
-        cls.selfInsert(out)
+        self.selfInsert(out)
 
         return out
 
-    @classmethod
-    def Collection(cls):
+    def Collection(self):
         logger.log("Created new collection", section="Saveable")
 
         out = ContentUnit()
         out.is_collection = True
 
-        cls.selfInsert(out)
-        cls.call.collections.append(out)
+        self.selfInsert(out)
+        self.call.collections.append(out)
 
         return out
 
-    @classmethod
-    def StorageUnit(cls):
+    def StorageUnit(self):
         logger.log("Created new StorageUnit", section="Saveable")
 
         out = StorageUnit()
 
         return out
 
-    @classmethod
-    def ThumbnailUnit(cls):
+    def ThumbnailUnit(self):
         logger.log("Created new ThumbnailUnit", section="Saveable")
 
         return ThumbnailUnit()

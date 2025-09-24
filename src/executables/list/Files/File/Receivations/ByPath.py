@@ -76,7 +76,8 @@ class Implementation(File.AbstractReceivation):
             out_file.setCommonFile(move_to)
             await out_file.flush()
 
-            out = await self.outer.createSelf(out_file)
+            out = self.ContentUnit()
+            out.display_name = out_file.getFileName()
             out.JSONContent.update({
                 "exported": str(i.get("type")),
                 "format": str(path.suffix[1:]),
@@ -86,6 +87,7 @@ class Implementation(File.AbstractReceivation):
                 "content": str(path)
             })
             await out.flush()
+            out.LinkManager.linkAsCommon(out_file)
 
             outs.append(out)
 

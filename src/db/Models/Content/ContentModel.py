@@ -66,6 +66,8 @@ class ContentModel(BaseModel):
         logger.log(f"Saved {self.__class__.self_name} to db {self.getDbName()}, id: {self.uuid}", kind=LogKind.KIND_SUCCESS, section=["Saveable"])
 
     async def flush(self, **kwargs):
+        '''Runs beforeSave(), saves model to temporary db
+        '''
         await self.beforeSave()
         kwargs["to_temp"] = True
 
