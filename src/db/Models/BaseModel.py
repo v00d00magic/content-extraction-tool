@@ -1,6 +1,6 @@
 from peewee import Model
 from app.App import db_connection
-from app.Logger.LogSection import LogSection
+from app.Logger.LogKind import LogKind
 from app.App import logger
 from db.ModelDTO import ModelDTO
 
@@ -24,11 +24,22 @@ class BaseModel(Model):
         super().save(**kwargs)
 
     def moveToDb(self, db):
-        to_message = f"Moving {self.__class__.__name__} to another db"
+        id_part = self.__class__.__name__
         if hasattr(self.__class__, "uuid") != None:
-            to_message = f"Moving {self.__class__.__name__}_{self.uuid} to another db"
+            id_part = f"{self.__class__.__name__}_{self.name_db_id}"
 
-        logger.log(to_message, section = ["DB", "Moving"])
+        logger.log(f"Moving {id_part} from db {self.getDbName()}", kind = LogKind.KIND_HIGHLIGHT, section = ["DB", "Moving"])
 
         movement = ModelDTO()
         movement.moveTo(self, db)
+
+        logger.log(f"Moved {id_part} to db {self.getDbName()}", kind = LogKind.KIND_HIGHLIGHT, section = ["DB", "Moving"])
+
+    def getDbName(self):
+        if self.getDbPath() == ":memory:":
+            return "temp"
+        else:
+            return "content"
+
+    def getDbPath(self):
+        return self._meta.database.database

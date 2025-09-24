@@ -4,7 +4,6 @@ from playhouse.sqlite_ext import fn
 
 from snowflake import SnowflakeGenerator
 
-from app.Logger.LogSection import LogSection
 from app.Logger.LogKind import LogKind
 from app.App import logger
 
@@ -37,18 +36,21 @@ class ContentModel(BaseModel):
     def name_id(self) -> str:
         return f"{self.short_name}_{self.uuid}"
 
+    @property
+    def name_db_id(self) -> str:
+        parts = [self.getDbName(), self.short_name, str(self.uuid)]
+
+        if self.uuid == None:
+            parts[2] = "None"
+
+        return "_".join(parts)
+
     def isSaved(self) -> bool:
         return self.uuid != None
 
     def generateId(self):
         gen = SnowflakeGenerator(0)
         return str(next(gen))
-
-    def getDbName(self):
-        if self._meta.database.database == ":memory:":
-            return "temp"
-        else:
-            return "content"
 
     def sign(self)->str:
         return f"__$|{self.short_name}_{self.uuid}"

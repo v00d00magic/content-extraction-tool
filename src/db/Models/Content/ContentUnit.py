@@ -31,6 +31,7 @@ class ContentUnit(ContentModel):
     table_name = 'content_units'
     self_name = 'ContentUnit'
     short_name = 'cu'
+    link_sign = "__$|cu_"
 
     def __init__(self, **kwargs):
         from db.Links.LinkManager import LinkManager
@@ -40,7 +41,7 @@ class ContentUnit(ContentModel):
         class JSONContentUnitContainer(JSONContentContainer):
             @classmethod
             def get_description(cls):
-                return f"{cls.__name__} uuid: {self.uuid}"
+                return f"{cls.__name__} {self.name_db_id}"
 
         class JSONContent(JSONContentUnitContainer):
             @classmethod
@@ -119,6 +120,8 @@ class ContentUnit(ContentModel):
                 })
 
     def getStructure(self, return_content = True, return_linked = True):
+        logger.log(f"Getting API structure of {self.name_db_id}",section="Saveable")
+
         payload = {}
         payload['id'] = str(self.uuid) # Converting to str cuz JSON.parse cannot convert it
         payload['class_name'] = self.self_name

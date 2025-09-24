@@ -1,6 +1,4 @@
 import asyncio
-import threading
-import traceback
 
 def category_check(func):
     def wrapper(self, *args, **kwargs):

@@ -59,7 +59,6 @@ class Representation(Executable, metaclass=RepresentationMeta):
             return cls.receivations[0]
 
         # dumb way
-        print(args.__dict__())
         for item in cls.receivations:
             decl = item.comparerShortcut(None, args)
 

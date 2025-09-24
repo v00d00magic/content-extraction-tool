@@ -69,7 +69,7 @@ class ExecutableCall(Hookable):
         try:
             self.log(f"Calling execute() with args: {JSON(self.args.__dict__()).dump()}", section = self.section_name)
         except:
-            pass
+            self.log(f"Calling execute() with args: display error", section = self.section_name)
 
         return Response.convert(await self.executable.execute(self.args))
 

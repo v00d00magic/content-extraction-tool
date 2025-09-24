@@ -3,7 +3,6 @@ Todo:
 #### Executables
 
 - [x] Сonfirmable classes
-- [ ] Js classes for executable
 - [x] Progress notifications
 - [ ] Extend contentunit from representation
 - [x] Dump executable runs
@@ -22,6 +21,13 @@ Todo:
 - [x] "Configurable"
 - [ ] Extend declarable args functionality
 - [ ] Variables of the class
+
+#### JS
+
+or something 
+
+- [ ] PageClass
+- [ ] ListClass
 
 #### Models
 

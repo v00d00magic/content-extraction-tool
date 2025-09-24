@@ -40,6 +40,8 @@ class LogMessage(Wrap):
                 color = self.colors.get('green')
             case LogKind.KIND_DEPRECATED:
                 color = self.colors.get('yellow')
+            case LogKind.KIND_HIGHLIGHT:
+                color = self.colors.get('pink')
 
         print_parts = []
 

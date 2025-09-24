@@ -11,6 +11,7 @@ class StorageUnit(ContentModel):
     table_name = 'storage_units'
     self_name = 'StorageUnit'
     short_name = 'su'
+    link_sign = "__$|su_"
 
     hash = TextField(null=True)
     # attached_path = TextField(null=True) i dont will add dis

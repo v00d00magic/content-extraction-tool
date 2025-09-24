@@ -1,7 +1,7 @@
 from app.App import logger
 
 class ModelDTO:
-    def moveTo(self, 
+    def moveTo(self,
                item, 
                db,
                recursion_value = 0,
@@ -12,12 +12,15 @@ class ModelDTO:
         if getattr(item, "LinkManager", None) != None:
             linked_items = item.LinkManager.getItems()
 
-            logger.log(f"Found {len(linked_items)} linked at {item.getDbName()}:{item.uuid}", section=["Saveable"])
+            logger.log(f"Found {len(linked_items)} linked at {item.name_db_id}", section=["Saveable"])
 
             for link_item in linked_items:
                 links.append(link_item)
 
         item.setDb(db)
+
+        logger.log(f"Set db of item {item.name_db_id} to {item.getDbName()}", section=["Saveable", "DB"])
+
         if hasattr(item, "moveSelf") == True:
             item.moveSelf()
 

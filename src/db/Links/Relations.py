@@ -2,7 +2,11 @@ from db.Links.ContentUnitRelation import ContentUnitRelation, RelationEnum
 
 class Relations:
     def __init__(self, parent = None):
-        self.db_reference = parent._meta.database
+        self.parent = parent
+
+    @property
+    def db_reference(self):
+        return self.parent._meta.database
 
     def create(self, parent, child, relation_type: int = RelationEnum.RELATION_NONE):
         assert parent != None and child != None, 'Not found item to link'
@@ -56,9 +60,9 @@ class Relations:
         relation_select = relation_select.select()
         relation_select = relation_select.where(ContentUnitRelation.parent == parent.uuid)
 
-        if class_name == None:
+        if class_name != None:
             relation_select = relation_select.where(ContentUnitRelation.child_type == class_name)
-        if relation_type == None:
+        if relation_type != None:
             relation_select = relation_select.where(ContentUnitRelation.relation_type == relation_type)
 
         return relation_select.execute()

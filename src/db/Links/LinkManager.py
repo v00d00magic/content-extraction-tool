@@ -14,7 +14,7 @@ class AlreadyLinkedException(Exception):
 class LinkManager:
     section_name = "LinkManager"
 
-    def __init__(self, parent, db_reference = None):
+    def __init__(self, parent: ContentUnit):
         self.parent = parent
         self.relations = Relations(self.parent)
 
@@ -26,14 +26,14 @@ class LinkManager:
     def link(self, child, relation_type: int = None):
         res = self.relations.create(self.parent, child, relation_type)
 
-        logger.log(message=f"Linked {self.parent.name_id}<->{child.name_id}, order {res.order}", section = self.section_name, kind = LogKind.KIND_SUCCESS)
+        logger.log(message=f"Linked {self.parent.name_db_id}<->{child.name_db_id}, order {res.order}, db: {res.getDbName()}", section = self.section_name, kind = LogKind.KIND_SUCCESS)
 
         return res
 
     def unlink(self, child, relation_type: int = None) -> bool:
         res = self.relations.remove(self.parent, child, relation_type)
 
-        logger.log(message=f"Unlinked {self.parent.name_id}<->{child.name_id}", section = self.section_name, kind = LogKind.KIND_SUCCESS)
+        logger.log(message=f"Unlinked {self.parent.name_db_id}<->{child.name_db_id}, db: {res.getDbName()}", section = self.section_name, kind = LogKind.KIND_SUCCESS)
 
         return res != None
 
@@ -51,6 +51,8 @@ class LinkManager:
         storage_units = []
         response = []
 
+        logger.log(message=f"Getting linked from {self.parent.name_db_id}, db {self.parent.getDbName()}", section = self.section_name, kind = LogKind.KIND_SUCCESS)
+
         for id in self.ids(class_name, relation_type):
             if id[0] == 'ContentUnit':
                 content_units.append(id[1])
@@ -62,8 +64,6 @@ class LinkManager:
         for unit in StorageUnit.select().where(StorageUnit.uuid << storage_units):
             response.append(unit)
 
-        logger.log(message=f"Getting linked from {self.parent.name_id}", section = self.section_name, kind = LogKind.KIND_SUCCESS)
-
         return response
 
     def injectLinksToJson(self, to_check, linked_list, recurse_level = 0, recurse_limit = 10):
@@ -73,7 +73,7 @@ class LinkManager:
             return [self.injectLinksToJson(item, linked_list) for item in to_check]
         elif isinstance(to_check, str):
             try:
-                if to_check.startswith("__$|cu_"):
+                if to_check.startswith(ContentUnit.link_sign):
                     got_id = to_check.replace("__$|cu_", "")
                     got_id = int(got_id)
 
@@ -82,7 +82,7 @@ class LinkManager:
                             return linked.data_with_linked_replacements(recursive=True,recurse_level=recurse_level+1)
 
                     return to_check
-                elif to_check.startswith("__$|su_"):
+                elif to_check.startswith(StorageUnit.link_sign):
                     got_id = to_check.replace("__$|su_", "")
                     got_id = int(got_id)
                     for linked in linked_list:

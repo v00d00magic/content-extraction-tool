@@ -9,3 +9,6 @@ class Increment:
         self.increment()
 
         return self.id
+
+    def null(self):
+        self.id = 0

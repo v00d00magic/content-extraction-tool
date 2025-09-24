@@ -5,8 +5,11 @@ from app.App import config
 from pathlib import Path
 import asyncio, aiohttp, os, time
 from utils.Configurable import Configurable
+from utils.Increment import Increment
 
 class DownloadManagerItem():
+    section_name = ["DownloadManager", "Item"]
+
     def __init__(self, url: str, dir: str):
         self.url = url
         self.dir = dir
@@ -18,10 +21,72 @@ class DownloadManagerItem():
             "start_time": 0,
             "percentage": 0
         }
+        self.status = "end"
+        self.id = 0
+
+    def getPrefix(self):
+        return f"DownloadItem->{self.id}"
+
+    async def startDownload(self, manager = None):
+        self.manager = manager
+
+        async with self.manager._session as session:
+            self.task = await asyncio.create_task(self.download(session))
+
+            return self.task
+
+    async def download(self, session):
+        DOWNLOAD_URL = self.url
+        DOWNLOAD_DIR = self.dir
+
+        logger.log(f"Downloading {DOWNLOAD_URL}", section=self.section_name, id_prefix = self.getPrefix())
+
+        async with self.manager.semaphore:
+            async with session.get(DOWNLOAD_URL, allow_redirects=True, headers=self.manager._headers) as response:
+                STATUS = response.status
+
+                if STATUS == 404 or STATUS == 403:
+                    raise FileNotFoundError('File not found')
+
+                if DOWNLOAD_DIR != None and Path(DOWNLOAD_DIR).is_file():
+                    logger.log(f"{DOWNLOAD_URL} is already downloaded", section = self.section_name, id_prefix = self.getPrefix())
+
+                    return response
+
+                CONTENT_LENGTH = response.headers.get("Content-Length", 0)
+                self.stat["downloaded"] = 0
+                self.stat["size"] = int(CONTENT_LENGTH)
+                self.stat["start_time"] = time.time()
+                if DOWNLOAD_DIR != None:
+                    with open(DOWNLOAD_DIR, 'wb') as f:
+                        async for chunk in response.content.iter_chunked(1024):
+                            #await self["pause_flag"].wait() FIXME
+                            f.write(chunk)
+
+                            elapsed_time = time.time() - self.stat.get("start_time")
+                            expected_time = len(chunk)
+                            self.stat["downloaded"] += expected_time
+                            if self.stat.get("size", 0) != 0:
+                                self.stat["percentage"] = (self.stat.get("downloaded") / self.stat.get("size")) * 100
+
+                            self.status = "downloading"
+                            self.manager.trigger("downloading", self)
+
+                            if self.manager.speed_limit_kbps:
+                                expected_time = expected_time / (self.speed_limit_bytes)
+                                if expected_time > elapsed_time:
+                                    await asyncio.sleep(expected_time - elapsed_time)
+
+                    self.status = "success"
+                    self.manager.trigger("success", self)
+
+                    logger.log(f"Downloading complete", section=self.section_name, kind=LogKind.KIND_SUCCESS, id_prefix = self.getPrefix())
+
+                return response
 
 # FIXME: rewrite
 class DownloadManager(Hookable, Configurable):
-    section_name = "AsyncDownloadManager"
+    section_name = "DownloadManager"
 
     @classmethod
     def declareSettings(cls):
@@ -72,13 +137,14 @@ class DownloadManager(Hookable, Configurable):
 
     def __init__(self, max_concurrent_downloads: int = 3, speed_limit_kbps: int = config.get("net.max_speed")):
         super().__init__()
-        
+
         self.updateConfig()
         self.queue = []
         self.max_concurrent_downloads = max_concurrent_downloads
         self.speed_limit_kbps = speed_limit_kbps
         self.semaphore = asyncio.Semaphore(self.max_concurrent_downloads)
         self._timeout = config.get("net.timeout")
+        self.download_index = Increment()
         self._headers = {
             "User-Agent": config.get("net.useragent")
         }
@@ -93,75 +159,11 @@ class DownloadManager(Hookable, Configurable):
         print(d.get("percentage"))
 
     async def addDownload(self, download_item):
+        download_item.id = self.download_index.getIndex()
         self._check_session()
         self.queue.append(download_item)
 
-        return await self.startDownload(self.queue[-1])
-
-    async def startDownload(self, queue_element: DownloadManagerItem):
-        async with self._session as session:
-            queue_element.task = await asyncio.create_task(self.download(session, queue_element))
-
-            return queue_element.task
-
-    async def download(self, session, queue_element):
-        DOWNLOAD_URL = queue_element.url
-        DOWNLOAD_DIR = queue_element.dir
-
-        logger.log(f"Downloading {DOWNLOAD_URL}", section=self.section_name, id_prefix = f"DownloadItem->UNDEFINED")
-        async with self.semaphore:
-            async with session.get(DOWNLOAD_URL, allow_redirects=True, headers=self._headers) as response:
-                HTTP_REQUEST_STATUS = response.status
-
-                if HTTP_REQUEST_STATUS == 404 or HTTP_REQUEST_STATUS == 403:
-                    raise FileNotFoundError('File not found')
-
-                if DOWNLOAD_DIR != None and Path(DOWNLOAD_DIR).is_file():
-                    logger.log(f"{DOWNLOAD_URL} already downloaded",section=self.section_name, id_prefix = f"DownloadItem->UNDEFINED")
-                    return response
-
-                start_time = time.time()
-                queue_element.stat["downloaded"] = 0
-                queue_element.stat["size"] = int(response.headers.get("Content-Length", 0))
-                queue_element.stat["start_time"] = start_time
-                if DOWNLOAD_DIR != None:
-                    with open(DOWNLOAD_DIR, 'wb') as f:
-                        async for chunk in response.content.iter_chunked(1024):
-                            #await queue_element["pause_flag"].wait() FIXME
-                            f.write(chunk)
-
-                            elapsed_time = time.time() - start_time
-                            expected_time = len(chunk)
-                            queue_element.stat["downloaded"] += expected_time
-                            if queue_element.stat.get("size", 0) != 0:
-                                queue_element.stat["percentage"] = (queue_element.stat.get("downloaded") / queue_element.stat.get("size")) * 100
-
-                            for hook in self._hooks:
-                                try:
-                                    hook_dict = queue_element.copy()
-                                    hook_dict["status"] = "downloading"
-
-                                    hook(hook_dict)
-                                except:
-                                    pass
-
-                            if self.speed_limit_kbps:
-                                expected_time = expected_time / (self.speed_limit_kbps * 1024)
-                                if expected_time > elapsed_time:
-                                    await asyncio.sleep(expected_time - elapsed_time)
-
-                    for hook in self._hooks:
-                        try:
-                            hook_dict = queue_element.stat.copy()
-                            hook_dict["status"] = "success"
-
-                            hook(hook_dict)
-                        except:
-                            pass
-
-                    logger.log(f"Loading complete", section=self.section_name, kind=LogKind.KIND_SUCCESS, id_prefix = f"DownloadItem->UNDEFINED")
-
-                return response
+        return await download_item.startDownload(self)
 
     def _findDownloadByURL(self, url):
         for item in self.queue:
@@ -190,3 +192,7 @@ class DownloadManager(Hookable, Configurable):
 
     def set_speed_limit_kbps(self, value):
         self.speed_limit_kbps = int(value)
+
+    @property
+    def speed_limit_bytes(self):
+        return self.speed_limit_kbps * 1024
