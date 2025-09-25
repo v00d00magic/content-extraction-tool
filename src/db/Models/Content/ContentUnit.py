@@ -144,7 +144,7 @@ class ContentUnit(ContentModel):
 
         if return_linked == True:
             payload["linked"] = []
-            for linked_item in self.LinkManager.getItems():
-                payload.get("linked").append(linked_item.getStructure())
+            for relation in self.LinkManager.getRelations():
+                payload.get("linked").append(relation.getStructureWithModel())
 
         return payload

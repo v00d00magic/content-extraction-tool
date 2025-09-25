@@ -10,12 +10,12 @@ class ModelDTO:
         links = []
 
         if getattr(item, "LinkManager", None) != None:
-            relations = item.LinkManager.getItemsAndTypes()
+            relations = item.LinkManager.getRelations()
 
             logger.log(f"Found {len(relations)} linked at {item.name_db_id}", section=["Saveable"])
 
             for link_item in relations:
-                links.append(link_item)
+                links.append(link_item.getStructure())
 
         item.setDb(db)
 
@@ -29,13 +29,16 @@ class ModelDTO:
         if recursion_value > recursion_limit:
             return
 
-        for link_item in links:
-            so_item_to_link = link_item.get("item")
+        for link_obj in links:
+            print(link_obj)
+            link_item = link_obj.get("item")
+            link_type = link_obj.get("type")
+
             movement = ModelDTO()
-            movement.moveTo(item = so_item_to_link, 
+            movement.moveTo(item = link_item, 
                             db = db, 
                             recursion_value = recursion_value + 1,
                             recursion_limit = recursion_limit)
-            item.LinkManager.link(so_item_to_link, link_item.get("type"))
+            item.LinkManager.link(link_item, link_type)
 
         return counts

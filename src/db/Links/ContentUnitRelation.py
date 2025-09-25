@@ -1,5 +1,7 @@
 from peewee import CharField, AutoField, BigIntegerField
 from db.Models.BaseModel import BaseModel
+from db.Models.Content.ContentUnit import ContentUnit
+from db.Models.Content.StorageUnit import StorageUnit
 from enum import Enum
 
 class RelationEnum():
@@ -17,3 +19,33 @@ class ContentUnitRelation(BaseModel):
     order = AutoField()
 
     relation_type = BigIntegerField(default = 0)
+
+    def getModel(self):
+        item = None
+
+        if self.child_type == "ContentUnit":
+            item = ContentUnit.select().where(ContentUnit.uuid == self.child)
+        elif self.child_type == "StorageUnit":
+            item = StorageUnit.select().where(StorageUnit.uuid == self.child)
+
+        return item.get()
+
+    def getStructure(self):
+        model = self.getModel()
+        item_append = {
+            "type": self.relation_type,
+            "item": None,
+        }
+
+        if model != None:
+            item_append["item"] = model
+
+        return item_append
+
+    def getStructureWithModel(self):
+        structure = self.getStructure()
+
+        if structure.get("item") != None:
+            structure["item"] = structure.get("item").getStructure()
+
+        return structure

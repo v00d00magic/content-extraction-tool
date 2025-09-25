@@ -48,7 +48,7 @@ class Relations:
 
         if relation_select == None:
             return False
-        
+
         relation_select.delete()
 
         return True
@@ -68,7 +68,8 @@ class Relations:
 
         return relation_select.execute()
 
-    def relationsToModels(self, items, as_dict = False):
+    # FIXME refactor
+    def relationsToModels(self, items: list, as_dict = False):
         content_units = []
         storage_units = []
         response = []

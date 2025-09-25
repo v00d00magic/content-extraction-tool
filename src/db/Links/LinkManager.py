@@ -53,28 +53,15 @@ class LinkManager:
     def getRelations(self, class_name = None, relation_type: int = None):
         return self.relations.getByParent(class_name, relation_type)
 
-    def getItems(self, class_name = None, relation_type: int = None):
+    def getModels(self, class_name = None, relation_type: int = None):
         rels = self.getRelations(class_name, relation_type)
 
         logger.log(message=f"Getting linked from {self.parent.name_db_id}, db {self.parent.getDbName()}", section = self.section_name, kind = LogKind.KIND_SUCCESS)
 
         return self.relations.relationsToModels(rels)
 
-    def getItemsAndTypes(self, class_name = None, relation_type: int = None):
-        rels = self.getRelations(class_name, relation_type)
-        items = self.relations.relationsToModels(rels, True)
-        dicts = []
-
-        for item in rels:
-            dicts.append({
-                "item": items[str(item.child)],
-                "type": item.relation_type
-            })
-
-        return dicts
-
     def getCommon(self):
-        return self.getItems("StorageUnit", RelationEnum.RELATION_MAIN)
+        return self.getModels("StorageUnit", RelationEnum.RELATION_MAIN)
 
     def injectLinksToJson(self, to_check, linked_list, recurse_level = 0, recurse_limit = 10):
         if isinstance(to_check, dict):
@@ -89,7 +76,7 @@ class LinkManager:
 
                     for linked in linked_list:
                         if linked.uuid == got_id and linked.self_name == "ContentUnit":
-                            return linked.data_with_linked_replacements(recursive=True,recurse_level=recurse_level+1)
+                            return linked.JSONContent.getDataRecursively(recursive=True,recurse_level=recurse_level+1)
 
                     return to_check
                 elif to_check.startswith(StorageUnit.link_sign):
@@ -109,4 +96,4 @@ class LinkManager:
             return to_check
 
     def injectLinksToJsonFromInstance(self, recurse_level = 0):
-        return self.injectLinksToJson(self.parent.JSONContent.getData(), self.getItems(), recurse_level)
+        return self.injectLinksToJson(self.parent.JSONContent.getData(), self.getModels(), recurse_level)

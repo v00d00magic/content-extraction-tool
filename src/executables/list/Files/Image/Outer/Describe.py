@@ -7,7 +7,6 @@ class Implementation(Outer):
         item = i.get("item")
 
         for common_item in item.LinkManager.getCommon():
-            print(common_item)
             with PILImage.open(common_item.getCommonFile()) as img:
                 item.JSONContent.update({
                     "image": {
