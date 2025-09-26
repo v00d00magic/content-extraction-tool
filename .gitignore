@@ -6,7 +6,9 @@ dist/
 build/
 env/
 venv/
+src/venv/
 storage/*
+src/storage/*
 src/executables/list/*/Custom/*
 src/executables/list/*/Secret/*
 *node_modules*
