@@ -5,7 +5,7 @@ import asyncio
 import threading
 
 from Utils.Configurable import Configurable
-from Executables.list.Executables.Execute import Implementation as Execute
+from Executables.list.Executables.Execute.Execute import Implementation as Execute
 from DB.Models.Content.StorageUnit import StorageUnit
 from Utils.Data.JSON import JSON
 from pathlib import Path

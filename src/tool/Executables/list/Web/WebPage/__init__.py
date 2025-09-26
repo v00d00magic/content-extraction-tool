@@ -1,4 +1,4 @@
-from Executables.templates.representations import Representation
+from Executables.Templates.Representations import Representation
 from Utils.ClassProperty import classproperty
 
 class Implementation(Representation):

@@ -1,4 +1,4 @@
-from Executables.templates.services import Service
+from Executables.Templates.Services import Service
 
 from DB.Models.Content.ContentUnit import ContentUnit
 from Declarable.Arguments import CsvArgument, StringArgument, BooleanArgument

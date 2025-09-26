@@ -1,4 +1,4 @@
-from Executables.templates.acts import Act
+from Executables.Templates.Acts import Act
 from Declarable.Arguments import ExecutableArgument, ObjectArgument
 from DB.Models.Instances.ArgumentsDump import ArgumentsDump
 from Utils.Data.JSON import JSON

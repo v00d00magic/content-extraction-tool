@@ -1,4 +1,4 @@
-from Executables.templates.acts import Act
+from Executables.Templates.Acts import Act
 from Declarable.Arguments import ContentUnitArgument, CsvArgument
 
 class Implementation(Act):

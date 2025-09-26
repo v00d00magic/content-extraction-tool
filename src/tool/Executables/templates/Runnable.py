@@ -40,9 +40,13 @@ class Runnable:
         satisf_libs = []
 
         for required_module in cls.getRequiredModules():
-            if required_module in all_installed:
-                satisf_libs.append(required_module)
+            module_versions = required_module.split("==")
+            module_name = module_versions[0]
 
+            if module_name in all_installed:
+                satisf_libs.append(module_name)
+
+        print(satisf_libs)
         return len(satisf_libs) == len(cls.getRequiredModules())
 
     @classproperty
@@ -56,6 +60,10 @@ class Runnable:
 
     @classmethod
     def getName(cls):
+        '''
+        Splitting full module path and joining it by dot
+        '''
+
         _parts = cls.__module__.split('.')
         if _parts[-1] == _parts[-2]:
             return ".".join(_parts[2:-1])
@@ -63,7 +71,15 @@ class Runnable:
         return ".".join(_parts[2:])
 
     async def execute(self, i):
+        '''
+        Internal method. Returns result and calls module-defined implementation()
+        '''
+
         if hasattr(self, "beforeExecute") == True:
             self.beforeExecute(i)
 
-        return await self.implementation(i)
+        response = await self.implementation(i)
+        if response == None:
+            return self.getResult()
+
+        return response

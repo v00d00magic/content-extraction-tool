@@ -1,5 +1,5 @@
-
 from App.Logger.LogKind import LogKind
+from App import app
 from Utils.Data.JSON import JSON
 import json
 

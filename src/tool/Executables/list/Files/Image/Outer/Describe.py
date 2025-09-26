@@ -1,4 +1,4 @@
-from Executables.templates.outer import Outer
+from Executables.Templates.Outer import Outer
 
 class Implementation(Outer):
     async def implementation(self, i = {}):

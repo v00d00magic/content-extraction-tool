@@ -1,4 +1,4 @@
-from Executables.responses.Response import Response
+from Executables.Responses.Response import Response
 
 class ItemsResponse(Response):
     def check(self):

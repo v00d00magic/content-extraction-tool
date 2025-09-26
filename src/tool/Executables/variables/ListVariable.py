@@ -1,4 +1,4 @@
-from Executables.variables.ExecutableVariable import ExecutableVariable
+from Executables.Variables.ExecutableVariable import ExecutableVariable
 
 class ListVariable(ExecutableVariable):
     def __init__(self):

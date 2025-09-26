@@ -1,8 +1,7 @@
 from Declarable.Arguments import BooleanArgument
-from Executables.templates.Executable import Executable
+from Executables.Templates.Executable import Executable
 from Executables.ExecutableCall import ExecutableCall
-from Executables.responses.ItemsResponse import ItemsResponse
-from Executables.variables.ResultsVariable import ResultsVariable
+from Executables.Responses.ItemsResponse import ItemsResponse
 
 class RepresentationMeta(type):
     def __init__(cls, name, bases, attrs):
@@ -12,12 +11,6 @@ class RepresentationMeta(type):
 
 class Representation(Executable, metaclass=RepresentationMeta):
     self_name = "Representation"
-
-    def defineVariables(self):
-        variables = {}
-        variables["items"] = ResultsVariable()
-
-        return variables
 
     @classmethod
     def doDefaultAppending(cls):
@@ -66,28 +59,43 @@ class Representation(Executable, metaclass=RepresentationMeta):
             return cls.receivations[0]
 
         # dumb way
+        # Checking all the recieve classes: if it has similar arguments, returning it
         for item in cls.receivations:
             decl = item.comparerShortcut(None, args)
 
             if decl.diff():
                 return item
 
-    async def optimalStrategy(self, i: dict = {}):
+    async def getOptimalStrategy(self, i: dict = {}):
         strategy = self.findSuitableExtractor(i)
 
         assert strategy != None, "cant find correct extractor"
 
         strategy_class = ExecutableCall(None, strategy)
-
-        # на самом деле это ненастоящие модули (они от другого класса) поэтому приходится сделать так.
-        # FIXME
         strategy_class.executable.setOuter(self.__class__)
-        compares = strategy_class.executable.comparerShortcut(None, i)
 
-        if getattr(self, "beforeExecute", None) != None:
-            self.beforeExecute(compares.dict())
+        return strategy_class
 
-        return await strategy_class.executable.execute(compares.dict())
+    def variable(self, name):
+        return self.strategy.executable.variable(name).get()
 
-    async def implementation(self, i: dict = {}):
-        return ItemsResponse(await self.optimalStrategy(i))
+    def getResult(self):
+        return self.variable("items")
+
+    async def execute(self, i: dict = {}):
+        if hasattr(self, "beforeExecute") == True:
+            self.beforeExecute(i)
+
+        if getattr(self, "implementation", None) != None:
+            return await self.implementation(i)
+
+        self.strategy = await self.getOptimalStrategy(i)
+        compares = self.strategy.executable.comparerShortcut(None, i)
+
+        if getattr(self.strategy, "beforeExecute", None) != None:
+            self.strategy.beforeExecute(compares.dict())
+
+        response = await self.strategy.executable.execute(compares.dict())
+        result = self.getResult()
+
+        return ItemsResponse(result)

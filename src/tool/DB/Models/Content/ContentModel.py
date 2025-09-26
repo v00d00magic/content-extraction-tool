@@ -5,7 +5,7 @@ from playhouse.sqlite_ext import fn
 from snowflake import SnowflakeGenerator
 
 from App.Logger.LogKind import LogKind
-
+from App import app
 
 class ContentModel(BaseModel):
     uuid = IntegerField(unique=True, primary_key=True)

@@ -1,4 +1,4 @@
-from Executables.templates.Executable import Executable
+from Executables.Templates.Executable import Executable
 from App.Logger.LogSection import LogSection
 
 class EndOfCycleException(Exception):

@@ -1,5 +1,5 @@
 from Executables.ExecutableCall import ExecutableCall
-from Executables.list.Executables.Execute import Implementation as Execute
+from Executables.list.Executables.Execute.Execute import Implementation as Execute
 from Utils.Data.JSON import JSON
 from App.App import App
 

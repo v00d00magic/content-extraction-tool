@@ -1,4 +1,4 @@
-from Executables.templates.acts import Act
+from Executables.Templates.Acts import Act
 from Declarable.Arguments import ServiceInstanceArgument, JsonArgument
 
 class Implementation(Act):

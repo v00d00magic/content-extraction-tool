@@ -54,8 +54,8 @@ class Submodulable():
 
     @classmethod
     def _build_submodules(cls):
-        from Executables.templates.extractors import Extractor
-        from Executables.templates.acts import Act
+        from Executables.Templates.Extractors import Extractor
+        from Executables.Templates.Acts import Act
 
         class AbstractAct(Act):
             self_name = "Act"

@@ -1,5 +1,5 @@
 from DB.Models.Content.ContentModel import BaseModel
-from Executables.templates.outer import Outer
+from Executables.Templates.Outer import Outer
 from App import app
 from pathlib import Path
 import os

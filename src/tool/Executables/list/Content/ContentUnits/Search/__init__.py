@@ -1,4 +1,4 @@
-from Executables.templates.acts import Act
+from Executables.Templates.Acts import Act
 from Declarable.Arguments import IntArgument, CsvArgument, ContentUnitArgument, StringArgument, LimitedArgument, BooleanArgument
 from DB.Models.Content.ContentUnit import ContentUnit
 from functools import reduce

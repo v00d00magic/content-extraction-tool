@@ -1,4 +1,4 @@
-from Executables.templates.representations import Representation
+from Executables.Templates.Representations import Representation
 from Declarable.Arguments import StringArgument, ObjectArgument
 
 locale_keys = {

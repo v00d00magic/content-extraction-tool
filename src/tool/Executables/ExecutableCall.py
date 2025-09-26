@@ -1,6 +1,6 @@
 from DB.Models.Instances.ArgumentsDump import ArgumentsDump
-from Executables.templates.Executable import Executable
-from Executables.responses.Response import Response
+from Executables.Templates.Executable import Executable
+from Executables.Responses.Response import Response
 from Utils.Hookable import Hookable
 from Utils.Data.JSON import JSON
 from App import app
@@ -73,7 +73,7 @@ class ExecutableCall(Hookable):
         return Response.convert(await self.executable.execute(self.args))
 
     def getCollections(self):
-        return self.collections
+        return self.executable.variable("collections")
 
     # Progress
 

@@ -1,7 +1,7 @@
 from Declarable.Arguments import CsvArgument, ContentUnitArgument, ExecutableArgument, BooleanArgument
-from Executables.responses.Response import Response
-from Executables.responses.ItemsResponse import ItemsResponse
-from Executables.templates.acts import Act
+from Executables.Responses.Response import Response
+from Executables.Responses.ItemsResponse import ItemsResponse
+from Executables.Templates.Acts import Act
 from DB.Models.Content.ContentUnit import ContentUnit
 from Declarable.ExecutableConfig import ExecutableConfig
 from Executables.ExecutableCall import ExecutableCall
@@ -65,7 +65,7 @@ class Implementation(Act):
             self.call.dump()
 
         if i.get("check_requirements") == True:
-            assert executable.isModulesInstalled(), "requirements not installed"
+            assert executable.isModulesInstalled(), "requirements not satisfied"
 
         if len(executable.confirmations) > 0:
             if int(i.get("confirm")) == 1 == False:
@@ -89,13 +89,19 @@ class Implementation(Act):
         this_call = ExecutableCall(executable=executable)
         this_call.passArgs(i.__dict__(exclude=self.__class__.declare().keys()))
 
-        await this_call.run_asyncely()
+        result = await this_call.run_asyncely()
         for link in this_call.getCollections():
             link_to.append(link)
 
-        if isinstance(this_call.getResult(), ItemsResponse) == True:
-            for item in result.items():
-                if is_save == True:
+        if isinstance(result, ItemsResponse) == True:
+            if is_save == True:
+                items = result.items()
+
+                app.logger.log(f"Moving {len(items)} to common db", section=["Executables", "DBMovement"])
+
+                for item in items:
+                    app.logger.log(f"Moving {item.name_db_id} to common db", section=["Executables", "DBMovement"])
+
                     item.moveToDb(app.db_connection.db)
                     #item.linkTo(link_to)
 

@@ -6,7 +6,6 @@ class ExecutableArgument(Argument):
     def value(self):
         from App import app
 
-        print(str(self.passed_value))
         return app.indexated_scripts.find(str(self.passed_value), self.compare)
 
     def assertion_not_null(self, item):

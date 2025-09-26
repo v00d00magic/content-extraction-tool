@@ -1,5 +1,5 @@
-from Executables.templates.extractors.Timeoutable import Timeoutable
-from Executables.templates.extractors import Extractor
+from Executables.Templates.Extractors.Timeoutable import Timeoutable
+from Executables.Templates.Extractors import Extractor
 from Declarable.Arguments import IntArgument
 
 import asyncio

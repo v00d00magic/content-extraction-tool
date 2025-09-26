@@ -64,8 +64,6 @@ class ArgsComparer():
     def getByName(self, name, check_assertions = True):
         inputs_value = self.args.get(name)
 
-        print(self.args)
-        print(inputs_value)
         param_object = self.compare.get(name)
 
         if param_object == None:

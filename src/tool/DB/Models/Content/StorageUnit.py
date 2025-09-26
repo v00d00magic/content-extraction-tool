@@ -38,9 +38,9 @@ class StorageUnit(ContentModel):
 
     def tears(self, as_saved = False, mkdir = True):
         if as_saved == False:
-            self.hash_dir = HashDirectory(storage.get("temp_storage_units"), self.hash, mkdir)
+            self.hash_dir = HashDirectory(app.storage.get("temp_storage_units"), self.hash, mkdir)
         else:
-            self.hash_dir = HashDirectory(storage.get("storage_units"), self.hash, mkdir)
+            self.hash_dir = HashDirectory(app.storage.get("storage_units"), self.hash, mkdir)
             self.hash_dir.setCommonFile(self.hash_dir.getProbalyCommonFile())
 
     def getDir(self) -> Path:
@@ -96,7 +96,7 @@ class StorageUnit(ContentModel):
         app.logger.log(f"Moving HashDirectory of StorageUnit {self.uuid} to storage_units", section = ["Saveable"])
 
         self.tears(False, False)
-        self.hash_dir.moveSelf(storage.get("storage_units"))
+        self.hash_dir.moveSelf(app.storage.get("storage_units"))
 
     def getFileName(self):
         return ".".join([self.upload_name, self.extension])

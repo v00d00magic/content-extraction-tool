@@ -4,11 +4,15 @@ class Containable():
     def defineVariables(self):
         pass
 
-    def __init__(self):
-        self.variables = self.defineVariables()
-
     def variable(self, name):
+        if getattr(self, "variables", None) == None:
+            self.variables = self.defineVariables()
+
         return self.variables.get(name)
 
     def getResult(self):
+        '''
+        If nothing returned at implementation(), we calling that function to check variables
+        '''
+
         pass

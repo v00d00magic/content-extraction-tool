@@ -1,5 +1,5 @@
-from Executables.templates.acts import Act
-from Executables.templates.services import Service
+from Executables.Templates.Acts import Act
+from Executables.Templates.Services import Service
 from DB.Models.Instances.ServiceInstance import ServiceInstance
 from Declarable.Arguments import StringArgument, IntArgument
 from Declarable.ExecutableConfig import ExecutableConfig

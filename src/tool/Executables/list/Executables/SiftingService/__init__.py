@@ -1,5 +1,5 @@
-from Executables.templates.services.BaseDeclaredAtDependent import BaseDeclaredAtDependent
-from Executables.templates.extractors import Extractor
+from Executables.Templates.Services.BaseDeclaredAtDependent import BaseDeclaredAtDependent
+from Executables.Templates.Extractors import Extractor
 from Declarable.Arguments import StringArgument, ObjectArgument
 
 class Implementation(BaseDeclaredAtDependent):

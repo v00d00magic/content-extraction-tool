@@ -1,5 +1,4 @@
-from Executables.templates.Executable import Executable
-
+from Executables.Templates.Executable import Executable
 
 class Outer(Executable):
     # must not return anything

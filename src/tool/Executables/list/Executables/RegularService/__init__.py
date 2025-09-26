@@ -1,6 +1,6 @@
-from Executables.templates.services import Service
-from Executables.templates.acts import Act
-from Executables.templates.extractors import Extractor
+from Executables.Templates.Services import Service
+from Executables.Templates.Acts import Act
+from Executables.Templates.Extractors import Extractor
 
 from App.Logger.LogSection import LogSection
 from Declarable.Arguments import LimitedArgument, StringArgument, ObjectArgument
