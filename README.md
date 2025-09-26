@@ -10,17 +10,19 @@ Todo:
 - [x] Move `response` to class
 - [x] Store executable threads
 - [ ] Recursion protection
+- [ ] ExecutableMap: split class ExecutableMapResult
 
 #### App
 
-- [ ] Use pydantic
+- [ ] Use pydantic (?)
 - [ ] Save logs to file
 - [ ] Max logfile size
 - [ ] Move logger to separate module
 - [x] Outer executable type
 - [x] "Configurable"
 - [ ] Extend declarable args functionality
-- [ ] Variables of the class
+- [ ] Argument<<>>Variable
+- [x] Variables of the class
 
 #### JS
 
@@ -56,7 +58,7 @@ or something
 - [x] Alternate db connection
 - [x] Unsaved contentunits
 - [ ] Obvious description of `source`
-- [ ] Store links in json
+- [x] Relation types
 
 #### Declared arguments
 

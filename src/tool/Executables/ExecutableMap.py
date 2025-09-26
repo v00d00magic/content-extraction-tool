@@ -7,7 +7,6 @@ class ExecutableMap:
     section_name = ["Executables", "Initialization"]
 
     items = {}
-    js_modules = {}
 
     RESULT_MODULE = 1
     RESULT_SUBMODULE = 2
@@ -42,7 +41,7 @@ class ExecutableMap:
                         end_time = time.time()
 
                         app.logger.log(f"Imported module {module.getName()} in {round(end_time - start_time, 3)}s", section=self.section_name)
-
+                        # the time is USELESS because microseconds are shown
                         _item = self.register(module)
 
                         counters["success"] +=1
@@ -148,7 +147,7 @@ class ExecutableMap:
             '''
             return ExecutableMap.RESULT_MODULE
         else:
-            app.logger.log(f"Injected module {module.getName()} to {main_module.getName()}", section=self.section_name)
+            app.logger.log(f"Injected module {module.getName()} into {main_module.getName()} as submodule", section=self.section_name)
 
             self.items[main_module.getName()].addSubmodule(module) # registering to main module
             self.items[module.getName()] = module
