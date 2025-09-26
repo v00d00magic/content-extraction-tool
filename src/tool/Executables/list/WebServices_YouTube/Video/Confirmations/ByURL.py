@@ -1,11 +1,11 @@
 from .. import Implementation as Video
-from Declarable.Arguments import CsvArgument, StringArgument
+from Declarable.Arguments import ListArgument, StringArgument
 
 class Implementation(Video.AbstractConfirmation):
     @classmethod
     def declare(cls):
         params = {}
-        params["url"] = CsvArgument({
+        params["url"] = ListArgument({
             "orig": StringArgument({}),
             "default": None,
         })

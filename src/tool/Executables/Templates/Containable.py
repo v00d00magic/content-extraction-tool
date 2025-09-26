@@ -8,6 +8,9 @@ class Containable():
         if getattr(self, "variables", None) == None:
             self.variables = self.defineVariables()
 
+        if self.variables == None:
+            return None
+
         return self.variables.get(name)
 
     def getResult(self):

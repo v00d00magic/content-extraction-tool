@@ -1,4 +1,4 @@
-from Declarable.Arguments import StringArgument, LimitedArgument, CsvArgument
+from Declarable.Arguments import StringArgument, LimitedArgument, ListArgument
 from Utils.Files.FileItem import FileItem
 from .. import Implementation as File
 from pathlib import Path
@@ -26,7 +26,7 @@ class Implementation(File.AbstractReceivation):
     @classmethod
     def declare(cls):
         params = {}
-        params["path"] = CsvArgument({
+        params["path"] = ListArgument({
             "orig": StringArgument({}),
             "docs": {
                 "name": cls.key("path.name"),

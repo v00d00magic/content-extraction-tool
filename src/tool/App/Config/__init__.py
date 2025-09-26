@@ -18,7 +18,7 @@ class Config():
         self.is_hidden = True
 
     def passDeclarable(self):
-        from Declarable.ArgsComparer import ArgsComparer
+        from Declarable.Arguments.ArgsComparer import ArgsComparer
 
         self.declared_settings = ArgsComparer(compare=self.compared_options, 
                                               args=self.passed_options, 

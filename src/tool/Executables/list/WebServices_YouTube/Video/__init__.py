@@ -1,5 +1,5 @@
 from Executables.Templates.Representations import Representation
-from Declarable.Arguments import CsvArgument, StringArgument
+from Declarable.Arguments import ListArgument, StringArgument
 from Utils.ClassProperty import classproperty
 
 class Implementation(Representation):
@@ -10,7 +10,7 @@ class Implementation(Representation):
     @classmethod
     def declare(cls):
         params = {}
-        params["ids"] = CsvArgument({
+        params["ids"] = ListArgument({
             "orig": StringArgument({}),
             "default": [],
             "assertion": {

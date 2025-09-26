@@ -10,7 +10,7 @@ Todo:
 - [x] Move `response` to class
 - [x] Store executable threads
 - [ ] Recursion protection
-- [ ] ExecutableMap: split class ExecutableMapResult
+- [x] ExecutableList: split class ExecutableListResult
 
 #### App
 
@@ -21,7 +21,7 @@ Todo:
 - [x] Outer executable type
 - [x] "Configurable"
 - [ ] Extend declarable args functionality
-- [ ] Argument<<>>Variable
+- [x] Argument<<>>Variable
 - [x] Variables of the class
 
 #### JS

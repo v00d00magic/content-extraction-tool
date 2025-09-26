@@ -1,97 +1,93 @@
+from App import app
+
 class InvalidArgumentName(Exception):
     pass
 
 class Argument:
     forbidden = ["i", "name", "confirm"]
-    cache_results = True
 
-    def __init__(self, configuration):
-        if configuration.get('name') in self.forbidden:
-            raise InvalidArgumentName(f"{configuration.get('name')} is invalid argument name")
+    def __init__(self, data):
+        assert data.get('name') not in self.forbidden
 
-        self.configuration = configuration
+        self.data = data
+        self.passed_value = None
+        self.value = None
 
-    # logic violation
-    def input_value(self, val):
-        self.passed_value = val
+    def getDefault(self):
+        if self.data.get("env") != None:
+            env_arg = self.data.get("env")
 
-    # This method must be changed in inherited!
-    def value(self):
-        return self.passed_value
+            return app.env.get(env_arg.get("name"), env_arg.getDefault())
 
-    def default(self):
-        if self.configuration.get("env") != None:
-            from App.App import env
+        return self.data.get('default', None)
 
-            env_arg = self.configuration.get("env")
-
-            return env.get(env_arg.get("name"), env_arg.default())
-
-        return self.configuration.get('default', None)
-
-    def sensitive_default(self):
-        if self.configuration.get('sensitive') == True:
+    def getSensitiveDefault(self):
+        if self.data.get('sensitive') == True:
             return None
         else:
-            return self.default()
+            return self.getDefault()
 
     def get(self, name, default = None):
-        return self.configuration.get(name, default)
+        return self.data.get(name, default)
 
-    def manual(self):
-        return self.configuration.get("docs")
+    def getDocs(self):
+        return self.data.get("docs")
 
     def getStructure(self):
-        payload = self.configuration.copy()
+        payload = self.data.copy()
         payload.update({
             'type': self.__class__.__name__,
-            'docs': self.manual()
+            'docs': self.getDocs()
         })
 
-        payload['default'] = self.sensitive_default()
+        payload['default'] = self.getSensitiveDefault()
 
         return payload
 
-    def getResult(self, default_sub = True):
+    def getResult(self, default_instead_none = True):
         got = None
         if self.passed_value != None:
             try:
-                got = self.value()
+                got = self.implementation()
             except Exception as e:
                 try:
-                    
-
                     app.logger.log(e, "Executables!Declaration")
                 except:
                     print(e)
 
-                if default_sub == True:
-                    got = self.default()
+                if default_instead_none == True:
+                    got = self.getDefault()
         else:
-            if default_sub == True:
-                got = self.default()
+            if default_instead_none == True:
+                got = self.getDefault()
 
-        self.recieved_value = got
+        self.value = got
 
-        return got
+        return self.value
+
+    def passValue(self, val):
+        self.passed_value = val
+
+    def implementation(self):
+        return self.passed_value
 
     def assertions(self):
-        assertions_list = self.configuration.get("assertion")
+        assertions_list = self.data.get("assertion")
 
         if assertions_list != None:
             for assertion_name, assertion_item in assertions_list.items():
-                _method = getattr(self, "assertion_" + assertion_name, None)
-                if _method != None:
-                    _method(assertion_item)
+                assertion_method = getattr(self, "assertion_" + assertion_name, None)
+                if assertion_method != None:
+                    assertion_method(assertion_item)
 
     def assertion_not_null(self, item):
-        this_name = self.configuration.get('name')
-        assert self.recieved_value != None, f"{this_name} is null"
+        this_name = self.data.get('name')
+        assert self.value != None, f"{this_name} is null"
 
     def _assertion_only_when(self, item):
         for condition in item:
-            _en = list(enumerate(condition))
-            key_name = _en[0][1]
+            dicts = condition.items()
+            key_name = dicts[0]
             key_value = condition.get(key_name)
 
             operator = key_value.get("operator")

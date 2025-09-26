@@ -1,4 +1,4 @@
-from Declarable.Arguments import CsvArgument, StringArgument
+from Declarable.Arguments import ListArgument, StringArgument
 from .. import Implementation as File
 from Utils.Web.URL import URL
 from pathlib import Path
@@ -13,7 +13,7 @@ class Implementation(File.AbstractReceivation):
     @classmethod
     def declare(cls):
         params = {}
-        params["url"] = CsvArgument({
+        params["url"] = ListArgument({
             "docs": {
                 "name": cls.key("url.name")
             },

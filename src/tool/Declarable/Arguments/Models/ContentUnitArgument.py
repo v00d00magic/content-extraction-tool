@@ -1,7 +1,7 @@
 from Declarable.Arguments.Argument import Argument
 
 class ContentUnitArgument(Argument):
-    def value(self):
+    def implementation(self):
         from DB.Models.Content.ContentUnit import ContentUnit
 
         if self.passed_value != None:

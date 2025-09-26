@@ -1,11 +1,11 @@
 from .. import Implementation as Hyperlink
-from Declarable.Arguments import CsvArgument
+from Declarable.Arguments import ListArgument
 
 class Implementation(Hyperlink.AbstractAct):
     @classmethod
     def declare(cls):
         params = {}
-        params["url"] = CsvArgument({
+        params["url"] = ListArgument({
             "default": None,
         })
 

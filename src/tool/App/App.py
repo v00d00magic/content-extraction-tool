@@ -51,9 +51,9 @@ class App(Hookable):
         self.src = self.cwd.parent
 
     def setupMap(self):
-        from Executables.ExecutableMap import ExecutableMap
+        from Executables.ExecutableList import ExecutableList
 
-        self.indexated_scripts = ExecutableMap()
+        self.indexated_scripts = ExecutableList()
 
     def setupGlobals(self):
         from App.Config import Config

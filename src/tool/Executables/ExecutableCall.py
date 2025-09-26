@@ -73,7 +73,11 @@ class ExecutableCall(Hookable):
         return Response.convert(await self.executable.execute(self.args))
 
     def getCollections(self):
-        return self.executable.variable("collections")
+        cols = self.executable.variable("collections")
+        if cols == None:
+            return []
+
+        return cols
 
     # Progress
 

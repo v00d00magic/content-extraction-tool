@@ -1,5 +1,5 @@
 from Declarable.ExecutableConfig import ExecutableConfig
-from Declarable.ArgsComparer import ArgsComparer
+from Declarable.Arguments.ArgsComparer import ArgsComparer
 from Utils.ClassProperty import classproperty
 from App.Logger.LogSection import LogSection
 from App import app

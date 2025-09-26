@@ -1,11 +1,11 @@
 from Executables.Templates.Acts import Act
-from Declarable.Arguments import StorageUnitArgument, CsvArgument
+from Declarable.Arguments import StorageUnitArgument, ListArgument
 
 class Implementation(Act):
     @classmethod
     def declare(cls):
         params = {}
-        params["items"] = CsvArgument({
+        params["items"] = ListArgument({
             "orig": StorageUnitArgument({}),
             "assertion": {
                 "not_null": True

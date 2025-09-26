@@ -3,8 +3,8 @@ from Utils.Data.JSON import JSON
 from Utils.Data.List import List
 import json
 
-class CsvArgument(Argument):
-    def value(self):
+class ListArgument(Argument):
+    def implementation(self):
         intrerm_val = []
         end_vals = []
 
@@ -23,9 +23,9 @@ class CsvArgument(Argument):
                     intrerm_val = _json
 
         for val in intrerm_val:
-            if self.configuration.get("orig") != None:
-                p = self.configuration.get("orig")
-                p.input_value(val)
+            if self.data.get("orig") != None:
+                p = self.data.get("orig")
+                p.passValue(val)
 
                 end_vals.append(p.getResult())
             else:

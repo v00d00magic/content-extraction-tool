@@ -1,5 +1,5 @@
 from Executables.Templates.Acts import Act
-from Declarable.Arguments import IntArgument, CsvArgument, ContentUnitArgument, StringArgument, LimitedArgument, BooleanArgument
+from Declarable.Arguments import IntArgument, ListArgument, ContentUnitArgument, StringArgument, LimitedArgument, BooleanArgument
 from DB.Models.Content.ContentUnit import ContentUnit
 from functools import reduce
 from peewee import fn
@@ -51,11 +51,11 @@ class Implementation(Act):
         params["collections_only"] = BooleanArgument({
             "default": False,
         })
-        params["link"] = CsvArgument({
+        params["link"] = ListArgument({
             "orig": ContentUnitArgument({}),
             "default": None,
         })
-        params["ids"] = CsvArgument({
+        params["ids"] = ListArgument({
             "orig": IntArgument({}),
         })
 

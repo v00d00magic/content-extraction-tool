@@ -1,12 +1,12 @@
 from .. import Implementation as TextImplementation
-from Declarable.Arguments import StringArgument, CsvArgument
+from Declarable.Arguments import StringArgument, ListArgument
 from Utils.Data.Text import Text
 
 class Implementation(TextImplementation.AbstractReceivation):
     @classmethod
     def declare(cls):
         params = {}
-        params["text"] = CsvArgument({
+        params["text"] = ListArgument({
             "orig": StringArgument({
                 "is_long": True,
             }),

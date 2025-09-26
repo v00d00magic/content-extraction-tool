@@ -2,7 +2,7 @@ from Declarable.Arguments.Argument import Argument
 from Utils.Data.JSON import JSON
 
 class LimitedArgument(Argument):
-    def value(self):
+    def implementation(self):
         inp = str(self.passed_value)
         if len(inp) == 0:
             if self.data.get('return_none_on_empty', True) == True:

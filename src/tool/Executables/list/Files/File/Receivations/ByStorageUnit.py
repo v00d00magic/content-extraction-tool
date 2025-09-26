@@ -1,4 +1,4 @@
-from Declarable.Arguments import CsvArgument, StorageUnitArgument
+from Declarable.Arguments import ListArgument, StorageUnitArgument
 from .. import Implementation as File
 
 locale_keys = {
@@ -11,7 +11,7 @@ class Implementation(File.AbstractReceivation):
     @classmethod
     def declare(cls):
         params = {}
-        params["storage_unit"] = CsvArgument({
+        params["storage_unit"] = ListArgument({
             "orig": StorageUnitArgument({}),
             "docs": {
                 "name": cls.key("storage_unit.name")

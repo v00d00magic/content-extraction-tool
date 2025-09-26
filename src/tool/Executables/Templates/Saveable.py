@@ -19,7 +19,7 @@ class Saveable:
         out.is_collection = True
 
         self.selfInsert(out)
-        self.call.collections.append(out)
+        self.variable("collections").append(out)
 
         return out
 

@@ -1,12 +1,12 @@
 from Executables.Templates.Acts import Act
 from DB.Models.Content.ContentUnit import ContentUnit
-from Declarable.Arguments import JsonArgument, CsvArgument
+from Declarable.Arguments import JsonArgument, ListArgument
 
 class Implementation(Act):
     @classmethod
     def declare(cls):
         params = {}
-        params["items"] = CsvArgument({
+        params["items"] = ListArgument({
             "orig": JsonArgument({}),
             "assertion": {
                 "not_null": True

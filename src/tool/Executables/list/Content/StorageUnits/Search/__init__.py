@@ -1,5 +1,5 @@
 from Executables.Templates.Acts import Act
-from Declarable.Arguments import ContentUnitArgument, IntArgument, CsvArgument, StringArgument, LimitedArgument, BooleanArgument
+from Declarable.Arguments import ContentUnitArgument, IntArgument, ListArgument, StringArgument, LimitedArgument, BooleanArgument
 from DB.Models.Content.StorageUnit import StorageUnit
 from functools import reduce
 import operator
@@ -45,11 +45,11 @@ class Implementation(Act):
         params["return_thumbnails"] = BooleanArgument({
             "default": False,
         })
-        params["link"] = CsvArgument({
+        params["link"] = ListArgument({
             "orig": ContentUnitArgument({}),
             "default": None,
         })
-        params["ids"] = CsvArgument({
+        params["ids"] = ListArgument({
             "orig": IntArgument({}),
         })
 

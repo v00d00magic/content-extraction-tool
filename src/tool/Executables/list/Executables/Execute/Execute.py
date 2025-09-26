@@ -1,4 +1,4 @@
-from Declarable.Arguments import CsvArgument, ContentUnitArgument, ExecutableArgument, BooleanArgument
+from Declarable.Arguments import ListArgument, ContentUnitArgument, ExecutableArgument, BooleanArgument
 from Executables.Responses.Response import Response
 from Executables.Responses.ItemsResponse import ItemsResponse
 from Executables.Templates.Acts import Act
@@ -29,7 +29,7 @@ class Implementation(Act):
                 "can_be_executed": True
             }
         })
-        params["links"] = CsvArgument({
+        params["links"] = ListArgument({
             "orig": ContentUnitArgument({}),
             "docs": {
                 "name": Act.key("name"),

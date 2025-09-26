@@ -1,5 +1,5 @@
 from Executables.Templates.Acts import Act
-from Declarable.Arguments import LimitedArgument, StringArgument, ClassArgument, CsvArgument
+from Declarable.Arguments import LimitedArgument, StringArgument, ClassArgument, ListArgument
 from DB.Export.ArchiveExport import ArchiveExport
 from DB.Export.ExportItem import ExportItem
 
@@ -7,7 +7,7 @@ class Implementation(Act):
     @classmethod
     def declare(cls):
         params = {}
-        params["items"] = CsvArgument({
+        params["items"] = ListArgument({
             "orig": ClassArgument({
                 "class": ExportItem
             }),

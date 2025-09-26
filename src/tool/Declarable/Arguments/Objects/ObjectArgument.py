@@ -2,7 +2,7 @@ from Declarable.Arguments.Argument import Argument
 from Utils.Data.JSON import JSON
 
 class ObjectArgument(Argument):
-    def value(self):
+    def implementation(self):
         if type(self.passed_value) == list:
             return self.passed_value
         elif type(self.passed_value) == str:

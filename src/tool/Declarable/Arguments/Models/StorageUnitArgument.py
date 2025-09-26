@@ -1,7 +1,7 @@
 from Declarable.Arguments.Argument import Argument
 
 class StorageUnitArgument(Argument):
-    def value(self):
+    def implementation(self):
         from DB.Models.Content.StorageUnit import StorageUnit
 
         if self.passed_value != None:

@@ -1,7 +1,7 @@
 from Executables.Templates.Services import Service
 
 from DB.Models.Content.ContentUnit import ContentUnit
-from Declarable.Arguments import CsvArgument, StringArgument, BooleanArgument
+from Declarable.Arguments import ListArgument, StringArgument, BooleanArgument
 from DB.Links.LinkManager import LinkManager
 
 class BaseDeclaredAtDependent(Service):
@@ -11,7 +11,7 @@ class BaseDeclaredAtDependent(Service):
     @classmethod
     def declare(cls):
         params = {}
-        params["append_ids"] = CsvArgument({
+        params["append_ids"] = ListArgument({
             'default': [],
         })
         params["date_offset"] = StringArgument({

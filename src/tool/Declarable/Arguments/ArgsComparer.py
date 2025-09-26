@@ -1,4 +1,4 @@
-from Declarable.ArgsDict import ArgsDict
+from Declarable.Arguments.ArgsDict import ArgsDict
 from App import app
 
 class ArgsComparer():
@@ -63,22 +63,20 @@ class ArgsComparer():
 
     def getByName(self, name, check_assertions = True):
         inputs_value = self.args.get(name)
+        argument = self.compare.get(name)
 
-        param_object = self.compare.get(name)
-
-        if param_object == None:
+        if argument == None:
             if self.missing_args_inclusion == True:
                 return inputs_value
             else:
                 return None
 
-        fallback = param_object.default()
-        set_default = self.default_sub
+        fallback = argument.getSensitiveDefault()
 
-        param_object.configuration['name'] = name
-        param_object.input_value(inputs_value)
+        argument.data['name'] = name
+        argument.passValue(inputs_value)
 
-        value = param_object.getResult(set_default)
+        value = argument.getResult(self.default_sub)
 
         try:
             app.logger.log(f"ArgsComparer: {name}={inputs_value}={str(value)}", section=["Executables", "Declaration", "Name"])
@@ -87,7 +85,7 @@ class ArgsComparer():
 
         if check_assertions == True:
             try:
-                param_object.assertions()
+                argument.assertions()
             except Exception as assertion:
                 try:
                     app.logger.log(assertion, "Executables!Declaration")
@@ -97,7 +95,7 @@ class ArgsComparer():
                 if self.exc == ArgsComparer.EXCEPT_ASSERT:
                     raise assertion
                 else:
-                    if set_default == True:
+                    if self.default_sub == True:
                         value = fallback
 
         return value

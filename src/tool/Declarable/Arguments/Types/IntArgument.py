@@ -1,5 +1,5 @@
 from Declarable.Arguments.Argument import Argument
 
 class IntArgument(Argument):
-    def value(self)->int:
+    def implementation(self)->int:
         return int(self.passed_value)
