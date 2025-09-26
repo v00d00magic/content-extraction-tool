@@ -1,6 +1,6 @@
-from declarable.Arguments import ObjectArgument, LimitedArgument
-from executables.templates.acts import Act
-from app.App import config
+from Declarable.Arguments import ObjectArgument, LimitedArgument
+from Executables.templates.acts import Act
+from App import app
 
 class Implementation(Act):
     @classmethod

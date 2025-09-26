@@ -1,5 +1,5 @@
-from executables.templates.acts import Act
-from declarable.Arguments import StorageUnitArgument, CsvArgument
+from Executables.templates.acts import Act
+from Declarable.Arguments import StorageUnitArgument, CsvArgument
 
 class Implementation(Act):
     @classmethod

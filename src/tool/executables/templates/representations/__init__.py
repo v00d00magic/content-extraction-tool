@@ -1,8 +1,8 @@
-from declarable.Arguments import BooleanArgument
-from executables.templates.Executable import Executable
-from executables.ExecutableCall import ExecutableCall
-from executables.responses.ItemsResponse import ItemsResponse
-from executables.variables.ResultsVariable import ResultsVariable
+from Declarable.Arguments import BooleanArgument
+from Executables.templates.Executable import Executable
+from Executables.ExecutableCall import ExecutableCall
+from Executables.responses.ItemsResponse import ItemsResponse
+from Executables.variables.ResultsVariable import ResultsVariable
 
 class RepresentationMeta(type):
     def __init__(cls, name, bases, attrs):

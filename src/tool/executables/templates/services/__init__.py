@@ -1,6 +1,5 @@
-from app.App import logger
-from executables.templates.Executable import Executable
-from app.Logger.LogSection import LogSection
+from Executables.templates.Executable import Executable
+from App.Logger.LogSection import LogSection
 
 class EndOfCycleException(Exception):
     pass

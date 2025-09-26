@@ -1,7 +1,7 @@
-from executables.templates.acts import Act
-from declarable.Arguments import ExecutableArgument, ObjectArgument
-from db.Models.Instances.ArgumentsDump import ArgumentsDump
-from utils.Data.JSON import JSON
+from Executables.templates.acts import Act
+from Declarable.Arguments import ExecutableArgument, ObjectArgument
+from DB.Models.Instances.ArgumentsDump import ArgumentsDump
+from Utils.Data.JSON import JSON
 
 class Implementation(Act):
     @classmethod

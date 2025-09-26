@@ -1,5 +1,5 @@
-from executables.templates.Executable import Executable
-from app.App import logger
+from Executables.templates.Executable import Executable
+
 
 class Outer(Executable):
     # must not return anything

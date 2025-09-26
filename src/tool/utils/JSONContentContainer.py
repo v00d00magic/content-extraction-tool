@@ -1,6 +1,6 @@
-from app.App import logger
-from app.Logger.LogKind import LogKind
-from utils.Data.JSON import JSON
+
+from App.Logger.LogKind import LogKind
+from Utils.Data.JSON import JSON
 import json
 
 class JSONContentContainer():
@@ -28,7 +28,7 @@ class JSONContentContainer():
 
     @classmethod
     def getData(cls):
-        logger.log(f"Getting {cls.get_description()} property",section=["Saveable", "Container"])
+        app.logger.log(f"Getting {cls.get_description()} property",section=["Saveable", "Container"])
 
         if cls.get_cached() != None:
             return cls.get_cached()
@@ -39,7 +39,7 @@ class JSONContentContainer():
         try:
             cls._cached = JSON(cls.get_attr()).parse()
         except json.decoder.JSONDecodeError:
-            logger.log(f"Container {cls.get_description()} contains wrong json", kind = LogKind.KIND_ERROR, section = ["Saveable", "Container"])
+            app.logger.log(f"Container {cls.get_description()} contains wrong json", kind = LogKind.KIND_ERROR, section = ["Saveable", "Container"])
             return None
 
         return cls._cached
@@ -49,7 +49,7 @@ class JSONContentContainer():
         _data = cls.getData()
         _data.update(new_data)
 
-        logger.log(f"Updated container {cls.get_description()}",section=["Saveable", "Container"])
+        app.logger.log(f"Updated container {cls.get_description()}",section=["Saveable", "Container"])
 
         cls.set_attr(_data)
 

@@ -1,4 +1,5 @@
-from app.App import app
-from app.AppConsole import call
+from Views.CLI import CLI
 
-app.loop.run_until_complete(call())
+cli = CLI()
+
+cli.app.loop.run_until_complete(cli.call())

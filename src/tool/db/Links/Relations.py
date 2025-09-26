@@ -1,6 +1,6 @@
-from db.Links.ContentUnitRelation import ContentUnitRelation, RelationEnum
-from db.Models.Content.ContentUnit import ContentUnit
-from db.Models.Content.StorageUnit import StorageUnit
+from DB.Links.ContentUnitRelation import ContentUnitRelation, RelationEnum
+from DB.Models.Content.ContentUnit import ContentUnit
+from DB.Models.Content.StorageUnit import StorageUnit
 
 class Relations:
     def __init__(self, parent = None):

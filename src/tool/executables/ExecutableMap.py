@@ -1,5 +1,5 @@
 from pathlib import Path
-from app.App import app, logger
+from App import app
 import importlib
 import time
 
@@ -16,7 +16,7 @@ class ExecutableMap:
         self.putItems()
 
     def putItems(self):
-        logger.log("Getting executables list...", section=self.section_name)
+        app.logger.log("Getting executables list...", section=self.section_name)
 
         counters = {
             "total": 0,
@@ -24,7 +24,7 @@ class ExecutableMap:
             "submodules": 0,
             "errors": 0
         }
-        executables_dir = app.cwd.joinpath("executables")
+        executables_dir = app.cwd.joinpath("Executables")
 
         # for some reason it goes backwards LOOOL
         for item in self.scanDirectory(executables_dir.joinpath("list")): # iterating
@@ -41,7 +41,7 @@ class ExecutableMap:
                         module = self.doImport(parts)
                         end_time = time.time()
 
-                        logger.log(f"Imported module {module.getName()} in {round(end_time - start_time, 3)}s", section=self.section_name)
+                        app.logger.log(f"Imported module {module.getName()} in {round(end_time - start_time, 3)}s", section=self.section_name)
 
                         _item = self.register(module)
 
@@ -52,12 +52,12 @@ class ExecutableMap:
                         self.js_modules[".".join(parts.get("parts"))] = parts.get("name")
 
             except AssertionError as e:
-                logger.log(f"AssertionError when importing {".".join(parts.get("parts"))}: {str(e) }, probaly not an executable", section=self.section_name)
+                app.logger.log(f"AssertionError when importing {".".join(parts.get("parts"))}: {str(e) }, probaly not an executable", section=self.section_name)
             except Exception as e:
                 counters["errors"] += 1
-                logger.log(e, section=self.section_name, prefix=f"Did not imported module {".".join(parts.get("parts"))}: ")
+                app.logger.log(e, section=self.section_name, prefix=f"Did not imported module {".".join(parts.get("parts"))}: ")
 
-        logger.log(f"Found total {counters["total"]} scripts, {counters["success"]} successfully, {counters["submodules"]} submodules, {counters["errors"]} errors", section=self.section_name)
+        app.logger.log(f"Found total {counters["total"]} scripts, {counters["success"]} successfully, {counters["submodules"]} submodules, {counters["errors"]} errors", section=self.section_name)
 
     def scanDirectory(self, executables_dir):
         list = []
@@ -118,7 +118,7 @@ class ExecutableMap:
     def doImport(self, data):
         is_end = data.get("name") == "__init__.py"
         title = "Implementation"
-        module_path = f'executables.list.' + ".".join(data.get("parts"))
+        module_path = f'Executables.list.' + ".".join(data.get("parts"))
         if is_end == False:
             module_path += "." + data.get("name")[:-3]
 
@@ -148,7 +148,7 @@ class ExecutableMap:
             '''
             return ExecutableMap.RESULT_MODULE
         else:
-            logger.log(f"Injected module {module.getName()} to {main_module.getName()}", section=self.section_name)
+            app.logger.log(f"Injected module {module.getName()} to {main_module.getName()}", section=self.section_name)
 
             self.items[main_module.getName()].addSubmodule(module) # registering to main module
             self.items[module.getName()] = module

@@ -1,5 +1,5 @@
-from declarable.Arguments.Argument import Argument
-from utils.Data.Text import Text
+from Declarable.Arguments.Argument import Argument
+from Utils.Data.Text import Text
 
 class StringArgument(Argument):
     def get_maxlength(self):

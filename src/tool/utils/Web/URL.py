@@ -1,7 +1,7 @@
 from urllib.parse import urlparse
 import os, mimetypes
-from utils.Web.DownloadManager import DownloadManagerItem
-from app.App import download_manager
+from Utils.Web.DownloadManager import DownloadManagerItem
+from App import app
 
 class URL():
     def __init__(self, url):
@@ -9,7 +9,7 @@ class URL():
         self.url = urlparse(url)
 
     async def download(self, download_to: str):
-        return await download_manager.addDownload(DownloadManagerItem(self._orig, download_to))
+        return await app.download_manager.addDownload(DownloadManagerItem(self._orig, download_to))
 
     def getNameAndExtensionByRequest(self, request):
         content_type = request.headers.get('Content-Type', '').lower()

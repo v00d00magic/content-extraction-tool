@@ -1,6 +1,6 @@
-from executables.templates.acts import Act
-from declarable.Arguments import IntArgument, CsvArgument, ContentUnitArgument, StringArgument, LimitedArgument, BooleanArgument
-from db.Models.Content.ContentUnit import ContentUnit
+from Executables.templates.acts import Act
+from Declarable.Arguments import IntArgument, CsvArgument, ContentUnitArgument, StringArgument, LimitedArgument, BooleanArgument
+from DB.Models.Content.ContentUnit import ContentUnit
 from functools import reduce
 from peewee import fn
 import operator

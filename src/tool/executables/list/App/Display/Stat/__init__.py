@@ -1,5 +1,5 @@
-from executables.templates.acts import Act
-from db.Models.Content.ContentUnit import ContentUnit
+from Executables.templates.acts import Act
+from DB.Models.Content.ContentUnit import ContentUnit
 
 class Implementation(Act):
     async def implementation(self, i = {}):

@@ -1,4 +1,4 @@
-from executables.templates.representations import Representation
+from Executables.templates.representations import Representation
 
 locale_keys = {
     "hyperlink.name": {

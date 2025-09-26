@@ -1,20 +1,11 @@
-from app.App import app
-from app.Config import Config
-from app.Logger import Logger
-from db.DbConnection import DbConnection
-from app.Storage import StorageContainer
+class AppWrapper:
+    def __init__(self):
+        self._app = None
 
-config = Config(app.cwd.parent)
-config.setAsConf()
-env = Config(app.cwd.parent, file_name="env.json", fallback=None)
+    def setApp(self, app):
+        self._app = app
 
-storage = StorageContainer(config)
-logger = Logger(config, storage)
+    def __getattr__(self, name):
+        return getattr(self._app, name, None)
 
-db_connection = DbConnection()
-db_connection.attachDb(config, env)
-db_connection.createTables()
-
-from utils.Web.DownloadManager import DownloadManager
-
-download_manager = DownloadManager(max_concurrent_downloads = 2)
+app = AppWrapper()

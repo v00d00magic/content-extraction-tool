@@ -1,5 +1,5 @@
-from utils.Data.List import List
-from utils.Wrap import Wrap
+from Utils.Data.List import List
+from Utils.Wrap import Wrap
 
 class LogSection(Wrap):
     section: list

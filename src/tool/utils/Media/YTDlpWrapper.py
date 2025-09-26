@@ -1,4 +1,4 @@
-from app.App import logger, config
+from App import app
 import yt_dlp
 
 class YTDlpWrapper:
@@ -9,13 +9,13 @@ class YTDlpWrapper:
            percent_str = ''.join(chr for chr in percent_str if chr.isprintable())
            percent = percent_str.split('%')[0].strip()
 
-           logger.log(kind="progress",message=f"Downloaded {percent}%",section="YtDlp")
+           app.logger.log(kind="progress",message=f"Downloaded {percent}%",section="YtDlp")
         elif d['status'] == 'finished':
-           logger.log(kind="success",message=f"Successfully downloaded",section="YtDlp")
+           app.logger.log(kind="success",message=f"Successfully downloaded",section="YtDlp")
     
     def __init__(self, opts):
         # 'outtmpl': 'downloads/%(title)s.mp4',
-        self.ydl_opts = {'quiet': True, 'progress_hooks': [self.download_hook], "ratelimit": float(config.get("net.max_speed")) * 1024}
+        self.ydl_opts = {'quiet': True, 'progress_hooks': [self.download_hook], "ratelimit": float(app.config.get("net.max_speed")) * 1024}
         #self.ydl_opts["quiet"] = False
         self.ydl_opts.update(opts)
 

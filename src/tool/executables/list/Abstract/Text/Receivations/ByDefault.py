@@ -1,6 +1,6 @@
 from .. import Implementation as TextImplementation
-from declarable.Arguments import StringArgument, CsvArgument
-from utils.Data.Text import Text
+from Declarable.Arguments import StringArgument, CsvArgument
+from Utils.Data.Text import Text
 
 class Implementation(TextImplementation.AbstractReceivation):
     @classmethod

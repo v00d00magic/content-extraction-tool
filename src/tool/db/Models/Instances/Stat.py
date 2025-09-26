@@ -1,5 +1,5 @@
 from peewee import TextField, TimestampField, BigIntegerField, AutoField
-from db.Models.BaseModel import BaseModel
+from DB.Models.BaseModel import BaseModel
 import time
 
 class Stat(BaseModel):

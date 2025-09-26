@@ -1,4 +1,4 @@
-from declarable.Arguments.Argument import Argument
+from Declarable.Arguments.Argument import Argument
 
 class FloatArgument(Argument):
     def value(self)->float:

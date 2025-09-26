@@ -1,5 +1,5 @@
-from declarable.ArgsDict import ArgsDict
-from app.App import logger
+from Declarable.ArgsDict import ArgsDict
+from App import app
 
 class ArgsComparer():
     EXCEPT_PASS = "pass"
@@ -48,6 +48,11 @@ class ArgsComparer():
         options.update(self.compare)
 
         for param_name, param_item in options.items():
+            try:
+                app.logger.log(f"ArgsComparer: getting name={param_name}", section=["Executables", "Declaration", "Name"])
+            except:
+                pass
+
             got_value = self.getByName(param_name)
             if got_value == None and self.save_none_values == False:
                 continue
@@ -58,6 +63,9 @@ class ArgsComparer():
 
     def getByName(self, name, check_assertions = True):
         inputs_value = self.args.get(name)
+
+        print(self.args)
+        print(inputs_value)
         param_object = self.compare.get(name)
 
         if param_object == None:
@@ -74,16 +82,17 @@ class ArgsComparer():
 
         value = param_object.getResult(set_default)
 
-        logger.log(f"ArgsComparer: {name}={str(value)}", section=["Executables", "Declaration", "Name"])
+        try:
+            app.logger.log(f"ArgsComparer: {name}={inputs_value}={str(value)}", section=["Executables", "Declaration", "Name"])
+        except:
+            pass
 
         if check_assertions == True:
             try:
                 param_object.assertions()
             except Exception as assertion:
                 try:
-                    from app.App import logger
-
-                    logger.log(assertion, "Executables!Declaration")
+                    app.logger.log(assertion, "Executables!Declaration")
                 except:
                     print(assertion)
 

@@ -1,5 +1,5 @@
-from executables.templates.acts import Act
-from declarable.Arguments import ExecutableArgument
+from Executables.templates.acts import Act
+from Declarable.Arguments import ExecutableArgument
 
 class Implementation(Act):
     @classmethod

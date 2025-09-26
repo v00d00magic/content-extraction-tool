@@ -1,4 +1,4 @@
-from declarable.Arguments.Argument import Argument
+from Declarable.Arguments.Argument import Argument
 
 class IntArgument(Argument):
     def value(self)->int:

@@ -1,5 +1,5 @@
-from executables.templates.Executable import Executable
-from executables.responses.ItemsResponse import ItemsResponse
+from Executables.templates.Executable import Executable
+from Executables.responses.ItemsResponse import ItemsResponse
 
 class Extractor(Executable):
     self_name = "Extractor"

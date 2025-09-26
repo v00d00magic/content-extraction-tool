@@ -1,5 +1,5 @@
 from .. import Implementation as Collection
-from declarable.Arguments import StringArgument
+from Declarable.Arguments import StringArgument
 
 class Implementation(Collection.AbstractReceivation):
     @classmethod

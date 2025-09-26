@@ -1,6 +1,6 @@
-from utils.Data.Text import Text
+from Utils.Data.Text import Text
 from peewee import SqliteDatabase, MySQLDatabase, PostgresqlDatabase, DatabaseProxy
-from utils.Configurable import Configurable
+from Utils.Configurable import Configurable
 
 class DbConnection(Configurable):
     def __init__(self):
@@ -33,12 +33,12 @@ class DbConnection(Configurable):
         self.instance_db = DbConnection.getByConfig(config.get("db.instance.connection"))
 
     def createTables(self):
-        from db.Models.Content.ContentUnit import ContentUnit
-        from db.Links.ContentUnitRelation import ContentUnitRelation
-        from db.Models.Instances.Stat import Stat
-        from db.Models.Content.StorageUnit import StorageUnit
-        from db.Models.Instances.ServiceInstance import ServiceInstance
-        from db.Models.Instances.ArgumentsDump import ArgumentsDump
+        from DB.Models.Content.ContentUnit import ContentUnit
+        from DB.Links.ContentUnitRelation import ContentUnitRelation
+        from DB.Models.Instances.Stat import Stat
+        from DB.Models.Content.StorageUnit import StorageUnit
+        from DB.Models.Instances.ServiceInstance import ServiceInstance
+        from DB.Models.Instances.ArgumentsDump import ArgumentsDump
 
         DbConnection.create(self.temp_db, [ContentUnitRelation, ContentUnit, StorageUnit])
         DbConnection.create(self.db, [ContentUnitRelation, ContentUnit, StorageUnit])
@@ -46,7 +46,7 @@ class DbConnection(Configurable):
 
     @classmethod
     def declareSettings(cls):
-        from declarable.Arguments import ObjectArgument
+        from Declarable.Arguments import ObjectArgument
 
         items = {}
         items["db.content.connection"] = ObjectArgument({

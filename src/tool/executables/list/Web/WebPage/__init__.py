@@ -1,5 +1,5 @@
-from executables.templates.representations import Representation
-from utils.ClassProperty import classproperty
+from Executables.templates.representations import Representation
+from Utils.ClassProperty import classproperty
 
 class Implementation(Representation):
     @classproperty

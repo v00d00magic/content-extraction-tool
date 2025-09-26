@@ -1,8 +1,8 @@
-from db.Models.Content.ContentModel import ContentModel
+from DB.Models.Content.ContentModel import ContentModel
 from peewee import TextField, BooleanField, FloatField, CharField
-from utils.JSONContentContainer import JSONContentContainer
-from utils.Data.Date import Date
-from app.App import logger
+from Utils.JSONContentContainer import JSONContentContainer
+from Utils.Data.Date import Date
+
 
 class ContentUnit(ContentModel):
     # Display
@@ -31,7 +31,7 @@ class ContentUnit(ContentModel):
     link_sign = "__$|cu_"
 
     def __init__(self, **kwargs):
-        from db.Links.LinkManager import LinkManager
+        from DB.Links.LinkManager import LinkManager
 
         super().__init__(**kwargs)
 
@@ -105,22 +105,22 @@ class ContentUnit(ContentModel):
             self.declared_created_at = float(_now)
 
     async def beforeSave(self):
-        logger.log(f"Running beforesave of {self.name_db_id}",section=["Saveable", "Beforesave"])
+        app.logger.log(f"Running beforesave of {self.name_db_id}",section=["Saveable", "Beforesave"])
 
         if self.via_method:
             for _outer in self.via_method.outer.outerList():
                 outer = _outer(self.via_method.outer)
-                logger.log(f"Beforesave: run {outer.getName()}",section=["Saveable", "Beforesave"])
+                app.logger.log(f"Beforesave: run {outer.getName()}",section=["Saveable", "Beforesave"])
 
                 try:
                     await outer.implementation({
                         "item": self
                     })
                 except Exception as exc:
-                    logger.log(exc, section="Saveable")
+                    app.logger.log(exc, section="Saveable")
 
     def getStructure(self, return_content = True, return_linked = True):
-        logger.log(f"Getting API structure of {self.name_db_id}",section="Saveable")
+        app.logger.log(f"Getting API structure of {self.name_db_id}",section="Saveable")
 
         payload = {}
         payload['id'] = str(self.uuid) # Converting to str cuz JSON.parse cannot convert it

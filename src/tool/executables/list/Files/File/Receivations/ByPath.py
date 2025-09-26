@@ -1,5 +1,5 @@
-from declarable.Arguments import StringArgument, LimitedArgument, CsvArgument
-from utils.Files.FileItem import FileItem
+from Declarable.Arguments import StringArgument, LimitedArgument, CsvArgument
+from Utils.Files.FileItem import FileItem
 from .. import Implementation as File
 from pathlib import Path
 import os

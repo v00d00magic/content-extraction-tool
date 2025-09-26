@@ -1,20 +1,20 @@
 from colorama import init as ColoramaInit
-from app.Logger.LogFile import LogFile
+from App.Logger.LogFile import LogFile
 
 # Maybe its better to create LogPart class?
-from app.Logger.LogMessage import LogMessage
-from app.Logger.LogKind import LogKind
-from app.Logger.LogSection import LogSection
-from app.Logger.LogLimiter import LogLimiter
+from App.Logger.LogMessage import LogMessage
+from App.Logger.LogKind import LogKind
+from App.Logger.LogSection import LogSection
+from App.Logger.LogLimiter import LogLimiter
 
-from utils.Configurable import Configurable
-from utils.Data.JSON import JSON
-from utils.Hookable import Hookable
+from Utils.Configurable import Configurable
+from Utils.Data.JSON import JSON
+from Utils.Hookable import Hookable
 from datetime import datetime
 
-from declarable.Arguments import Argument, StringArgument, ClassArgument, CsvArgument, BooleanArgument
-from app.Logger.LogSkipSection import LogSkipSection
-from declarable.Documentation import global_documentation
+from Declarable.Arguments import Argument, StringArgument, ClassArgument, CsvArgument, BooleanArgument
+from App.Logger.LogSkipSection import LogSkipSection
+from Declarable.Documentation import global_documentation
 
 import traceback
 

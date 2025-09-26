@@ -1,11 +1,11 @@
-from app.App import logger, storage
+from App import app
 from pathlib import Path
 from peewee import TextField, BigIntegerField, IntegerField, BooleanField
-from utils.Data.JSON import JSON
-from utils.Web.Mime import Mime
-from db.Models.Content.ContentModel import ContentModel
-from app.Storage.HashDirectory import HashDirectory
-from app.Logger.LogSection import LogSection
+from Utils.Data.JSON import JSON
+from Utils.Web.Mime import Mime
+from DB.Models.Content.ContentModel import ContentModel
+from App.Storage.HashDirectory import HashDirectory
+from App.Logger.LogSection import LogSection
 
 class StorageUnit(ContentModel):
     table_name = 'storage_units'
@@ -93,7 +93,7 @@ class StorageUnit(ContentModel):
         self.save(force_insert=True)
 
     def moveSelf(self):
-        logger.log(f"Moving HashDirectory of StorageUnit {self.uuid} to storage_units", section = ["Saveable"])
+        app.logger.log(f"Moving HashDirectory of StorageUnit {self.uuid} to storage_units", section = ["Saveable"])
 
         self.tears(False, False)
         self.hash_dir.moveSelf(storage.get("storage_units"))
@@ -110,7 +110,7 @@ class StorageUnit(ContentModel):
         return common_filesize
 
     def getStructure(self):
-        logger.log(f"Getting API structure of {self.name_db_id}",section="Saveable")
+        app.logger.log(f"Getting API structure of {self.name_db_id}",section="Saveable")
 
         payload = {}
         payload['class_name'] = self.self_name

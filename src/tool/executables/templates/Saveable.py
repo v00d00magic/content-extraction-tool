@@ -1,11 +1,11 @@
-from db.Models.Content.ContentUnit import ContentUnit
-from db.Models.Content.StorageUnit import StorageUnit
-from db.Models.Content.ThumbnailUnit import ThumbnailUnit
-from app.App import logger
+from DB.Models.Content.ContentUnit import ContentUnit
+from DB.Models.Content.StorageUnit import StorageUnit
+from DB.Models.Content.ThumbnailUnit import ThumbnailUnit
+from App import app
 
 class Saveable:
     def ContentUnit(self):
-        logger.log("Created new ContentUnit", section="Saveable")
+        app.logger.log("Created new ContentUnit", section="Saveable")
 
         out = ContentUnit()
         self.selfInsert(out)
@@ -13,7 +13,7 @@ class Saveable:
         return out
 
     def Collection(self):
-        logger.log("Created new collection", section="Saveable")
+        app.logger.log("Created new collection", section="Saveable")
 
         out = ContentUnit()
         out.is_collection = True
@@ -24,14 +24,14 @@ class Saveable:
         return out
 
     def StorageUnit(self):
-        logger.log("Created new StorageUnit", section="Saveable")
+        app.logger.log("Created new StorageUnit", section="Saveable")
 
         out = StorageUnit()
 
         return out
 
     def ThumbnailUnit(self):
-        logger.log("Created new ThumbnailUnit", section="Saveable")
+        app.logger.log("Created new ThumbnailUnit", section="Saveable")
 
         return ThumbnailUnit()
 

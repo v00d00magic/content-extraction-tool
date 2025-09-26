@@ -1,6 +1,6 @@
 import random
 import secrets
-from utils.Util import Util
+from Utils.Util import Util
 
 class Random(Util):
     def random_int(self, min, max):

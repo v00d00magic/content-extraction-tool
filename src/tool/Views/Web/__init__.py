@@ -1,16 +1,16 @@
-from app.App import config, logger
+from App import app, logger
 from aiohttp import web
 import os
 import asyncio
 import threading
 
-from utils.Configurable import Configurable
-from executables.list.Executables.Execute import Implementation as Execute
-from db.Models.Content.StorageUnit import StorageUnit
-from utils.Data.JSON import JSON
+from Utils.Configurable import Configurable
+from Executables.list.Executables.Execute import Implementation as Execute
+from DB.Models.Content.StorageUnit import StorageUnit
+from Utils.Data.JSON import JSON
 from pathlib import Path
-from declarable.Documentation import global_documentation
-from app.App import app as mainApp
+from Declarable.Documentation import global_documentation
+from App import app as mainApp
 
 mainApp.setup()
 
@@ -19,7 +19,7 @@ mainApp.context = "web"
 class WebApp(Configurable):
     @classmethod
     def declareSettings(cls):
-        from declarable.Arguments import StringArgument, IntArgument, BooleanArgument
+        from Declarable.Arguments import StringArgument, IntArgument, BooleanArgument
 
         locale_keys = {
             "ui.lang.name": {
@@ -194,7 +194,7 @@ async def websocket_connection(request):
                 "payload": {"result": kwargs.get("message").data}
             }))
         except Exception as e:
-            logger.log(e)
+            app.logger.log(e)
 
     async def __progress_hook_outer(message):
         try:
@@ -218,7 +218,7 @@ async def websocket_connection(request):
             results = await Execute(data.get("event_index")).execute_with_validation(data.get("payload"))
             payload["result"] = results.display()
         except Exception as e:
-            logger.log(e)
+            app.logger.log(e)
             payload["error"] = {
                 "status_code": 500,
                 "exception_name": e.__class__.__name__,

@@ -1,5 +1,5 @@
-from executables.list.Files.File import Implementation as FileImplementation
-from db.Models.Content.ContentUnit import ContentUnit
+from Executables.list.Files.File import Implementation as FileImplementation
+from DB.Models.Content.ContentUnit import ContentUnit
 from .Outer.Describe import Implementation as Describe
 from .Outer.ImageThumbnail import Implementation as ImageThumbnail
 

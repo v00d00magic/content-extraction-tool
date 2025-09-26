@@ -1,4 +1,4 @@
-from app.Config.DefaultSettings import DefaultSettings
+from App.Config.DefaultSettings import DefaultSettings
 from pathlib import Path
 import json
 
@@ -18,7 +18,7 @@ class Config():
         self.is_hidden = True
 
     def passDeclarable(self):
-        from declarable.ArgsComparer import ArgsComparer
+        from Declarable.ArgsComparer import ArgsComparer
 
         self.declared_settings = ArgsComparer(compare=self.compared_options, 
                                               args=self.passed_options, 

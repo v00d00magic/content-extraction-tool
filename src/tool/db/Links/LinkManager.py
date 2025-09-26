@@ -1,13 +1,13 @@
-from app.Logger.LogSection import LogSection
-from app.Logger.LogKind import LogKind
-from utils.Data.JSON import JSON
+from App.Logger.LogSection import LogSection
+from App.Logger.LogKind import LogKind
+from Utils.Data.JSON import JSON
 
-from db.Models.Content.ContentUnit import ContentUnit
-from db.Models.Content.StorageUnit import StorageUnit
-from db.Links.ContentUnitRelation import RelationEnum
+from DB.Models.Content.ContentUnit import ContentUnit
+from DB.Models.Content.StorageUnit import StorageUnit
+from DB.Links.ContentUnitRelation import RelationEnum
 
-from db.Links.Relations import Relations
-from app.App import logger
+from DB.Links.Relations import Relations
+from App import app
 
 class AlreadyLinkedException(Exception):
     pass
@@ -27,7 +27,7 @@ class LinkManager:
     def link(self, child, relation_type: int = None):
         res = self.relations.create(child, relation_type)
 
-        logger.log(message=f"Linked {self.parent.name_db_id}<->{child.name_db_id}, order {res.order}, db: {res.getDbName()}", section = self.section_name, kind = LogKind.KIND_SUCCESS)
+        app.logger.log(message=f"Linked {self.parent.name_db_id}<->{child.name_db_id}, order {res.order}, db: {res.getDbName()}", section = self.section_name, kind = LogKind.KIND_SUCCESS)
 
         return res
 
@@ -37,7 +37,7 @@ class LinkManager:
     def unlink(self, child, relation_type: int = None) -> bool:
         res = self.relations.remove(child, relation_type)
 
-        logger.log(message=f"Unlinked {self.parent.name_db_id}<->{child.name_db_id}, db: {res.getDbName()}", section = self.section_name, kind = LogKind.KIND_SUCCESS)
+        app.logger.log(message=f"Unlinked {self.parent.name_db_id}<->{child.name_db_id}, db: {res.getDbName()}", section = self.section_name, kind = LogKind.KIND_SUCCESS)
 
         return res != None
 
@@ -56,7 +56,7 @@ class LinkManager:
     def getModels(self, class_name = None, relation_type: int = None):
         rels = self.getRelations(class_name, relation_type)
 
-        logger.log(message=f"Getting linked from {self.parent.name_db_id}, db {self.parent.getDbName()}", section = self.section_name, kind = LogKind.KIND_SUCCESS)
+        app.logger.log(message=f"Getting linked from {self.parent.name_db_id}, db {self.parent.getDbName()}", section = self.section_name, kind = LogKind.KIND_SUCCESS)
 
         return self.relations.relationsToModels(rels)
 
@@ -90,7 +90,7 @@ class LinkManager:
                 else:
                     return to_check
             except Exception as exception:
-                logger.log(exception, section="Linkage")
+                app.logger.log(exception, section="Linkage")
                 return to_check
         else:
             return to_check

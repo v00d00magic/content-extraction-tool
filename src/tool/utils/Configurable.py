@@ -1,4 +1,4 @@
-from app.Config.DefaultSettings import DefaultSettings
+from App.Config.DefaultSettings import DefaultSettings
 
 class Configurable:
     @classmethod

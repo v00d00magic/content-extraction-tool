@@ -1,4 +1,4 @@
-from utils.Wrap import Wrap
+from Utils.Wrap import Wrap
 
 class LogKind(Wrap):
     KIND_SUCCESS = 'success'

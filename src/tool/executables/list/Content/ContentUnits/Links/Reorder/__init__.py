@@ -1,7 +1,7 @@
-from executables.templates.acts import Act
-from declarable.Arguments import IntArgument
-from db.Models.Content.ContentUnit import ContentUnit
-from db.Links.LinkManager import LinkManager
+from Executables.templates.acts import Act
+from Declarable.Arguments import IntArgument
+from DB.Models.Content.ContentUnit import ContentUnit
+from DB.Links.LinkManager import LinkManager
 
 class Implementation(Act):
     @classmethod

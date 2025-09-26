@@ -1,10 +1,10 @@
-from declarable.Arguments.Argument import Argument
+from Declarable.Arguments.Argument import Argument
 
 class ExecutableArgument(Argument):
     compare = None
 
     def value(self):
-        from app.App import app
+        from App import app
 
         print(str(self.passed_value))
         return app.indexated_scripts.find(str(self.passed_value), self.compare)

@@ -1,18 +1,18 @@
-from db.Models.BaseModel import BaseModel
+from DB.Models.BaseModel import BaseModel
 from peewee import IntegerField
 from playhouse.sqlite_ext import fn
 
 from snowflake import SnowflakeGenerator
 
-from app.Logger.LogKind import LogKind
-from app.App import logger
+from App.Logger.LogKind import LogKind
+
 
 class ContentModel(BaseModel):
     uuid = IntegerField(unique=True, primary_key=True)
 
     @classmethod
     def ids(cls, id):
-        logger.log(f"Searching {cls.self_name} by ids {str(id)}", section = ["DB", "Models"])
+        app.logger.log(f"Searching {cls.self_name} by ids {str(id)}", section = ["DB", "Models"])
 
         if type(id) in [str, int]:
             _query = cls.select().where(cls.uuid == int(id))
@@ -63,7 +63,7 @@ class ContentModel(BaseModel):
         pass
 
     async def postSave(self):
-        logger.log(f"Saved {self.__class__.self_name} to db {self.getDbName()}, id: {self.uuid}", kind=LogKind.KIND_SUCCESS, section=["Saveable"])
+        app.logger.log(f"Saved {self.__class__.self_name} to db {self.getDbName()}, id: {self.uuid}", kind=LogKind.KIND_SUCCESS, section=["Saveable"])
 
     async def flush(self, **kwargs):
         '''Runs beforeSave(), saves model to temporary db

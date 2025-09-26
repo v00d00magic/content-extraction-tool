@@ -1,12 +1,12 @@
-from executables.templates.acts import Act
-from declarable.Arguments import ExecutableArgument
+from Executables.templates.acts import Act
+from Declarable.Arguments import ExecutableArgument
 import subprocess, sys
 
 class Implementation(Act):
     @classmethod
     def declare(cls):
         params = {}
-        params["executable"] = ExecutableArgument({
+        params["class"] = ExecutableArgument({
             "assertion": {
                 "not_null": True
             }

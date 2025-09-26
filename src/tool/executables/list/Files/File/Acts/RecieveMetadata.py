@@ -1,8 +1,8 @@
 from .. import Implementation as File
-from declarable.Arguments import StringArgument, BooleanArgument, StorageUnitArgument
-from utils.ClassProperty import classproperty
+from Declarable.Arguments import StringArgument, BooleanArgument, StorageUnitArgument
+from Utils.ClassProperty import classproperty
 from collections import defaultdict
-from app.App import logger
+
 
 class Implementation(File.AbstractAct):
     @classproperty
@@ -71,6 +71,6 @@ class Implementation(File.AbstractAct):
                 else:
                     return _metadata.exportPlaintext()
             except Exception as err:
-                logger.log(err,section="Acts!Metadata")
+                app.logger.log(err,section="Acts!Metadata")
 
                 return []

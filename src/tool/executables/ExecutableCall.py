@@ -1,10 +1,10 @@
-from db.Models.Instances.ArgumentsDump import ArgumentsDump
-from executables.templates.Executable import Executable
-from executables.responses.Response import Response
-from utils.Hookable import Hookable
-from utils.Data.JSON import JSON
-from app.App import app, logger
-from app.Logger.LogSection import LogSection
+from DB.Models.Instances.ArgumentsDump import ArgumentsDump
+from Executables.templates.Executable import Executable
+from Executables.responses.Response import Response
+from Utils.Hookable import Hookable
+from Utils.Data.JSON import JSON
+from App import app
+from App.Logger.LogSection import LogSection
 import asyncio
 
 class ProgressMessage():
@@ -85,7 +85,7 @@ class ExecutableCall(Hookable):
 
     def log(self, *args, **kwargs):
         kwargs["id_prefix"] = "ExecutableCall->" + str(self.index)
-        return logger.log(*args, **kwargs)
+        return app.logger.log(*args, **kwargs)
 
     # Others
 

@@ -1,8 +1,8 @@
-from executables.templates.services import Service
-from app.App import logger
-from db.Models.Content.ContentUnit import ContentUnit
-from declarable.Arguments import CsvArgument, StringArgument, BooleanArgument
-from db.Links.LinkManager import LinkManager
+from Executables.templates.services import Service
+
+from DB.Models.Content.ContentUnit import ContentUnit
+from Declarable.Arguments import CsvArgument, StringArgument, BooleanArgument
+from DB.Links.LinkManager import LinkManager
 
 class BaseDeclaredAtDependent(Service):
     pass_params = {}
@@ -43,7 +43,7 @@ class BaseDeclaredAtDependent(Service):
 
         await extractor_instance.execute_with_validation(self.pass_params)
 
-        logger.log(message=f"Got total {len(linked_dict)} items",section=["Services", "RegularDeclaredAtChecker"])
+        app.logger.log(message=f"Got total {len(linked_dict)} items",section=["Services", "RegularDeclaredAtChecker"])
 
         list_items = []
         check_dates = []
@@ -60,12 +60,12 @@ class BaseDeclaredAtDependent(Service):
 
                 check_dates.append(int(item_created))
 
-        logger.log(message=f"Totally {len(list_items)} new items",section=["Services", "RegularDeclaredAtChecker"])
+        app.logger.log(message=f"Totally {len(list_items)} new items",section=["Services", "RegularDeclaredAtChecker"])
 
         if len(list_items) > 0:
             new_offset = max(check_dates)
 
-            logger.log(message=f"Changed date offset {date_offset}->{new_offset}",section=["Services", "RegularDeclaredAtChecker"])
+            app.logger.log(message=f"Changed date offset {date_offset}->{new_offset}",section=["Services", "RegularDeclaredAtChecker"])
 
             self.config['date_offset'] = new_offset
             self.service_object.updateData(self.config)

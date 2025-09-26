@@ -1,6 +1,6 @@
-from executables.templates.acts import Act
-from declarable.Arguments import ContentUnitArgument, IntArgument, CsvArgument, StringArgument, LimitedArgument, BooleanArgument
-from db.Models.Content.StorageUnit import StorageUnit
+from Executables.templates.acts import Act
+from Declarable.Arguments import ContentUnitArgument, IntArgument, CsvArgument, StringArgument, LimitedArgument, BooleanArgument
+from DB.Models.Content.StorageUnit import StorageUnit
 from functools import reduce
 import operator
 

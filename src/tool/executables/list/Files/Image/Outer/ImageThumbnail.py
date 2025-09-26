@@ -1,6 +1,6 @@
-from db.Models.Content.ContentModel import BaseModel
-from executables.templates.outer import Outer
-from app.App import config
+from DB.Models.Content.ContentModel import BaseModel
+from Executables.templates.outer import Outer
+from App import app
 from pathlib import Path
 import os
 

@@ -1,7 +1,7 @@
-from app.Storage.StorageItem import StorageItem
+from App.Storage.StorageItem import StorageItem
 from pathlib import Path
-from utils.Data.Random import Random
-from utils.Data.JSON import JSON
+from Utils.Data.Random import Random
+from Utils.Data.JSON import JSON
 import os
 
 class HashDirectory:

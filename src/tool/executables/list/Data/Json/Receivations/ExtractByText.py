@@ -1,6 +1,6 @@
 from .. import Implementation as Json
-from declarable.Arguments import StringArgument
-from utils.Data.JSON import JSON
+from Declarable.Arguments import StringArgument
+from Utils.Data.JSON import JSON
 
 class Implementation(Json.AbstractReceivation):
     @classmethod

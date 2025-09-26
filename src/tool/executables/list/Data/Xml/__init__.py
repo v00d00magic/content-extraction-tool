@@ -1,5 +1,5 @@
-from executables.templates.representations import Representation
-from declarable.Arguments import StringArgument, ObjectArgument
+from Executables.templates.representations import Representation
+from Declarable.Arguments import StringArgument, ObjectArgument
 
 locale_keys = {
     "xml.name": {

@@ -1,5 +1,5 @@
-from app.App import config
-from app.Views.Web import app
+from App import app
+from Views.Web import app
 import aiohttp, asyncio
 
 aiohttp.web.run_app(app,

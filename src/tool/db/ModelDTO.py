@@ -1,4 +1,4 @@
-from app.App import logger
+from App import app
 
 class ModelDTO:
     def moveTo(self,
@@ -12,14 +12,14 @@ class ModelDTO:
         if getattr(item, "LinkManager", None) != None:
             relations = item.LinkManager.getRelations()
 
-            logger.log(f"Found {len(relations)} linked at {item.name_db_id}", section=["Saveable"])
+            app.logger.log(f"Found {len(relations)} linked at {item.name_db_id}", section=["Saveable"])
 
             for link_item in relations:
                 links.append(link_item.getStructure())
 
         item.setDb(db)
 
-        logger.log(f"Set db of item {item.name_db_id} to {item.getDbName()}", section=["Saveable", "DB"])
+        app.logger.log(f"Set db of item {item.name_db_id} to {item.getDbName()}", section=["Saveable", "DB"])
 
         if hasattr(item, "moveSelf") == True:
             item.moveSelf()
@@ -30,7 +30,6 @@ class ModelDTO:
             return
 
         for link_obj in links:
-            print(link_obj)
             link_item = link_obj.get("item")
             link_type = link_obj.get("type")
 

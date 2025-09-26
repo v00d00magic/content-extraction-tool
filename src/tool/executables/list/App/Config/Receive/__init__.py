@@ -1,5 +1,5 @@
-from executables.templates.acts import Act
-from app.App import config
+from Executables.templates.acts import Act
+from App import app
 
 class Implementation(Act):
     @classmethod

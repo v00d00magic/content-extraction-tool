@@ -1,5 +1,4 @@
-from app.AppConsole import call
-from app.App import app
+from App import app
 
 app.argv = {
     'i': 'Abstract.Text',

@@ -1,6 +1,6 @@
-from executables.templates.representations import Representation
-from declarable.Arguments import CsvArgument, StringArgument
-from utils.ClassProperty import classproperty
+from Executables.templates.representations import Representation
+from Declarable.Arguments import CsvArgument, StringArgument
+from Utils.ClassProperty import classproperty
 
 class Implementation(Representation):
     @classproperty

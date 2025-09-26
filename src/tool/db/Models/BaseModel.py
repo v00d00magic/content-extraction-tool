@@ -1,8 +1,7 @@
 from peewee import Model
-from app.App import db_connection
-from app.Logger.LogKind import LogKind
-from app.App import logger
-from db.ModelDTO import ModelDTO
+from App import app
+from App.Logger.LogKind import LogKind
+from DB.ModelDTO import ModelDTO
 
 class BaseModel(Model):
     def setDb(self, db):
@@ -19,7 +18,7 @@ class BaseModel(Model):
 
         kwargs["force_insert"] = True
         if to_temp == True:
-            self.setDb(db_connection.temp_db)
+            self.setDb(app.db_connection.temp_db)
 
         super().save(**kwargs)
 
@@ -28,12 +27,12 @@ class BaseModel(Model):
         if hasattr(self.__class__, "uuid") != None:
             id_part = f"{self.__class__.__name__}_{self.name_db_id}"
 
-        logger.log(f"Moving {id_part} from db {self.getDbName()}", kind = LogKind.KIND_HIGHLIGHT, section = ["DB", "Moving"])
+        app.logger.log(f"Moving {id_part} from db {self.getDbName()}", kind = LogKind.KIND_HIGHLIGHT, section = ["DB", "Moving"])
 
         movement = ModelDTO()
         movement.moveTo(self, db)
 
-        logger.log(f"Moved {id_part} to db {self.getDbName()}", kind = LogKind.KIND_HIGHLIGHT, section = ["DB", "Moving"])
+        app.logger.log(f"Moved {id_part} to db {self.getDbName()}", kind = LogKind.KIND_HIGHLIGHT, section = ["DB", "Moving"])
 
     def getDbName(self):
         if self.getDbPath() == ":memory:":

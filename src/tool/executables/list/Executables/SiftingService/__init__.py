@@ -1,6 +1,6 @@
-from executables.templates.services.BaseDeclaredAtDependent import BaseDeclaredAtDependent
-from executables.templates.extractors import Extractor
-from declarable.Arguments import StringArgument, ObjectArgument
+from Executables.templates.services.BaseDeclaredAtDependent import BaseDeclaredAtDependent
+from Executables.templates.extractors import Extractor
+from Declarable.Arguments import StringArgument, ObjectArgument
 
 class Implementation(BaseDeclaredAtDependent):
     @classmethod

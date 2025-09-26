@@ -1,8 +1,8 @@
-from declarable.ExecutableConfig import ExecutableConfig
-from declarable.ArgsComparer import ArgsComparer
-from utils.ClassProperty import classproperty
-from app.Logger.LogSection import LogSection
-from app.App import logger
+from Declarable.ExecutableConfig import ExecutableConfig
+from Declarable.ArgsComparer import ArgsComparer
+from Utils.ClassProperty import classproperty
+from App.Logger.LogSection import LogSection
+from App import app
 
 class RecursiveDeclarable:
     section_name = "Executables"
@@ -41,7 +41,7 @@ class RecursiveDeclarable:
 
     @classmethod
     def comparerShortcut(cls, declare_with, args):
-        logger.log(f"Called ArgsComparer to {cls.getName()}", section = cls.section_name)
+        app.logger.log(f"Called ArgsComparer to {cls.getName()}", section = cls.section_name)
         if declare_with == None:
             declare_with = cls.declareRecursive()
 
@@ -61,7 +61,7 @@ class RecursiveDeclarable:
         ignore_list = cls.executable_configuration.ignores() # params that will be ignored from current level
         output_params = {}
 
-        logger.log("Called recursive declaration...", section = cls.section_name_declarable)
+        app.logger.log("Called recursive declaration...", section = cls.section_name_declarable)
 
         for _sub_class in cls.__mro__:
             if hasattr(_sub_class, "define") == True:
@@ -87,7 +87,7 @@ class RecursiveDeclarable:
                 count += 1
                 intermediate_dict[name] = current_level_declaration.get(name)
 
-            logger.log(f"Class {cls.getName()}: Called declare at {_sub_class.__name__} and got {count} arguments", section = cls.section_name_mro)
+            app.logger.log(f"Class {cls.getName()}: Called declare at {_sub_class.__name__} and got {count} arguments", section = cls.section_name_mro)
 
             output_params.update(intermediate_dict)
 

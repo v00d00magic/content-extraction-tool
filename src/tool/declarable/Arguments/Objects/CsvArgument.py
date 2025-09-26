@@ -1,6 +1,6 @@
-from declarable.Arguments.Argument import Argument
-from utils.Data.JSON import JSON
-from utils.Data.List import List
+from Declarable.Arguments.Argument import Argument
+from Utils.Data.JSON import JSON
+from Utils.Data.List import List
 import json
 
 class CsvArgument(Argument):

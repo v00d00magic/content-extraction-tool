@@ -1,5 +1,5 @@
 from .. import Implementation as Video
-from declarable.Arguments import CsvArgument, StringArgument
+from Declarable.Arguments import CsvArgument, StringArgument
 
 class Implementation(Video.AbstractConfirmation):
     @classmethod
@@ -13,7 +13,7 @@ class Implementation(Video.AbstractConfirmation):
         return params
 
     async def implementation(self, i = {}):
-        from utils.Media.YTDlpWrapper import YTDlpWrapper
+        from Utils.Media.YTDlpWrapper import YTDlpWrapper
 
         outer = self.outer.declareRecursive()
         with YTDlpWrapper({}).ydl as ydl:

@@ -1,11 +1,11 @@
-from app.App import logger
-from app.Logger.LogKind import LogKind
-from utils.Hookable import Hookable
-from app.App import config
+
+from App.Logger.LogKind import LogKind
+from Utils.Hookable import Hookable
+from App import app
 from pathlib import Path
 import asyncio, aiohttp, os, time
-from utils.Configurable import Configurable
-from utils.Increment import Increment
+from Utils.Configurable import Configurable
+from Utils.Increment import Increment
 
 class DownloadManagerItem():
     section_name = ["DownloadManager", "Item"]
@@ -39,7 +39,7 @@ class DownloadManagerItem():
         DOWNLOAD_URL = self.url
         DOWNLOAD_DIR = self.dir
 
-        logger.log(f"Downloading {DOWNLOAD_URL}", section=self.section_name, id_prefix = self.getPrefix())
+        app.logger.log(f"Downloading {DOWNLOAD_URL}", section=self.section_name, id_prefix = self.getPrefix())
 
         async with self.manager.semaphore:
             async with session.get(DOWNLOAD_URL, allow_redirects=True, headers=self.manager._headers) as response:
@@ -49,7 +49,7 @@ class DownloadManagerItem():
                     raise FileNotFoundError('File not found')
 
                 if DOWNLOAD_DIR != None and Path(DOWNLOAD_DIR).is_file():
-                    logger.log(f"{DOWNLOAD_URL} is already downloaded", section = self.section_name, id_prefix = self.getPrefix())
+                    app.logger.log(f"{DOWNLOAD_URL} is already downloaded", section = self.section_name, id_prefix = self.getPrefix())
 
                     return response
 
@@ -80,7 +80,7 @@ class DownloadManagerItem():
                     self.status = "success"
                     self.manager.trigger("success", self)
 
-                    logger.log(f"Downloading complete", section=self.section_name, kind=LogKind.KIND_SUCCESS, id_prefix = self.getPrefix())
+                    app.logger.log(f"Downloading complete", section=self.section_name, kind=LogKind.KIND_SUCCESS, id_prefix = self.getPrefix())
 
                 return response
 
@@ -90,8 +90,8 @@ class DownloadManager(Hookable, Configurable):
 
     @classmethod
     def declareSettings(cls):
-        from declarable.Documentation import global_documentation
-        from declarable.Arguments import IntArgument, StringArgument
+        from Declarable.Documentation import global_documentation
+        from Declarable.Arguments import IntArgument, StringArgument
 
         global_documentation.loadKeys({
             "net.max_speed.name": {
@@ -135,7 +135,7 @@ class DownloadManager(Hookable, Configurable):
 
         return items
 
-    def __init__(self, max_concurrent_downloads: int = 3, speed_limit_kbps: int = config.get("net.max_speed")):
+    def __init__(self, max_concurrent_downloads: int = 3, speed_limit_kbps: int = app.config.get("net.max_speed")):
         super().__init__()
 
         self.updateConfig()
@@ -143,10 +143,10 @@ class DownloadManager(Hookable, Configurable):
         self.max_concurrent_downloads = max_concurrent_downloads
         self.speed_limit_kbps = speed_limit_kbps
         self.semaphore = asyncio.Semaphore(self.max_concurrent_downloads)
-        self._timeout = config.get("net.timeout")
+        self._timeout = app.config.get("net.timeout")
         self.download_index = Increment()
         self._headers = {
-            "User-Agent": config.get("net.useragent")
+            "User-Agent": app.config.get("net.useragent")
         }
 
     def _check_session(self):

@@ -1,4 +1,4 @@
-from declarable.Arguments import CsvArgument, StorageUnitArgument
+from Declarable.Arguments import CsvArgument, StorageUnitArgument
 from .. import Implementation as File
 
 locale_keys = {

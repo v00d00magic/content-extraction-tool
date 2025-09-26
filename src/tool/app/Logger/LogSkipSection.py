@@ -1,6 +1,6 @@
 from .LogSection import LogSection
 from .LogKind import LogKind
-from utils.Wrap import Wrap
+from Utils.Wrap import Wrap
 from typing import List
 
 class LogSkipSection(Wrap):

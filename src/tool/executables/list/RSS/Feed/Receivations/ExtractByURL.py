@@ -1,7 +1,7 @@
-from declarable.Arguments import StringArgument
+from Declarable.Arguments import StringArgument
 from .. import Implementation as RSS
-from executables.list.RSS.Item import Implementation as RSSItem
-from app.App import logger
+from Executables.list.RSS.Item import Implementation as RSSItem
+
 import datetime
 
 def rss_date_parse(date_string: str):
@@ -41,7 +41,7 @@ class Implementation(RSS.AbstractReceivation):
             async with session.get(url) as response:
                 response_xml = await response.text()
 
-        logger.log(f"Called passed URL", section="RSS")
+        app.logger.log(f"Called passed URL", section="RSS")
 
         xmltojson = xmltodict.parse(response_xml)
         rss = xmltojson.get('rss')
@@ -77,7 +77,7 @@ class Implementation(RSS.AbstractReceivation):
             out.display_name = out.JSONContent.get("title", "Untitled")
             out.declared_created_at = rss_date_parse(out.JSONContent.get("pubDate")).timestamp()
 
-            self.notifyAboutProgress(logger.log(f'Got item with name "{out.display_name}"', section=self.outer.section), got / total)
+            self.notifyAboutProgress(app.logger.log(f'Got item with name "{out.display_name}"', section=self.outer.section), got / total)
 
             output.append(out)
             got += 1

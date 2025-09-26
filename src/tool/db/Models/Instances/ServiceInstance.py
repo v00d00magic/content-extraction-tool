@@ -1,6 +1,6 @@
 from peewee import SmallIntegerField, TextField, AutoField, TimestampField
-from db.Models.BaseModel import BaseModel
-from utils.Data.JSON import JSON
+from DB.Models.BaseModel import BaseModel
+from Utils.Data.JSON import JSON
 import time
 
 class ServiceInstance(BaseModel):

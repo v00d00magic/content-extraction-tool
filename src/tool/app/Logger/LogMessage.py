@@ -1,6 +1,6 @@
-from utils.Wrap import Wrap
-from app.Logger.LogKind import LogKind
-from app.Logger.LogSection import LogSection
+from Utils.Wrap import Wrap
+from App.Logger.LogKind import LogKind
+from App.Logger.LogSection import LogSection
 from datetime import datetime
 
 class LogMessage(Wrap):

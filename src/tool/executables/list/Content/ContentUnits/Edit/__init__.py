@@ -1,6 +1,6 @@
-from executables.templates.acts import Act
-from db.Models.Content.ContentUnit import ContentUnit
-from declarable.Arguments import JsonArgument, CsvArgument
+from Executables.templates.acts import Act
+from DB.Models.Content.ContentUnit import ContentUnit
+from Declarable.Arguments import JsonArgument, CsvArgument
 
 class Implementation(Act):
     @classmethod

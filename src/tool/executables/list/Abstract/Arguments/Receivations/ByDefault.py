@@ -1,5 +1,5 @@
 from .. import Implementation as Scratch
-from declarable.ExecutableConfig import ExecutableConfig
+from Declarable.ExecutableConfig import ExecutableConfig
 
 class Implementation(Scratch.AbstractReceivation):
     @classmethod

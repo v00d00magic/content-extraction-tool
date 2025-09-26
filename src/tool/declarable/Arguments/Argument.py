@@ -21,7 +21,7 @@ class Argument:
 
     def default(self):
         if self.configuration.get("env") != None:
-            from app.App import env
+            from App.App import env
 
             env_arg = self.configuration.get("env")
 
@@ -59,9 +59,9 @@ class Argument:
                 got = self.value()
             except Exception as e:
                 try:
-                    from app.App import logger
+                    
 
-                    logger.log(e, "Executables!Declaration")
+                    app.logger.log(e, "Executables!Declaration")
                 except:
                     print(e)
 

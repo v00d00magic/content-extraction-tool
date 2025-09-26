@@ -1,6 +1,6 @@
-from declarable.Arguments import CsvArgument, StringArgument
+from Declarable.Arguments import CsvArgument, StringArgument
 from .. import Implementation as File
-from utils.Web.URL import URL
+from Utils.Web.URL import URL
 from pathlib import Path
 
 locale_keys = {

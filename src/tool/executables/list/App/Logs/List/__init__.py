@@ -1,17 +1,17 @@
-from executables.templates.acts import Act
-from app.App import logger
-from app.App import config
+from Executables.templates.acts import Act
+
+from App import app
 
 class Implementation(Act):
     @classmethod
     def canBeUsedAt(cls, at):
         if at == "web":
-            return config.get("web.logs_watching.allow")
+            return app.config.get("web.logs_watching.allow")
 
         return super().canBeUsedAt(at)
 
     async def implementation(self, i = {}):
-        logs_storage = logger.logs_storage
+        logs_storage = app.logger.logs_storage
         dir_storage = logs_storage.dir
 
         log_files = dir_storage.glob('*.json')

@@ -1,4 +1,4 @@
-from utils.ClassProperty import classproperty
+from Utils.ClassProperty import classproperty
 
 class Submodulable():
     @classmethod
@@ -54,8 +54,8 @@ class Submodulable():
 
     @classmethod
     def _build_submodules(cls):
-        from executables.templates.extractors import Extractor
-        from executables.templates.acts import Act
+        from Executables.templates.extractors import Extractor
+        from Executables.templates.acts import Act
 
         class AbstractAct(Act):
             self_name = "Act"

@@ -1,7 +1,7 @@
-from executables.templates.extractors.Timeoutable import Timeoutable
-from executables.templates.extractors import Extractor
-from declarable.Arguments import IntArgument
-from app.App import logger
+from Executables.templates.extractors.Timeoutable import Timeoutable
+from Executables.templates.extractors import Extractor
+from Declarable.Arguments import IntArgument
+
 import asyncio
 
 class Implementation(Extractor, Timeoutable):
@@ -28,7 +28,7 @@ class Implementation(Extractor, Timeoutable):
             try:
                 await self.iterate(i, iterator)
             except Exception as _e:
-                logger.log(_e, "Iterable")
+                app.logger.log(_e, "Iterable")
 
             await asyncio.sleep(i.get("timeout"))
 

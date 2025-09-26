@@ -1,5 +1,5 @@
 from .. import Implementation as Hyperlink
-from declarable.Arguments import CsvArgument
+from Declarable.Arguments import CsvArgument
 
 class Implementation(Hyperlink.AbstractAct):
     @classmethod

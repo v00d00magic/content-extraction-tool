@@ -1,7 +1,7 @@
-from utils.Data.Text import Text
-from app.Storage.StorageItem import StorageItem
-from utils.Configurable import Configurable
-from declarable.Documentation import global_documentation
+from Utils.Data.Text import Text
+from App.Storage.StorageItem import StorageItem
+from Utils.Configurable import Configurable
+from Declarable.Documentation import global_documentation
 from pathlib import Path
 
 class StorageContainer(Configurable):
@@ -21,7 +21,7 @@ class StorageContainer(Configurable):
 
     @classmethod
     def declareSettings(cls):
-        from declarable.Arguments import StringArgument
+        from Declarable.Arguments import StringArgument
 
         items = {}
         items["storage.path"] = StringArgument({

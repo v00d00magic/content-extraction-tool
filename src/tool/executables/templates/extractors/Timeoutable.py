@@ -1,4 +1,4 @@
-from declarable.Arguments import FloatArgument
+from Declarable.Arguments import FloatArgument
 
 class Timeoutable:
     @classmethod

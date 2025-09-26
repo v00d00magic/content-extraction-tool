@@ -1,4 +1,5 @@
-from utils.Util import Util
+from Utils.Util import Util
+from App import app
 import re
 
 class Text(Util):
@@ -23,8 +24,6 @@ class Text(Util):
         return newString + ("..." if self.data != newString else "")
 
     def cwdReplacement(self):
-        from app.App import app
-
         self.replaceCwd(str(app.src))
 
         return self

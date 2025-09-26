@@ -1,11 +1,11 @@
-from declarable.Arguments import CsvArgument, ContentUnitArgument, ExecutableArgument, BooleanArgument
-from executables.responses.Response import Response
-from executables.responses.ItemsResponse import ItemsResponse
-from executables.templates.acts import Act
-from db.Models.Content.ContentUnit import ContentUnit
-from declarable.ExecutableConfig import ExecutableConfig
-from executables.ExecutableCall import ExecutableCall
-from app.App import db_connection
+from Declarable.Arguments import CsvArgument, ContentUnitArgument, ExecutableArgument, BooleanArgument
+from Executables.responses.Response import Response
+from Executables.responses.ItemsResponse import ItemsResponse
+from Executables.templates.acts import Act
+from DB.Models.Content.ContentUnit import ContentUnit
+from Declarable.ExecutableConfig import ExecutableConfig
+from Executables.ExecutableCall import ExecutableCall
+from App import app
 
 locale_keys = {
     "name": {
@@ -96,7 +96,7 @@ class Implementation(Act):
         if isinstance(this_call.getResult(), ItemsResponse) == True:
             for item in result.items():
                 if is_save == True:
-                    item.moveToDb(db_connection.db)
+                    item.moveToDb(app.db_connection.db)
                     #item.linkTo(link_to)
 
         return result

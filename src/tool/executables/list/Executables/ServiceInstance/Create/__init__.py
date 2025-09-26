@@ -1,8 +1,8 @@
-from executables.templates.acts import Act
-from executables.templates.services import Service
-from db.Models.Instances.ServiceInstance import ServiceInstance
-from declarable.Arguments import StringArgument, IntArgument
-from declarable.ExecutableConfig import ExecutableConfig
+from Executables.templates.acts import Act
+from Executables.templates.services import Service
+from DB.Models.Instances.ServiceInstance import ServiceInstance
+from Declarable.Arguments import StringArgument, IntArgument
+from Declarable.ExecutableConfig import ExecutableConfig
 
 class Implementation(Act):
     @classmethod

@@ -1,4 +1,4 @@
-from declarable.Documentation import Documentation
+from Declarable.Documentation import Documentation
 
 class Documentable:
     '''

@@ -1,5 +1,5 @@
-from declarable.Arguments.Argument import Argument
-from utils.Data.JSON import JSON
+from Declarable.Arguments.Argument import Argument
+from Utils.Data.JSON import JSON
 
 class ObjectArgument(Argument):
     def value(self):

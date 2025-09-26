@@ -1,7 +1,7 @@
 from peewee import CharField, AutoField, BigIntegerField
-from db.Models.BaseModel import BaseModel
-from db.Models.Content.ContentUnit import ContentUnit
-from db.Models.Content.StorageUnit import StorageUnit
+from DB.Models.BaseModel import BaseModel
+from DB.Models.Content.ContentUnit import ContentUnit
+from DB.Models.Content.StorageUnit import StorageUnit
 from enum import Enum
 
 class RelationEnum():

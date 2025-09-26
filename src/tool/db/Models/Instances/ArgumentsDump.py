@@ -1,6 +1,6 @@
-from db.Models.BaseModel import BaseModel
+from DB.Models.BaseModel import BaseModel
 from peewee import AutoField, TextField
-from utils.Data.JSON import JSON
+from Utils.Data.JSON import JSON
 
 class ArgumentsDump(BaseModel):
     table_name = 'dumps'
