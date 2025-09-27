@@ -3,12 +3,16 @@ from pathlib import Path
 import json
 
 class Config():
-    def __init__(self, cwd, file_name: str = 'config.json', fallback = DefaultSettings):
-        self.compared_options = fallback
+    file_name = "config.json"
+    fallback = DefaultSettings
+
+    def __init__(self, cwd):
+        DefaultSettings.update(self.declareSettings())
+        self.compared_options = self.fallback
 
         Path(cwd).joinpath("storage").joinpath("config").mkdir(parents=True,exist_ok=True)
 
-        self.path = Path(f"{str(cwd)}/storage/config/{file_name}")
+        self.path = Path(str(cwd)).joinpath("storage").joinpath("config").joinpath(self.file_name)
 
         self.loadPath(self.path)
         self.passDeclarable()
@@ -75,3 +79,18 @@ class Config():
         self.config_stream.truncate()
 
         self.options = {}
+
+    def isItemHidden(self, name):
+        for item in self.hidden_items:
+            return item.startswith(name)
+
+    @classmethod
+    def declareSettings(cls):
+        from Declarable.Arguments import BooleanArgument
+
+        items = {}
+        items["config.external_editing.allow"] = BooleanArgument({
+            "default": True,
+        })
+
+        return items

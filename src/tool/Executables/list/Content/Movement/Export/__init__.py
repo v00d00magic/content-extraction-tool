@@ -1,5 +1,5 @@
 from Executables.Templates.Acts import Act
-from Declarable.Arguments import LimitedArgument, StringArgument, ClassArgument, ListArgument
+from Declarable.Arguments import LimitedArgument, ClassArgument, ListArgument
 from DB.Export.ArchiveExport import ArchiveExport
 from DB.Export.ExportItem import ExportItem
 

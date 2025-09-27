@@ -12,7 +12,6 @@ from Utils.Data.JSON import JSON
 from Utils.Hookable import Hookable
 from datetime import datetime
 
-from Declarable.Arguments import Argument, StringArgument, ClassArgument, ListArgument, BooleanArgument
 from App.Logger.LogSkipSection import LogSkipSection
 from Declarable.Documentation import global_documentation
 
@@ -85,6 +84,8 @@ class Logger(Hookable, Configurable):
 
     @classmethod
     def declareSettings(cls):
+        from Declarable.Arguments import Argument, StringArgument, ClassArgument, ListArgument, BooleanArgument
+
         locale_keys = {
             "logger.skip_categories.name": {
                 "en_US": "Ignored categories",
@@ -99,6 +100,9 @@ class Logger(Hookable, Configurable):
         global_documentation.loadKeys(locale_keys)
 
         items = {}
+        items["logger.external_watching.allow"] = BooleanArgument({
+            "default": True,
+        })
         items["logger.skip_categories"] = ListArgument({
             "default": [
                 LogSkipSection({

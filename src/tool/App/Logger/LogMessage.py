@@ -4,12 +4,11 @@ from App.Logger.LogSection import LogSection
 from datetime import datetime
 
 class LogMessage(Wrap):
-    message: str
-    kind: LogKind
-    time: int
-    section: LogSection
-    time: int
-    id_prefix: int
+    message: str = None
+    kind: LogKind = None
+    time: int = None
+    section: LogSection = None
+    id_prefix: int = None
 
     colors = {
         "red": "\033[91m",

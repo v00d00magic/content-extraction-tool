@@ -19,10 +19,7 @@ class Implementation(TextImplementation.AbstractReceivation):
         return params
 
     async def implementation(self, i = {}):
-        texts = i.get('text')
-        output = []
-
-        for text in texts:
+        for text in i.get('text'):
             out = self.ContentUnit()
             out.display_name = Text(text).cut(100)
             out.JSONContent.update({
@@ -30,6 +27,4 @@ class Implementation(TextImplementation.AbstractReceivation):
             })
             await out.flush()
 
-            output.append(out)
-
-        return output
+            self.variable("items").append(out)

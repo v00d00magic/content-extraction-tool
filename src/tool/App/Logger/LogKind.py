@@ -7,4 +7,4 @@ class LogKind(Wrap):
     KIND_MESSAGE = 'message'
     KIND_HIGHLIGHT = 'highlight'
 
-    kind: str
+    kind: str = None

@@ -5,9 +5,9 @@ import importlib
 import time
 
 class ExecutableListResult(Wrap):
-    verdict: str
-    parts: list
-    name: str
+    verdict: str = None
+    parts: list = None
+    name: str = None
 
     MODULE = 1
     SUBMODULE = 2
@@ -21,7 +21,7 @@ class ExecutableListResult(Wrap):
     def doImport(self):
         is_end = self.name == "__init__.py"
         title = "Implementation"
-        module_path = f'Executables.list.' + ".".join(self.parts)
+        module_path = f'Executables.list.' + self.getName()
         if is_end == False:
             module_path += "." + self.name[:-3]
 
@@ -38,7 +38,8 @@ class ExecutableListResult(Wrap):
 
         return common_object
 
-    def getType(self, module):
+    @staticmethod
+    def getType(module):
         main_module = module.main_module
 
         if main_module == None:
@@ -48,7 +49,7 @@ class ExecutableListResult(Wrap):
 
     @staticmethod
     def partsToResult(path):
-        parts = str(path).split("\\")
+        parts = Path(path).parts
         name = ""
 
         verdict = ExecutableListResult.VERDICT_MODULE
@@ -105,7 +106,7 @@ class ExecutableList:
                         app.logger.log(f"Imported module {module.getName()}", section=self.section_name)
                         counters["success"] +=1
 
-                        match(result.getType(module)):
+                        match(ExecutableListResult.getType(module)):
                             case ExecutableListResult.MODULE:
                                 self.items[module.getName()] = module
                             case ExecutableListResult.SUBMODULE:

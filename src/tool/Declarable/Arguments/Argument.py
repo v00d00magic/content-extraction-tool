@@ -35,12 +35,22 @@ class Argument:
 
     def getStructure(self):
         payload = self.data.copy()
-        payload.update({
-            'type': self.__class__.__name__,
-            'docs': self.getDocs()
-        })
+        payload["type"] = self.__class__.__name__
 
-        payload['default'] = self.getSensitiveDefault()
+        defaults = self.getSensitiveDefault()
+
+        if payload.get("class") != None:
+            payload["class"] = payload.get("class").getStructure()
+
+        if type(defaults) == list:
+            i = 0
+            for default in defaults:
+                if hasattr(default, "toJson") == True:
+                    defaults[i] = default.toJson()
+
+                i+=1
+        
+        payload['default'] = defaults
 
         return payload
 

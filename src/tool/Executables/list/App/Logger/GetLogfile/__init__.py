@@ -19,26 +19,24 @@ class Implementation(Act):
     @classmethod
     def canBeUsedAt(cls, at):
         if at == "web":
-            return app.config.get("web.logs_watching.allow")
+            return app.config.get("logger.external_watching.allow")
 
         return super().canBeUsedAt(at)
 
     async def implementation(self, args = {}):
-        _file = args.get("file")
+        file = args.get("file")
+        if ".json" not in file:
+            file = file + ".json"
 
-        if ".json" not in _file:
-            _file = _file + ".json"
+        log_file = app.logger.logs_storage.dir.joinpath(file)
 
-        logs_storage = app.logger.logs_storage
-        dir_storage = logs_storage.dir
-
-        log_file = dir_storage.joinpath(_file)
-
-        assert log_file.is_file(), "not found"
+        assert log_file.is_file(), "file not found"
 
         content = log_file.open().read()
         content_size = len(content)
         content_json = JSON(content).parse()
+
+        # TODO convert to LogMessage's
 
         return {
             "size": content_size,

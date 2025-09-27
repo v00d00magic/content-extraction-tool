@@ -16,7 +16,3 @@ class Implementation(Representation):
             "name": cls.key("name"),
             "definition": cls.key("definition"),
         }
-
-    @classmethod
-    async def processItem(cls, item):
-        return item

@@ -27,3 +27,11 @@ class Implementation(FileImplementation):
         return {
             "name": cls.key("image.name"),
         }
+
+    class Content(FileImplementation.Content):
+        content = {
+            "image": {
+                "width": "int",
+                "height": "int"
+            }
+        }

@@ -19,10 +19,18 @@ Todo:
 - [ ] Max logfile size
 - [ ] Move logger to separate module
 - [x] Outer executable type
-- [x] "Configurable"
-- [ ] Extend declarable args functionality
+
+#### Arguments
+
+- [ ] Extend functionality
 - [x] Argument<<>>Variable
 - [x] Variables of the class
+- [ ] rand()
+
+#### Config
+
+- [x] "Configurable"
+- [ ] Every Configurable should has own options
 
 #### JS
 

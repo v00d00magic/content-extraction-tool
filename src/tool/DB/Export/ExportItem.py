@@ -11,7 +11,7 @@ class FlagsDict(TypedDict):
 
 class ExportItem(Wrap):
     class_name: ClassVar[ClassNameEnum] = ClassNameEnum.CONTENT_UNIT
-    id: int
+    id: int = None
     flags: ClassVar[FlagsDict] = {
         "link_depth": 10
     }

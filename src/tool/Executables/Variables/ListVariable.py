@@ -18,4 +18,6 @@ class ListVariable(ExecutableVariable):
         return self.count / self.total_count
 
     def append(self, item):
+        # TODO: add logger messages aboutit
+        # and hooks
         self.content.value.append(item)

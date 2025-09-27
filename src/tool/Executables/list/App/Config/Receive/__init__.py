@@ -5,27 +5,22 @@ class Implementation(Act):
     @classmethod
     def canBeUsedAt(cls, at):
         if at == "web":
-            return config.get("web.config_editing.allow")
+            return app.config.get("config.external_editing.allow")
 
         return super().canBeUsedAt(at)
 
     async def implementation(self, args = {}):
         result = []
 
-        for name, itm in config.compared_options.items():
-            val = config.compared_options.get(name)
-            no = False
+        for name, itm in app.config.compared_options.items():
+            option = app.config.compared_options.get(name)
 
-            for _name in config.hidden_items:
-                if name.startswith(_name):
-                    no = True
-
-            if no == True:
+            if app.config.isItemHidden(name) == True:
                 continue
 
-            val.configuration["name"] = name
-            val.configuration["current"] = config.options.get(name)
+            option.data["name"] = name
+            option.data["current"] = app.config.options.get(name)
 
-            result.append(val.getStructure())
+            result.append(option.getStructure())
 
         return result

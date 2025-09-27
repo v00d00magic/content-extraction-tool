@@ -2,7 +2,7 @@ from Utils.Data.List import List
 from Utils.Wrap import Wrap
 
 class LogSection(Wrap):
-    section: list
+    section: list = None
 
     def __init__(self, data):
         super().__init__(data)

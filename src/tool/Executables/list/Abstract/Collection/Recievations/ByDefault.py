@@ -1,4 +1,4 @@
-from .. import Implementation as Collection
+from ..Collection import Implementation as Collection
 from Declarable.Arguments import StringArgument
 
 class Implementation(Collection.AbstractReceivation):
@@ -17,12 +17,13 @@ class Implementation(Collection.AbstractReceivation):
         return params
 
     async def implementation(self, i = {}):
+        # not self.Collection() !
         out = self.ContentUnit()
         out.content = {}
         out.display_name = i.get('name')
         out.description = i.get('description')
         out.is_collection = True
 
-        self.log("Created collection")
+        await out.flush()
 
-        return [out]
+        self.variable("items").append(out)

@@ -1,7 +1,7 @@
 from Executables.Templates.Extractors.Timeoutable import Timeoutable
 from Executables.Templates.Extractors import Extractor
 from Declarable.Arguments import IntArgument
-
+from App import app
 import asyncio
 
 class Implementation(Extractor, Timeoutable):
@@ -32,5 +32,5 @@ class Implementation(Extractor, Timeoutable):
 
             await asyncio.sleep(i.get("timeout"))
 
-    async def iterate(self, i = {})->list:
+    async def iterate(self, i = {}):
         pass

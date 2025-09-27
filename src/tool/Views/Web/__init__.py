@@ -50,15 +50,6 @@ class WebApp(Configurable):
                 "name": global_documentation.get("ui.name.name"),
             },
         })
-        items["web.config_editing.allow"] = BooleanArgument({
-            "default": True,
-        })
-        items["web.env_editing.allow"] = BooleanArgument({
-            "default": False,
-        })
-        items["web.logs_watching.allow"] = BooleanArgument({
-            "default": True,
-        })
         items["web.host"] = StringArgument({
             "default": "127.0.0.1",
             "docs": {

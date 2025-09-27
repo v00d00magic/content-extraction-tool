@@ -57,13 +57,14 @@ class App(Hookable):
 
     def setupGlobals(self):
         from App.Config import Config
+        from App.Config.Env import Env
         from App.Logger import Logger
         from DB.DbConnection import DbConnection
         from App.Storage import StorageContainer
 
         self.config = Config(self.cwd.parent)
         self.config.setAsConf()
-        self.env = Config(self.cwd.parent, file_name="env.json", fallback=None)
+        self.env = Env(self.cwd.parent)
 
         self.storage = StorageContainer(self.config)
         self.logger = Logger(self.config, self.storage)

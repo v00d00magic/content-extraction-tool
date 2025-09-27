@@ -4,7 +4,7 @@ from Utils.Wrap import Wrap
 from typing import List
 
 class LogSkipSection(Wrap):
-    name: str
+    name: str = None
     wildcard: bool = False
     wildcard_all: bool = False
     inactive: bool = False

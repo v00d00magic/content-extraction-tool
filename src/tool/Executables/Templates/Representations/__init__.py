@@ -99,3 +99,12 @@ class Representation(Executable, metaclass=RepresentationMeta):
         result = self.getResult()
 
         return ItemsResponse(result)
+
+    class Source():
+        source = {
+            "type": "none",
+            "content": "str"
+        }
+
+    class Content():
+        content = {}

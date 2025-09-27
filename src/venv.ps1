@@ -16,7 +16,7 @@ if (Test-Path -Path $path) {
 
 Invoke-Expression $script
 
-if ($do_update = $true) {
+if ($do_update -eq $true) {
     pip install -e .
 }
 

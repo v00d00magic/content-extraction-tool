@@ -11,14 +11,12 @@ class Implementation(Act):
         return super().canBeUsedAt(at)
 
     async def implementation(self, i = {}):
-        logs_storage = app.logger.logs_storage
-        dir_storage = logs_storage.dir
-
-        log_files = dir_storage.glob('*.json')
+        log_files = app.logger.logs_storage.dir.glob('*.json')
         out_list = []
         
         for log_file in log_files:
             if log_file.is_file():
                 out_list.append(log_file.name.replace(log_file.suffix, ""))
 
+        # TODO convert to LogFile
         return out_list
