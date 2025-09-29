@@ -11,6 +11,23 @@ locale_keys = {
     }
 }
 
+from Executables.Responses.ItemsResponse import ItemsResponse
+
+class SearchResponse(ItemsResponse):
+    def check(self):
+        pass
+    
+    def display(self):
+        _object = {
+            "total_count": self.data.get("total_count"),
+            "items": []
+        }
+        for item in self.data.get("items"):
+            _object["items"].append(item.getStructure())
+
+        return _object
+
+
 class Implementation(Act):
     @classmethod
     def declare(cls):
@@ -140,11 +157,10 @@ class Implementation(Act):
             select_query = select_query.limit(count)
 
         fnl = []
-
         for item in select_query:
-            fnl.append(item.getStructure())
+            fnl.append(item)
 
-        return {
+        return SearchResponse({
             'total_count': items_count,
             'items': fnl
-        }
+        })

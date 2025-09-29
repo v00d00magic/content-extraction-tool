@@ -1,10 +1,8 @@
-from DB.Models.Instances.ArgumentsDump import ArgumentsDump
 from Executables.Templates.Executable import Executable
 from Executables.Responses.Response import Response
 from Utils.Hookable import Hookable
 from Utils.Data.JSON import JSON
 from App import app
-from App.Logger.LogSection import LogSection
 import asyncio
 
 class ProgressMessage():
@@ -94,6 +92,8 @@ class ExecutableCall(Hookable):
     # Others
 
     def dump(self):
+        from DB.Models.Instances.ArgumentsDump import ArgumentsDump
+
         dump = ArgumentsDump()
         dump.executable = self.executable.getName()
 

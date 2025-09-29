@@ -23,12 +23,18 @@ class ContentUnitRelation(BaseModel):
     def getModel(self):
         item = None
 
-        if self.child_type == "ContentUnit":
-            item = ContentUnit.select().where(ContentUnit.uuid == self.child)
-        elif self.child_type == "StorageUnit":
-            item = StorageUnit.select().where(StorageUnit.uuid == self.child)
+        _c = ContentUnit()
+        _s = StorageUnit()
+        _c.setWrapper(self.wrapper)
+        _s.setWrapper(self.wrapper)
 
-        return item.get()
+        with self.wrapper.db_ref.bind_ctx([_c, _s]):
+            if self.child_type == "ContentUnit":
+                item = _c.select().where(ContentUnit.uuid == self.child)
+            elif self.child_type == "StorageUnit":
+                item = _s.select().where(StorageUnit.uuid == self.child)
+
+            return item.get()
 
     def getStructure(self):
         model = self.getModel()

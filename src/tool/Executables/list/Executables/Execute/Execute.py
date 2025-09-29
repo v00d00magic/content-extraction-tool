@@ -102,7 +102,7 @@ class Implementation(Act):
                 for item in items:
                     app.logger.log(f"Moving {item.name_db_id} to common db", section=["Executables", "DBMovement"])
 
-                    item.moveToDb(app.db_connection.db)
+                    item.changeWrapper(app.db_connection.db)
                     #item.linkTo(link_to)
 
         return result

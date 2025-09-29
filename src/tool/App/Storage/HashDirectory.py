@@ -62,6 +62,9 @@ class HashDirectory:
         self.common = self.defineCommon(self.upper)
         self.setCommonFile(_new_name)
 
+    def copySelf(self, new_storage):
+        pass
+
     def generateFilesList(self):
         current_dir = self.common
         files_list = []

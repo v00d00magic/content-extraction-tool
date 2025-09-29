@@ -1,9 +1,9 @@
-from App.AppConsole import call
-from App import app
+from Views.CLI import CLI
 
-app.argv = {
+cli = CLI()
+cli.app.argv = {
     'i': 'Files.Image',
     'url': 'https://www.booksite.ru/fulltext/1/001/010/001/280082551.jpg',
 }
 
-app.loop.run_until_complete(call())
+cli.app.loop.run_until_complete(cli.call())

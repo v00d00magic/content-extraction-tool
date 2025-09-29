@@ -107,11 +107,13 @@ class Logger(Hookable, Configurable):
             "default": [
                 LogSkipSection({
                     "name": ["Executables", "Initialization"],
-                    "kinda": "message"
+                    "kinda": "message",
+                    "wildcard": True,
                 }), 
                 LogSkipSection({
                     "name": ["Executables", "Declaration"],
                     "kinda": "message",
+                    "wildcard": True,
                 }),
                 LogSkipSection({
                     "name": ["Saveable", "Container"],

@@ -5,6 +5,7 @@ from Utils.Data.JSON import JSON
 from Utils.Web.Mime import Mime
 from DB.Models.Content.ContentModel import ContentModel
 from App.Storage.HashDirectory import HashDirectory
+from App.Storage.StorageItem import StorageItem
 from App.Logger.LogSection import LogSection
 
 class StorageUnit(ContentModel):
@@ -92,11 +93,17 @@ class StorageUnit(ContentModel):
 
         self.save(force_insert=True)
 
-    def moveSelf(self):
+    def moveSelf(self, storage: StorageItem):
         app.logger.log(f"Moving HashDirectory of StorageUnit {self.uuid} to storage_units", section = ["Saveable"])
 
         self.tears(False, False)
-        self.hash_dir.moveSelf(app.storage.get("storage_units"))
+        self.hash_dir.moveSelf(storage)
+
+    def copySelf(self, storage: StorageItem):
+        app.logger.log(f"Moving HashDirectory of StorageUnit {self.uuid} to storage_units", section = ["Saveable"])
+
+        self.tears(False, False)
+        self.hash_dir.copySelf(storage)
 
     def getFileName(self):
         return ".".join([self.upload_name, self.extension])

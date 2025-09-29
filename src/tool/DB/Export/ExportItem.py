@@ -1,3 +1,5 @@
+from DB.Models.Content.ContentUnit import ContentUnit
+from DB.Models.Content.StorageUnit import StorageUnit
 from Utils.Wrap import Wrap
 from typing import TypedDict, ClassVar
 from enum import Enum
@@ -15,3 +17,13 @@ class ExportItem(Wrap):
     flags: ClassVar[FlagsDict] = {
         "link_depth": 10
     }
+
+    def getLinkDepth(self):
+        return self.flags.get("link_depth")
+
+    def getModel(self):
+        match (self.class_name):
+            case ClassNameEnum.CONTENT_UNIT.value:
+                return ContentUnit.ids(self.id)
+            case ClassNameEnum.STORAGE_UNIT.value:
+                return StorageUnit.ids(self.id)

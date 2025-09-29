@@ -1,36 +1,17 @@
-from Utils.Data.Text import Text
-from peewee import SqliteDatabase, MySQLDatabase, PostgresqlDatabase, DatabaseProxy
 from Utils.Configurable import Configurable
+from DB.DBWrapper import DBWrapper
 
 class DbConnection(Configurable):
     def __init__(self):
         self.updateConfig()
 
-    @classmethod
-    def getByConfig(cls, connection_config):
-        db = None
-
-        match(connection_config.get("protocol")):
-            case "sqlite":
-                db = SqliteDatabase(Text(connection_config.get("path")).cwdReplacement().get())
-
-        return db
-
-    @classmethod
-    def create(cls, db, models: list):
-        proxy = DatabaseProxy()
-        for model in models:
-            model._meta.table_name = model.table_name
-            model.setDbAtClass(proxy)
-
-        proxy.initialize(db)
-        db.connect()
-        db.create_tables(models, safe=True)
-
-    def attachDb(self, config, env):
-        self.db = DbConnection.getByConfig(config.get("db.content.connection"))
-        self.temp_db = SqliteDatabase(":memory:")
-        self.instance_db = DbConnection.getByConfig(config.get("db.instance.connection"))
+    def attachDbs(self, config, env):
+        self.temp_db = DBWrapper("temp", DBWrapper.getByConfig({
+            "protocol": "sqlite",
+            "path": ":memory:"
+        }))
+        self.db = DBWrapper("content", DBWrapper.getByConfig(config.get("db.content.connection")))
+        self.instance_db = DBWrapper("instance", DBWrapper.getByConfig(config.get("db.instance.connection")))
 
     def createTables(self):
         from DB.Models.Content.ContentUnit import ContentUnit
@@ -40,9 +21,9 @@ class DbConnection(Configurable):
         from DB.Models.Instances.ServiceInstance import ServiceInstance
         from DB.Models.Instances.ArgumentsDump import ArgumentsDump
 
-        DbConnection.create(self.temp_db, [ContentUnitRelation, ContentUnit, StorageUnit])
-        DbConnection.create(self.db, [ContentUnitRelation, ContentUnit, StorageUnit])
-        DbConnection.create(self.instance_db, [Stat, ServiceInstance, ArgumentsDump])
+        self.db.create([ContentUnitRelation, ContentUnit, StorageUnit])
+        self.temp_db.create([ContentUnitRelation, ContentUnit, StorageUnit])
+        self.instance_db.create([Stat, ServiceInstance, ArgumentsDump])
 
     @classmethod
     def declareSettings(cls):
@@ -62,5 +43,3 @@ class DbConnection(Configurable):
             }
         })
         return items
-
-db_connection = DbConnection()

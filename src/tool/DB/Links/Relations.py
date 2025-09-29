@@ -5,10 +5,10 @@ from DB.Models.Content.StorageUnit import StorageUnit
 class Relations:
     def __init__(self, parent = None):
         self.parent = parent
+        self.wrapper = None
 
-    @property
-    def db_reference(self):
-        return self.parent._meta.database
+    def setWrapper(self, wrapper):
+        self.wrapper = wrapper
 
     def create(self, child, relation_type: int = RelationEnum.RELATION_NONE):
         assert self.parent != None and child != None, 'Not found item to link'
@@ -20,8 +20,10 @@ class Relations:
         assert parent_id != child_id, "Can't link to themselves"
 
         relation = ContentUnitRelation()
-        if self.db_reference != None:
-            relation.setDb(self.db_reference)
+
+        if self.wrapper != None:
+            relation.setWrapper(self.wrapper)
+            relation.bind(self.wrapper.db_ref)
 
         relation.parent = parent_id
         relation.child_type = child.__class__.__name__
@@ -36,8 +38,8 @@ class Relations:
         assert self.parent != None and child != None, 'Not found item to unlink'
 
         relation_select = ContentUnitRelation()
-        if self.db_reference != None:
-            relation_select.setDb(self.db_reference)
+        if self.wrapper != None:
+            relation_select.setWrapper(self.wrapper)
 
         relation_select = relation_select.select()
         relation_select = relation_select.where(ContentUnitRelation.parent == self.parent.uuid)
@@ -55,8 +57,8 @@ class Relations:
 
     def getByParent(self, class_name: str = None, relation_type: int = RelationEnum.RELATION_NONE) -> list:
         relation_select = ContentUnitRelation()
-        if self.db_reference != None:
-            relation_select.setDb(self.db_reference)
+        if self.wrapper != None:
+            relation_select.setWrapper(self.wrapper)
 
         relation_select = relation_select.select()
         relation_select = relation_select.where(ContentUnitRelation.parent == self.parent.uuid)
@@ -66,31 +68,54 @@ class Relations:
         if relation_type != None:
             relation_select = relation_select.where(ContentUnitRelation.relation_type == relation_type)
 
-        return relation_select.execute()
+        items = []
+        for item in relation_select.execute():
+            if self.wrapper != None:
+                item.setWrapper(self.wrapper)
 
-    # FIXME refactor
-    def relationsToModels(self, items: list, as_dict = False):
-        content_units = []
-        storage_units = []
-        response = []
+            items.append(item)
+
+        return items
+
+    @staticmethod
+    def splitItems(items):
+        ids = {
+            "c": [],
+            "s": []
+        }
 
         for relation in items:
             if relation.child_type == "ContentUnit":
-                content_units.append(relation.child)
+                ids.get("c").append(relation.child)
             else:
-                storage_units.append(relation.child)
+                ids.get("s").append(relation.child)
 
-        if as_dict == True:
-            response = {}
+        return ids
 
-            for unit in ContentUnit.select().where(ContentUnit.uuid << content_units):
-                response[str(unit.uuid)] = unit
-            for unit in StorageUnit.select().where(StorageUnit.uuid << storage_units):
-                response[str(unit.uuid)] = unit
-        else:
-            for unit in ContentUnit.select().where(ContentUnit.uuid << content_units):
-                response.append(unit)
-            for unit in StorageUnit.select().where(StorageUnit.uuid << storage_units):
-                response.append(unit)
+    def relationsToModels(self, items: list, as_dict = False):
+        ids = self.splitItems(items)
+        response = {}
+
+        # :(
+        # TODO refactor
+
+        _c = ContentUnit()
+        _s = StorageUnit()
+
+        if self.wrapper != None:
+            _c.setWrapper(self.wrapper)
+            _s.setWrapper(self.wrapper)
+
+            with self.wrapper.db_ref.bind_ctx([_c, _s]):
+                _c = _c.select().where(ContentUnit.uuid << ids.get("c")).execute()
+                _s = _s.select().where(StorageUnit.uuid << ids.get("s")).execute()
+
+        for unit in _c:
+            response[str(unit.uuid)] = unit
+        for unit in _s:
+            response[str(unit.uuid)] = unit
+
+        if as_dict == False:
+            return response.values()
 
         return response

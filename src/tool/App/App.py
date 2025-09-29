@@ -70,7 +70,7 @@ class App(Hookable):
         self.logger = Logger(self.config, self.storage)
 
         self.db_connection = DbConnection()
-        self.db_connection.attachDb(self.config, self.env)
+        self.db_connection.attachDbs(self.config, self.env)
         self.db_connection.createTables()
 
         from Utils.Web.DownloadManager import DownloadManager

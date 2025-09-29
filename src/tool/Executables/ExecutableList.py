@@ -1,3 +1,4 @@
+from App.Logger.LogKind import LogKind
 from Utils.Wrap import Wrap
 from pathlib import Path
 from App import app
@@ -120,10 +121,10 @@ class ExecutableList:
                         pass
 
             except AssertionError as e:
-                app.logger.log(f"AssertionError when importing {result.getName()}: {str(e) }, probaly not an executable", section=self.section_name)
+                app.logger.log(f"AssertionError when importing {result.getName()}: {str(e) }, probaly not an executable", section=self.section_name, kind = LogKind.KIND_ERROR)
             except Exception as e:
                 counters["errors"] += 1
-                app.logger.log(e, section=self.section_name, prefix=f"Did not imported module {result.getName()}: ")
+                app.logger.log(e, section=self.section_name, prefix=f"Did not imported module {result.getName()}: ", kind = LogKind.KIND_ERROR)
 
         app.logger.log(f"Found total {counters["total"]} scripts, {counters["success"]} successfully, {counters["submodules"]} submodules, {counters["errors"]} errors", section=self.section_name)
 

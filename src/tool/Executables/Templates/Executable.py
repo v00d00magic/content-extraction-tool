@@ -10,3 +10,9 @@ from Executables.Templates.Submodulable import Submodulable
 class Executable(Containable, Documentable, EnvContainable, RecursiveDeclarable, Runnable, Saveable, Sectionable, Submodulable):
     def defineWrapper(self, wrapper):
         self.call = wrapper
+
+    @classmethod
+    def makeSelfCall(cls):
+        from Executables.ExecutableCall import ExecutableCall
+
+        return ExecutableCall(executable=cls)

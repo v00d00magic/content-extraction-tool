@@ -11,6 +11,7 @@ Todo:
 - [x] Store executable threads
 - [ ] Recursion protection
 - [x] ExecutableList: split class ExecutableListResult
+- [ ] Response refactor
 
 #### App
 
@@ -44,6 +45,7 @@ or something
 - [x] Db connection config should be dict
 - [x] Temp DB and storage
 - [x] Moving to common db
+- [ ] DBWrapper refactors
 
 #### Representations
 

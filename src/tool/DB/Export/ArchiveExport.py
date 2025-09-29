@@ -1,79 +1,46 @@
 from Utils.Data.Random import Random
-from DB.Models.Content.ContentModel import BaseModel
+from peewee import SqliteDatabase
+from DB.Export.ExportItem import ExportItem
+from DB.Links.ContentUnitRelation import ContentUnitRelation
 from DB.Models.Content.ContentUnit import ContentUnit
 from DB.Models.Content.StorageUnit import StorageUnit
-from peewee import Model, SqliteDatabase
-from DB.Links.LinkManager import LinkManager
-from App.App import storage
+from DB.DBWrapper import DBWrapper
+from App.Storage.StorageItem import StorageItem
+from DB.ModelDTO import ModelDTO
 
-class ExportItem():
-    def __init__(self, element_item, flags):
-        self.item = element_item
-        self.flags = flags
-
-    def export(self):
-        item_type = self.item.short_name
-        save_at_db = True
-        save_files = True
-
-        if save_at_db == True:
-            with override_db([ContentUnit, StorageUnit], self.db):
-                item_data = self.item.__dict__["__data__"]
-                self.item.insert(item_data).execute()
-
-        match (item_type):
-            case "su":
-                pass
+from App import app
 
 class ArchiveExport:
     EXTENSION_NAME = "units"
 
-    @classmethod
-    def create_manager(cls):
-        return ArchiveExport()
+    def defineTemp(self):
+        self.export_hash = Random().random_hash(32)
+        self.tmp = app.storage.get("temp_exports").path().joinpath(self.export_hash)
+        self.tmp.mkdir()
 
-    def define_temp(self):
-        _storage = storage.get("tmp_exports")
-        storage_path = _storage.path()
+        self.storage = StorageItem(self.tmp, "storage_units", make_dir=True)
 
-        self.tmp_path = storage_path.joinpath(Random().random_hash(32))
-        self.tmp_path.mkdir()
+    def defineDB(self):
+        models = [ContentUnit, StorageUnit, ContentUnitRelation]
 
-        self.content_path = self.tmp_path.joinpath("content")
-        self.content_path.mkdir()
-
-        # self.cu_path = self.content_path.joinpath("content_units")
-        # self.cu_path.mkdir()
-
-        self.su_path = self.content_path.joinpath("storage_units")
-        self.su_path.mkdir()
-
-    def define_db(self):
-        self.db = SqliteDatabase(self.tmp_path.joinpath("items.db"))
-        _models = [ContentUnit, StorageUnit]
-
-        with override_db(_models, self.db):
-            self.db.connect()
-            self.db.create_tables(_models, safe=True)
-            print(self.db)
+        self.db_wrapper = DBWrapper(f"export_{self.export_hash}", SqliteDatabase(self.tmp.joinpath("items.db")))
+        with self.db_wrapper.db_ref.bind_ctx(models):
+            self.db_wrapper.db_ref.create_tables(models, safe=True)
 
     def end(self):
-        self.db.close()
+        self.db_wrapper.db_ref.close()
 
-    def getByTypeAndId(self, type: str, id: int):
-        '''
-        type: cu or su
-        id: id of model
-        '''
-        element_class = None
+    def export(self, item: ExportItem):
+        model = item.getModel()
 
-        match(type):
-            case "cu":
-                element_class = ContentUnit.ids(int(id))
-            case "su":
-                element_class = StorageUnit.ids(int(id))
+        assert model != None, "item not found"
 
-        return element_class
+        app.logger.log(f"Exporting {model.name_db_id} to db {self.db_wrapper.db_name}", section=["Export", "Items"])
 
-    def getExportItem(self, item: BaseModel, flags):
-        return ExportItem(item, flags)
+        movement = ModelDTO()
+        movement.moveTo(model, 
+                        self.db_wrapper, 
+                        recursion_limit = item.getLinkDepth(),
+                        storage_units_move_type = ModelDTO.MOVE_TYPE_COPY)
+
+        return model

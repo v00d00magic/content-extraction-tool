@@ -27,7 +27,7 @@ class LinkManager:
     def link(self, child, relation_type: int = None):
         res = self.relations.create(child, relation_type)
 
-        app.logger.log(message=f"Linked {self.parent.name_db_id}<->{child.name_db_id}, order {res.order}, db: {res.getDbName()}", section = self.section_name, kind = LogKind.KIND_SUCCESS)
+        app.logger.log(message=f"Linked {self.parent.name_db_id}<->{child.name_db_id}, order {res.order}, db {res.getDbName()}", section = self.section_name, kind = LogKind.KIND_SUCCESS)
 
         return res
 
@@ -37,7 +37,7 @@ class LinkManager:
     def unlink(self, child, relation_type: int = None) -> bool:
         res = self.relations.remove(child, relation_type)
 
-        app.logger.log(message=f"Unlinked {self.parent.name_db_id}<->{child.name_db_id}, db: {res.getDbName()}", section = self.section_name, kind = LogKind.KIND_SUCCESS)
+        app.logger.log(message=f"Unlinked {self.parent.name_db_id}<->{child.name_db_id}, db {res.getDbName()}", section = self.section_name, kind = LogKind.KIND_SUCCESS)
 
         return res != None
 
