@@ -1,8 +1,5 @@
 from App import app
-from Views.Web import app
-import aiohttp, asyncio
+from Views.Web import WebApp
 
-aiohttp.web.run_app(app,
-    host=config.get("web.host"),
-    port=config.get("web.port"),
-)
+web = WebApp()
+web.run()
