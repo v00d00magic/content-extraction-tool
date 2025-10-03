@@ -1,11 +1,11 @@
 
 from App.Logger.LogKind import LogKind
-from Utils.Hookable import Hookable
+from Objects.Hookable import Hookable
 from App import app
 from pathlib import Path
 import asyncio, aiohttp, os, time
-from Utils.Configurable import Configurable
-from Utils.Increment import Increment
+from Objects.Configurable import Configurable
+from Objects.Increment import Increment
 
 class DownloadManagerItem():
     section_name = ["DownloadManager", "Item"]

@@ -1,4 +1,4 @@
-from Utils.Configurable import Configurable
+from Objects.Configurable import Configurable
 from DB.DBWrapper import DBWrapper
 
 class DbConnection(Configurable):

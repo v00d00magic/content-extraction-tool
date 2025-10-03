@@ -1,6 +1,6 @@
 from Utils.Data.Text import Text
 from App.Storage.StorageItem import StorageItem
-from Utils.Configurable import Configurable
+from Objects.Configurable import Configurable
 from Declarable.Documentation import global_documentation
 from pathlib import Path
 

@@ -72,6 +72,7 @@ or something
 
 #### Declared arguments
 
+- [ ] use pydantic
 - [ ] ObjectArgument: scheme (?)
 - [x] ClassArgument
 

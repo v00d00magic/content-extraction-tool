@@ -1,6 +1,6 @@
 from Executables.Templates.Executable import Executable
 from Executables.Responses.Response import Response
-from Utils.Hookable import Hookable
+from Objects.Hookable import Hookable
 from Utils.Data.JSON import JSON
 from App import app
 import asyncio

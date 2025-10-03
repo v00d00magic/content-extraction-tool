@@ -1,5 +1,5 @@
-from Utils.Hookable import Hookable
-from Utils.Increment import Increment
+from Objects.Hookable import Hookable
+from Objects.Increment import Increment
 from pathlib import Path
 import asyncio, sys
 import os

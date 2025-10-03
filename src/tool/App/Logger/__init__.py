@@ -7,9 +7,9 @@ from App.Logger.LogKind import LogKind
 from App.Logger.LogSection import LogSection
 from App.Logger.LogLimiter import LogLimiter
 
-from Utils.Configurable import Configurable
+from Objects.Configurable import Configurable
 from Utils.Data.JSON import JSON
-from Utils.Hookable import Hookable
+from Objects.Hookable import Hookable
 from datetime import datetime
 
 from App.Logger.LogSkipSection import LogSkipSection
