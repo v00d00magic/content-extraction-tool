@@ -2,7 +2,7 @@ from DB.Models.Content.ContentModel import ContentModel
 from peewee import TextField, BooleanField, FloatField, CharField
 from Utils.JSONContentContainer import JSONContentContainer
 from Utils.Data.Date import Date
-from Plugins.App.Storage.Storage import app
+from App import app
 
 class ContentUnit(ContentModel):
     # Display

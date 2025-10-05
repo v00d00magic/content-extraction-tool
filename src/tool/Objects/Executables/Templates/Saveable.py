@@ -1,7 +1,7 @@
 from DB.Models.Content.ContentUnit import ContentUnit
 from DB.Models.Content.StorageUnit import StorageUnit
 from DB.Models.Content.ThumbnailUnit import ThumbnailUnit
-from Plugins.App.Storage.Storage import app
+from App import app
 
 class Saveable:
     def ContentUnit(self):

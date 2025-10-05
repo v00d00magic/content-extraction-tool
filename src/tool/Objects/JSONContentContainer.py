@@ -1,5 +1,5 @@
 from Plugins.App.Logger.LogParts.LogKind import LogKind
-from Plugins.App.Storage.Storage import app
+from App import app
 from Utils.Data.JSON import JSON
 import json
 

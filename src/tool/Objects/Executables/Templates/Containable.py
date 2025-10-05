@@ -1,6 +1,4 @@
 class Containable():
-    # or better Variableble
-
     def defineVariables(self):
         pass
 

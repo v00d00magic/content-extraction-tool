@@ -1,10 +1,12 @@
 from Objects.Object import Object
+from pydantic.dataclasses import dataclass
 from pydantic import Field
 
-class ArgumentList(Object):
-    items: list = Field()
+@dataclass
+class ArgumentList:
+    items: list
 
-    def toDict(self):
+    def toDict(self) -> dict:
         dicts = {}
         for item in self.items:
             dicts[item.name] = item

@@ -1,6 +1,6 @@
 from DB.Models.Content.ContentUnit import ContentUnit
 from DB.Models.Content.StorageUnit import StorageUnit
-from Utils.Wrap import Wrap
+from Objects.Object import Object
 from typing import TypedDict, ClassVar
 from enum import Enum
 
@@ -11,7 +11,7 @@ class ClassNameEnum(Enum):
 class FlagsDict(TypedDict):
     link_depth: int = 10
 
-class ExportItem(Wrap):
+class ExportItem(Object):
     class_name: ClassVar[ClassNameEnum] = ClassNameEnum.CONTENT_UNIT
     id: int = None
     flags: ClassVar[FlagsDict] = {

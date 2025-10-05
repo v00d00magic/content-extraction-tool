@@ -2,8 +2,8 @@ from .LogParts import LogMessage, LogKind, LogSection, LogLimiter, LogFile, LogS
 from Plugins.Arguments.ArgumentList import ArgumentList
 
 from Objects.Configurable import Configurable
-from Plugins.Data.JSON.JSON import JSON
 from Objects.Hookable import Hookable
+from Objects.classproperty import classproperty
 from datetime import datetime
 
 from pydantic import Field
@@ -12,41 +12,16 @@ from Objects.Object import Object
 import traceback
 
 class Logger(Object, Hookable, Configurable):
-    skip_file: int = Field(default=False)
-    limiter: LogLimiter = LogLimiter()
-    file: LogFile = Field(default=None)
-
-    events: list = ["log"]
-
-    def constructor(self):
-        super().__init__()
-
-        self.file = None
-        self.setFile(self.newFile())
-
-        def hook_WriteToConsole(**kwargs):
-            message = kwargs.get("message")
-            if self.limiter.shouldBeDisplayed(message, "console") == True:
-                message.print()
-
-        def hook_WriteToFile(**kwargs):
-            return
-            message = kwargs.get("message")
-            if message.should("file") == True:
-                return
-
-            self.file_stream.truncate(0)
-            self.file_stream.seek(0)
-            self.file_stream.write(JSON(self.logs).dump(indent=4))
-
-        self.addHook("log", hook_WriteToConsole)
-        #self.addHook("log", hook_WriteToFile)
+    skip_file: bool = Field(default=False)
+    limiter: LogLimiter.LogLimiter = Field(default=None)
+    file: LogFile.LogFile = Field(default=None)
 
     def logMessage(self, msg: LogMessage):
-        self.file.add(msg)
+        #self.file.add(msg)
         self.trigger("log", message=msg)
 
     def log(self, message, section: str = "App", kind: str = "message", silent: bool = False, prefix: str = "", id_prefix: int = None):
+        print(message)
         write_message = message
         if isinstance(message, BaseException):
             exc = traceback.format_exc()
@@ -63,7 +38,43 @@ class Logger(Object, Hookable, Configurable):
         self.logMessage(msg)
 
     @property
-    def options() -> ArgumentList:
+    def events() -> list:
+        return ["log"]
+
+    def constructor(self):
+        super().__init__()
+
+        if self.skip_file != True:
+            self.file = LogFile.LogFile.new()
+
+        self.addHooks()
+
+    def addHooks(self):
+        def hook_WriteToConsole(**kwargs):
+            message: LogMessage = kwargs.get("message")
+            if self.limiter.shouldBeDisplayed(message, "console") == True:
+                print(message.toString(), end='\n')
+
+        def hook_WriteToFile(**kwargs):
+            return
+            #from Plugins.Data.JSON.JSON import JSON
+
+            message = kwargs.get("message")
+            if message.should("file") == True:
+                return
+
+            self.file_stream.truncate(0)
+            self.file_stream.seek(0)
+            self.file_stream.write(JSON(self.logs).dump(indent=4))
+
+        self.addHook("log", hook_WriteToConsole)
+
+    @classproperty
+    def options(cls) -> ArgumentList:
+        from Plugins.Arguments.Types.BooleanArgument import BooleanArgument
+        from Plugins.Arguments.Objects.ListArgument import ListArgument
+        from Plugins.Arguments.Objects.ObjectArgument import ObjectArgument
+
         return ArgumentList([
             BooleanArgument(
                 name = "logger.external_watching.allow",
@@ -72,39 +83,28 @@ class Logger(Object, Hookable, Configurable):
             ListArgument(
                 name = "logger.skip_categories",
                 default = [
-                    LogSkipSection({
-                        "name": ["Executables", "Initialization"],
-                        "kinda": "message",
-                        "wildcard": True,
-                    }), 
-                    LogSkipSection({
-                        "name": ["Executables", "Declaration"],
-                        "kinda": "message",
-                        "wildcard": True,
-                    }),
-                    LogSkipSection({
-                        "name": ["Saveable", "Container"],
-                        "wildcard": False,
-                    })
+                    LogSkipSection.LogSkipSection(
+                        name = ["Executables", "Initialization"],
+                        kinda = ["message"],
+                        wildcard = True
+                    ), 
+                    LogSkipSection.LogSkipSection(
+                        name = ["Executables", "Declaration"],
+                        kinda = ["message"],
+                        wildcard = True
+                    ),
+                    LogSkipSection.LogSkipSection(
+                        name = ["Saveable", "Container"],
+                        kinda = ["message"],
+                    )
                 ],
-                orig = ClassArgument(
-                    wrap = LogSkipSection
+                orig = ObjectArgument(
+                    name = "skip_category",
+                    object = LogSkipSection.LogSkipSection
                 )
             ),
             BooleanArgument(
-                name = "logger.skip_file"
+                name = "logger.skip_file",
                 default = 0,
             )
         ])
-
-    def setFile(self, file: LogFile):
-        self.file = file
-
-    def newFile(self) -> LogFile:
-        if self.skip_file == True:
-            return None
-
-        file = LogFile()
-        file.create(0, self.storage)
-
-        return file

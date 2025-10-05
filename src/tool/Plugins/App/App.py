@@ -29,21 +29,30 @@ class App(Hookable, Namespace):
     class Globals(Section):
         section_name = ["App", "Globals"]
 
-        def __init__(self, outer):
+        def initConfig(self, outer):
             from Plugins.App.Config import Config
             from Plugins.App.Env import Env
-            from Plugins.App.Logger import Logger
-            from Plugins.App.Logger.LogParts.LogLimiter import LogLimiter
-            from DB.DbConnection import DbConnection
-            from Plugins.App.Storage import Storage
 
             outer.Config = Config.Config(
                 path = outer.cwd.parent.joinpath("storage").joinpath("config")
             )
             outer.Config.comparer.compare = outer.options
             outer.Env = Env.Env(
-                path = self.cwd.parent
+                path = outer.cwd.parent
             )
+
+        def initLogger(self, outer):
+            from Plugins.App.Logger import Logger
+            from Plugins.App.Logger.LogParts.LogLimiter import LogLimiter
+
+            outer.Logger = Logger.Logger(
+                skip_file = False,
+                limiter = LogLimiter(outer.Config.get("logger.skip_categories")),
+            )
+            outer.Logger.constructor()
+
+        def initStorage(self, outer):
+            from Plugins.App.Storage import Storage
 
             texts = Text()
             _common = texts.NTFSNormalizer(outer.Config.get("storage.path"))
@@ -53,16 +62,29 @@ class App(Hookable, Namespace):
             outer.Storage = Storage.Storage(
                 common = _common
             )
-            outer.Logger = Logger.Logger(
-                skip_file = False,
-                skip_categories = LogLimiter(outer.Config.get("logger.skip_categories")),
+
+        def initDB(self, outer):
+            from Plugins.DB.Connection import Connection
+            from Plugins.DB.ConnectionWrapper import ConnectionWrapper
+            from Plugins.DB.ConnectionConfig import ConnectionConfig
+
+            outer.DbConnection = Connection(
+                temp_db = ConnectionWrapper(
+                    name = "temp",
+                    db = ConnectionConfig(protocol = "sqlite", content = ":memory:").getConnection()
+                ),
+                db = self.Config.get("db.content.connection").getConnection(),
+                instance_db = self.Config.get("db.instance.connection").getConnection()
             )
-            outer.Logger.constructor()
+            outer.DbConnection.createTables()
+
+        def __init__(self, outer):
+            self.initConfig(outer)
+            self.initLogger(outer)
             outer.Logger.log("Loading globals", section = self.section_name)
 
-            outer.DbConnection = DbConnection()
-            outer.DbConnection.attachDbs(self.Config, self.Env)
-            outer.DbConnection.createTables()
+            self.initStorage(outer)
+            self.initDB(outer)
 
             #from Utils.Web.DownloadManager import DownloadManager
 
@@ -72,12 +94,14 @@ class App(Hookable, Namespace):
         super().__init__()
 
         self.context = context_name
+
+    def consturctor(self):
+        self.cwd = Path(os.getcwd())
+        self.src = self.cwd.parent
+        self.loop = asyncio.get_event_loop()
         self.globals = self.Globals(self)
         self.executables = self.ExecutablesTable()
         self.argv = self._parse_argv()
-        self.loop = asyncio.get_event_loop()
-        self.cwd = Path(os.getcwd())
-        self.src = self.cwd.parent
 
     def _parse_argv(self):
         # didn't changed since sep.2024

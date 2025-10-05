@@ -1,4 +1,4 @@
-from Plugins.App.Storage.Storage import app
+from App import app
 
 class Section:
     section_name = ["App"]

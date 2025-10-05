@@ -1,4 +1,4 @@
-from Objects.Executables.Templates.Representations import Representation
+from Objects.Executables.Types.Representation import Representation
 import json
 
 locale_keys = {
@@ -7,7 +7,7 @@ locale_keys = {
     }
 }
 
-class Implementation(Representation):
+class JSON(Representation):
     def parse(self, data):
         if type(data) == str:
             return json.loads(data)

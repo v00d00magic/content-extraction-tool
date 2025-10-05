@@ -1,6 +1,6 @@
 from DB.Models.Content.ContentModel import BaseModel
 from Executables.Templates.Outer import Outer
-from Plugins.App.Storage.Storage import app
+from App import app
 from pathlib import Path
 import os
 

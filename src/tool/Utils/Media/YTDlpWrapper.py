@@ -1,4 +1,4 @@
-from Plugins.App.Storage.Storage import app
+from App import app
 import yt_dlp
 
 class YTDlpWrapper:

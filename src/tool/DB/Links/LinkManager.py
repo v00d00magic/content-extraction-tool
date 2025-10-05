@@ -7,7 +7,7 @@ from DB.Models.Content.StorageUnit import StorageUnit
 from DB.Links.ContentUnitRelation import RelationEnum
 
 from DB.Links.Relations import Relations
-from Plugins.App.Storage.Storage import app
+from App import app
 
 class AlreadyLinkedException(Exception):
     pass

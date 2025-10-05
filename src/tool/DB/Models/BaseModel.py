@@ -2,7 +2,7 @@ from peewee import Model
 from Plugins.App.Logger.LogParts.LogKind import LogKind
 from DB.DBWrapper import DBWrapper
 from DB.ModelDTO import ModelDTO
-from Plugins.App.Storage.Storage import app
+from App import app
 
 class BaseModel(Model):
     @classmethod

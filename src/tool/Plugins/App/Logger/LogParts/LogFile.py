@@ -1,27 +1,35 @@
-from datetime import datetime
 from Objects.Object import Object
+from pathlib import Path
+from pydantic import Field
+from Objects.Object import Object
+from datetime import datetime
+from enum import Enum
 
-class LogFile():
-    MODE_PER_DAY = 0
-    MODE_PER_STARTUP = 1
+class LogModeEnum(Enum):
+    per_day = 0
+    per_startup = 1
 
-    def __init__(self):
-        self.items = []
+class LogFile(Object):
+    items: list = []
+    mode: LogModeEnum = LogModeEnum.per_startup
+    created: datetime = Field(default=lambda: datetime.now())
+    filename: str = None
+    path: Path = None
 
-    def create(self, write_mode, storage):
-        now = datetime.now()
-        filename = ""
+    def getFile(self):
+        match(self.mode):
+            case LogModeEnum.per_startup.value:
+                filename = f"{self.created.strftime('%Y-%m-%d_%H-%M-%S')}.json"
+            case LogModeEnum.per_day.value:
+                filename = f"{self.created.strftime('%Y-%m-%d')}.json"
 
-        match(write_mode):
-            case self.MODE_PER_STARTUP:
-                filename = f"{now.strftime('%Y-%m-%d_%H-%M-%S')}.json"
-            case self.MODE_PER_DAY:
-                filename = f"{now.strftime('%Y-%m-%d')}.json"
+        return filename
 
-        self.path = storage.dir.joinpath(filename)
+    def open(self, storage):
+        self.path = storage.dir.joinpath(self.getFile())
         if self.path.exists() == False:
-            _not_exists = open(self.path, 'w', encoding='utf-8')
-            _not_exists.close()
+            t = open(self.path, 'w', encoding='utf-8')
+            t.close()
 
         self.stream = open(str(self.path), 'r+', encoding='utf-8')
 
@@ -30,3 +38,12 @@ class LogFile():
 
     def save(self):
         pass
+
+    @staticmethod
+    def new(storage):
+        file = LogFile(
+            mode = LogModeEnum.per_startup.value
+        )
+        file.open(storage)
+
+        return file

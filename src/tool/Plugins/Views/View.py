@@ -1,10 +1,14 @@
 from pydantic import Field
+
+from typing import Any
 from Objects.Section import Section
 from Objects.Object import Object
 from Plugins.App.App import App
 
 class View(Object):
     name: str = Field(default="na")
+    app_wrapper: Any = None
+    runner: Any = None
 
     # not asynco
     class AppWrapper(Section):
@@ -38,12 +42,15 @@ class View(Object):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs),
 
+        # Sorry but this is necessary :(
+
         self.app_wrapper = self.AppWrapper(self.name)
-        self.runner = self.Runner()
         self.setAsCommon()
+        self.app_wrapper.app.consturctor()
+        self.runner = self.Runner()
 
     def setAsCommon(self):
-        from Plugins.App.Storage.Storage import app
+        from App import app
 
         app.setView(self)
 

@@ -1,16 +1,12 @@
 from Utils.Data.List import List
-from Utils.Wrap import Wrap
+from Objects.Object import Object
+from pydantic import Field
 
-class LogSection(Wrap):
-    section: list = None
+class LogSection(Object):
+    section: list = Field(repr=True)
 
-    def __init__(self, data):
-        super().__init__(data)
-
-        if type(data.get("section")) == list:
-            self.section = data.get("section")
-        else:
-            self.section = data.get("section").split("!")
-
-    def str(self):
+    def join(self) -> str:
         return "!".join(self.section)
+
+    def toString(self) -> str:
+        return f"[{self.join()}]"

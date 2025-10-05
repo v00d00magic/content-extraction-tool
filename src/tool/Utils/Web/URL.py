@@ -1,7 +1,7 @@
 from urllib.parse import urlparse
 import os, mimetypes
 from Utils.Web.DownloadManager import DownloadManagerItem
-from Plugins.App.Storage.Storage import app
+from App import app
 
 class URL():
     def __init__(self, url):

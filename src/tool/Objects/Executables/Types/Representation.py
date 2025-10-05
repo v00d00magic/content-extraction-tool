@@ -1,7 +1,5 @@
-from Declarable.Arguments import BooleanArgument
-from Executables.Templates.Executable import Executable
-from Executables.ExecutableCall import ExecutableCall
-from Executables.Responses.ItemsResponse import ItemsResponse
+from .Executable import Executable
+from ..ExecutableCall import ExecutableCall
 
 class RepresentationMeta(type):
     def __init__(cls, name, bases, attrs):
@@ -9,8 +7,9 @@ class RepresentationMeta(type):
             cls._build_submodules()
         super().__init__(name, bases, attrs)
 
-class Representation(Executable, metaclass=RepresentationMeta):
-    self_name = "Representation"
+class Representation(Executable):
+    __metaclass__ = RepresentationMeta
+    self_name: str = "Representation"
 
     @classmethod
     def doDefaultAppending(cls):

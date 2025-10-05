@@ -3,7 +3,7 @@ from Executables.Responses.ItemsResponse import ItemsResponse
 from Executables.Templates.Acts import Act
 from DB.Models.Content.ContentUnit import ContentUnit
 from Executables.ExecutableCall import ExecutableCall
-from Plugins.App.Storage.Storage import app
+from App import app
 
 locale_keys = {
     "name": {

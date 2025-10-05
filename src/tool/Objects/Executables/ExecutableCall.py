@@ -1,15 +1,9 @@
-from Executables.Templates.Executable import Executable
-from Executables.Responses.Response import Response
+from .Types.Executable import Executable
+from ..Responses.Response import Response
 from Objects.Hookable import Hookable
-from Utils.Data.JSON import JSON
-from Plugins.App.Storage.Storage import app
+from Plugins.Data.JSON import JSON
+from App import app
 import asyncio
-
-class ProgressMessage():
-    def __init__(self, message, percentage, index):
-        self.message = message
-        self.percentage = percentage
-        self.index = index
 
 class ExecutableCall(Hookable):
     section_name = ["Executables", "ExecutableCall"]
@@ -76,12 +70,6 @@ class ExecutableCall(Hookable):
             return []
 
         return cols
-
-    # Progress
-
-    def notifyAboutProgress(self, message, percentage: float = 0.0):
-        _message = ProgressMessage(message, percentage, self.index)
-        self.trigger("progress", message=_message)
 
     # Log
 

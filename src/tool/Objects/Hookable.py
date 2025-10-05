@@ -10,12 +10,14 @@ def category_check(func):
     return wrapper
 
 class Hookable:
-    events = []
+    categories: list = []
+    hooks: dict = {}
 
-    def __init__(self):
-        self._hooks = {}
+    @property
+    def events() -> list:
+        return []
 
-    def hooks(self, category):
+    def getHooks(self, category) -> list:
         return self._hooks.get(category)
 
     def runHook(self, hook_func, *args, **kwargs):
@@ -31,16 +33,16 @@ class Hookable:
 
     @category_check
     def addHook(self, category, hook):
-        self._hooks.get(category).append(hook)
+        self.hooks.get(category).append(hook)
 
     @category_check
     def removeHook(self, category, hook):
         try:
-            self._hooks.get(category).remove(hook)
+            self.hooks.get(category).remove(hook)
         except Exception:
             pass
 
     @category_check
     def trigger(self, category, *args, **kwargs):
-        for hook in self._hooks.get(category):
+        for hook in self.hooks.get(category):
             self.runHook(hook, *args, **kwargs)

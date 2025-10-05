@@ -3,7 +3,7 @@ from Executables.Responses.ItemsResponse import ItemsResponse
 from Executables.Variables.ResultsVariable import ResultsVariable
 
 class Extractor(Executable):
-    self_name = "Extractor"
+    self_name: str = "Extractor"
 
     def getResult(self):
         return ItemsResponse(self.variable("items").get())

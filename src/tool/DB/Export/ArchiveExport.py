@@ -8,7 +8,7 @@ from DB.DBWrapper import DBWrapper
 from App.Storage.StorageItem import StorageItem
 from DB.ModelDTO import ModelDTO
 
-from Plugins.App.Storage.Storage import app
+from App import app
 
 class ArchiveExport:
     EXTENSION_NAME = "units"

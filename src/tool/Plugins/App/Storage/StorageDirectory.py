@@ -1,15 +1,16 @@
-from App.Storage.StorageItem import StorageItem
+from Objects.Object import Object
+from .StorageItem import StorageItem
 from pathlib import Path
 from Utils.Data.Random import Random
 from Utils.Data.JSON import JSON
 import os
 
-class HashDirectory:
-    HASH_BYTES = 32
-
+class StorageDirectory(Object):
     @classmethod
     def getHash(cls):
-        return Random().random_hash(cls.HASH_BYTES)
+        HASH_BYTES = 32
+
+        return Random().random_hash(HASH_BYTES)
 
     def __init__(self, storage: StorageItem, hash: str, do_mkdir: bool = False):
         self.do_mkdir: bool = do_mkdir

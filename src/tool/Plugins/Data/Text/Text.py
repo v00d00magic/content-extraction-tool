@@ -1,5 +1,5 @@
 from Objects.Object import Object
-from Plugins.App.Storage.Storage import app
+from App import app
 import re
 
 class Text(Object):

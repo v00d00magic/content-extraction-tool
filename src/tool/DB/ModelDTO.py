@@ -1,4 +1,4 @@
-from Plugins.App.Storage.Storage import app
+from App import app
 
 class ModelDTO:
     MOVE_TYPE_TRANSFER = "move"

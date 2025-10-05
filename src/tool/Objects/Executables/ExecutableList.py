@@ -1,11 +1,11 @@
 from Plugins.App.Logger.LogParts.LogKind import LogKind
-from Utils.Wrap import Wrap
+from Objects.Object import Object
 from pathlib import Path
-from Plugins.App.Storage.Storage import app
+from App import app
 import importlib
 import time
 
-class ExecutableListResult(Wrap):
+class ExecutableListResult(Object):
     verdict: str = None
     parts: list = None
     name: str = None

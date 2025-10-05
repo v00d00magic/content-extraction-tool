@@ -1,4 +1,4 @@
-from Plugins.App.Storage.Storage import app
+from App import app
 from pathlib import Path
 from peewee import TextField, BigIntegerField, IntegerField, BooleanField
 from Utils.Data.JSON import JSON

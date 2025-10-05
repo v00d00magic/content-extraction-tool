@@ -49,13 +49,14 @@ class Comparer(Object):
             else:
                 return None
 
-        fallback = argument.sensitive_default
         argument.current = inputs
+        fallback = argument.sensitive_default
 
-        value = argument.getResult()
-        if value == None and self.default_sub == True:
-            value = argument.getDefau
+        value = argument.value
+        if value == None and self.default_on_none == True:
+            value = argument.default
 
+        print(argument.value)
         try:
             app.logger.log(f"ArgsComparer: {name}={inputs}={str(value)}", section=["Comparer"])
         except:

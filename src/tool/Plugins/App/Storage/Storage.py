@@ -2,6 +2,7 @@ from Plugins.App.Storage.StorageItem import StorageItem
 from Objects.Configurable import Configurable
 from Plugins.Arguments.ArgumentList import ArgumentList
 from Objects.Object import Object
+from Objects.classproperty import classproperty
 from pydantic import Field
 from pathlib import Path
 
@@ -21,8 +22,8 @@ class Storage(Object, Configurable):
     def get(self, name):
         return self.items.get(name)
 
-    @property
-    def options() -> ArgumentList:
+    @classproperty
+    def options(cls) -> ArgumentList:
         from Plugins.Arguments.Types.StringArgument import StringArgument
 
         return ArgumentList([

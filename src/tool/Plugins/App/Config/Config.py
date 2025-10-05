@@ -3,6 +3,7 @@ from Objects.Object import Object
 from Objects.Configurable import Configurable
 from Plugins.Arguments.Comparer import Comparer
 from Plugins.Arguments.ArgumentList import ArgumentList
+from Objects.classproperty import classproperty
 from pydantic import Field, computed_field
 import json
 
@@ -16,23 +17,17 @@ class Config(Object, Configurable):
 
     @computed_field
     @property
-    def file(self):
+    def file(self) -> Path:
         return self.path.joinpath(self.name)
-
-    def __init__(self):
-        super().__init__()
-
-        self.path.mkdir(parents=True,exist_ok=True)
-        self.checkFile()
 
     def __del__(self):
         try:
-            self.config_stream.close()
+            self._stream.close()
         except AttributeError:
             pass
 
-    @property
-    def options() -> ArgumentList:
+    @classproperty
+    def options(cls) -> ArgumentList:
         from Plugins.Arguments.Types.BooleanArgument import BooleanArgument
 
         return ArgumentList([
@@ -56,15 +51,15 @@ class Config(Object, Configurable):
             self.comparer.values[option] = value
 
         self.updateFile()
-        self.passDeclarable()
 
     def checkFile(self):
-        if self.path.exists() == False:
+        self.path.mkdir(parents=True,exist_ok=True)
+        if self.file.exists() == False:
             t = open(self.file, 'w', encoding='utf-8')
             json.dump({}, t)
             t.close()
 
-        self._stream = open(self.path, 'r+', encoding='utf-8')
+        self._stream = open(self.file, 'r+', encoding='utf-8')
         try:
             self.comparer.values = json.load(self._stream)
         except json.JSONDecodeError as __exc:
@@ -82,7 +77,7 @@ class Config(Object, Configurable):
         self._stream.write("{}")
         self._stream.truncate()
 
-        self.options = {}
+        self.comparer.values = {}
 
     def isItemHidden(self, name):
         for item in self.hidden_items:

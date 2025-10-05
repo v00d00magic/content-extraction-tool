@@ -1,9 +1,10 @@
 from Plugins.Arguments.ArgumentList import ArgumentList
+from Objects.classproperty import classproperty
 from App import app
 
 class Configurable:
-    @property
-    def options() -> ArgumentList:
+    @classproperty
+    def options(cls) -> ArgumentList:
         pass
 
     @classmethod

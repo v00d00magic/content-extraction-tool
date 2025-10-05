@@ -1,4 +1,4 @@
-from Utils.ClassProperty import classproperty
+from Objects.classproperty import classproperty
 from importlib.metadata import distributions
 
 class Runnable:

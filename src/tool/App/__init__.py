@@ -6,6 +6,6 @@ class ViewWrapper:
         self._view = view
 
     def __getattr__(self, name):
-        return getattr(self._view.app, name, None)
+        return getattr(self._view.app_wrapper.app, name, None)
 
 app = ViewWrapper()

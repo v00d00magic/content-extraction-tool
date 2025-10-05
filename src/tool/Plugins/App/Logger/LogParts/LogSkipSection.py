@@ -1,15 +1,15 @@
 from .LogSection import LogSection
 from .LogKind import LogKind
-from Utils.Wrap import Wrap
-from typing import List
+from Objects.Object import Object
+from pydantic import Field
 
-class LogSkipSection(Wrap):
-    name: str = None
-    wildcard: bool = False
-    wildcard_all: bool = False
-    inactive: bool = False
-    kinda: List = None
-    where: List = "console"
+class LogSkipSection(Object):
+    name: list = Field()
+    wildcard: bool = Field(default=False)
+    wildcard_all: bool = Field(default=False)
+    inactive: bool = Field(default=False)
+    kinda: list = Field(default=[])
+    where: list = Field(default=["console"])
 
     def isIt(self, section: LogSection, kind: LogKind = None) -> bool:
         section_check = False

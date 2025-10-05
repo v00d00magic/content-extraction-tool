@@ -1,6 +1,8 @@
-class LogLimiter():
-    def __init__(self, skip_categories):
-        self.skip_categories = skip_categories
+from Objects.Object import Object
+from pydantic import Field
+
+class LogLimiter(Object):
+    skip_categories: list = Field()
 
     def shouldBeDisplayed(self, msg, where):
         for _section in self.skip_categories:
