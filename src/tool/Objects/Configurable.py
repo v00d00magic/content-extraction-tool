@@ -1,10 +1,14 @@
-from App.Config.DefaultSettings import DefaultSettings
+from Plugins.Arguments.ArgumentList import ArgumentList
+from App import app
 
 class Configurable:
-    @classmethod
-    def updateConfig(cls):
-        DefaultSettings.update(cls.declareSettings())
+    @property
+    def options() -> ArgumentList:
+        pass
 
     @classmethod
-    def declareSettings(cls):
-        pass
+    def update(cls):
+        app.options.update(cls.options.toDict())
+
+    def __init_subclass__(cls):
+        cls.update()

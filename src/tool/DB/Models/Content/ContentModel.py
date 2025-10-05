@@ -4,8 +4,8 @@ from playhouse.sqlite_ext import fn
 
 from snowflake import SnowflakeGenerator
 
-from App.Logger.LogKind import LogKind
-from App import app
+from Plugins.App.Logger.LogParts.LogKind import LogKind
+from Plugins.App.Storage.Storage import app
 
 class ContentModel(BaseModel):
     uuid = IntegerField(unique=True, primary_key=True)

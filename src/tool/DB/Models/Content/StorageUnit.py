@@ -1,4 +1,4 @@
-from App import app
+from Plugins.App.Storage.Storage import app
 from pathlib import Path
 from peewee import TextField, BigIntegerField, IntegerField, BooleanField
 from Utils.Data.JSON import JSON
@@ -6,7 +6,7 @@ from Utils.Web.Mime import Mime
 from DB.Models.Content.ContentModel import ContentModel
 from App.Storage.HashDirectory import HashDirectory
 from App.Storage.StorageItem import StorageItem
-from App.Logger.LogSection import LogSection
+from Plugins.App.Logger.LogParts.LogSection import LogSection
 
 class StorageUnit(ContentModel):
     table_name = 'storage_units'

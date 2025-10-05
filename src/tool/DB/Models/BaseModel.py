@@ -1,8 +1,8 @@
 from peewee import Model
-from App.Logger.LogKind import LogKind
+from Plugins.App.Logger.LogParts.LogKind import LogKind
 from DB.DBWrapper import DBWrapper
 from DB.ModelDTO import ModelDTO
-from App import app
+from Plugins.App.Storage.Storage import app
 
 class BaseModel(Model):
     @classmethod

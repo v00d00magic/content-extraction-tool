@@ -1,5 +1,5 @@
 from peewee import SqliteDatabase, MySQLDatabase, PostgresqlDatabase, DatabaseProxy
-from Utils.Data.Text import Text
+from Plugins.Data.Text.Text import Text
 from playhouse.shortcuts import ThreadSafeDatabaseMetadata
 
 class DBWrapper:

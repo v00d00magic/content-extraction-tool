@@ -1,7 +1,7 @@
 
-from App.Logger.LogKind import LogKind
+from Plugins.App.Logger.LogParts.LogKind import LogKind
 from Objects.Hookable import Hookable
-from App import app
+from Plugins.App.Storage.Storage import app
 from pathlib import Path
 import asyncio, aiohttp, os, time
 from Objects.Configurable import Configurable

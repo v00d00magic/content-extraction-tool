@@ -18,7 +18,7 @@ class Hookable:
     def hooks(self, category):
         return self._hooks.get(category)
 
-    def run_hook(self, hook_func, *args, **kwargs):
+    def runHook(self, hook_func, *args, **kwargs):
         try:
             if asyncio.iscoroutinefunction(hook_func):
                 loop = asyncio.get_running_loop()
@@ -30,11 +30,11 @@ class Hookable:
             raise e
 
     @category_check
-    def add_hook(self, category, hook):
+    def addHook(self, category, hook):
         self._hooks.get(category).append(hook)
 
     @category_check
-    def remove_hook(self, category, hook):
+    def removeHook(self, category, hook):
         try:
             self._hooks.get(category).remove(hook)
         except Exception:
@@ -43,4 +43,4 @@ class Hookable:
     @category_check
     def trigger(self, category, *args, **kwargs):
         for hook in self._hooks.get(category):
-            self.run_hook(hook, *args, **kwargs)
+            self.runHook(hook, *args, **kwargs)

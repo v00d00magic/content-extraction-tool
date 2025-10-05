@@ -1,5 +1,5 @@
-from App.Logger.LogSection import LogSection
-from App.Logger.LogKind import LogKind
+from Plugins.App.Logger.LogParts.LogSection import LogSection
+from Plugins.App.Logger.LogParts.LogKind import LogKind
 from Utils.Data.JSON import JSON
 
 from DB.Models.Content.ContentUnit import ContentUnit
@@ -7,7 +7,7 @@ from DB.Models.Content.StorageUnit import StorageUnit
 from DB.Links.ContentUnitRelation import RelationEnum
 
 from DB.Links.Relations import Relations
-from App import app
+from Plugins.App.Storage.Storage import app
 
 class AlreadyLinkedException(Exception):
     pass
