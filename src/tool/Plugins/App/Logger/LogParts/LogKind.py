@@ -21,7 +21,7 @@ class LogKind(Object):
     kind: LogKindEnum = LogKindEnum.message
 
     def getColor(self) -> ColorsEnum:
-        match(self.kind):
+        match(self.kind.value):
             case LogKindEnum.error.value:
                 return ColorsEnum.red.value
             case LogKindEnum.success.value:
@@ -30,4 +30,5 @@ class LogKind(Object):
                 return ColorsEnum.deprecated.value
             case LogKindEnum.highlight.value:
                 return ColorsEnum.pink.value
-
+            case _:
+                return ColorsEnum.white.value

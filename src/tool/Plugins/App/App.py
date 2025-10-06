@@ -36,7 +36,7 @@ class App(Hookable, Namespace):
             outer.Config = Config.Config(
                 path = outer.cwd.parent.joinpath("storage").joinpath("config")
             )
-            outer.Config.comparer.compare = outer.options
+            outer.Config.comparer.compare = outer.settings
             outer.Env = Env.Env(
                 path = outer.cwd.parent
             )
@@ -46,8 +46,8 @@ class App(Hookable, Namespace):
             from Plugins.App.Logger.LogParts.LogLimiter import LogLimiter
 
             outer.Logger = Logger.Logger(
-                skip_file = False,
-                limiter = LogLimiter(outer.Config.get("logger.skip_categories")),
+                skip_file = outer.Config.get("logger.output.to_file"),
+                limiter = LogLimiter(skip_categories = outer.Config.get("logger.output.filters")),
             )
             outer.Logger.constructor()
 

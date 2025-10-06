@@ -1,4 +1,4 @@
 class Namespace():
-    options = {}
+    settings = {}
     consts = {}
     locales = {}

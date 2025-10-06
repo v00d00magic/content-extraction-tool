@@ -9,7 +9,7 @@ class Configurable:
 
     @classmethod
     def update(cls):
-        app.options.update(cls.options.toDict())
+        app.settings.update(cls.options.toDict())
 
     def __init_subclass__(cls):
         cls.update()

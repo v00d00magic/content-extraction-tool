@@ -12,10 +12,14 @@ class Argument(Object):
     docs: Documentation = Field(default=None)
     assertions: Assertions = Field(default=None)
 
-    @computed_field
-    @property
     def value(self) -> Any:
         return self.implementation()
+
+    def inputs(self) -> Any:
+        if self.current == None:
+            return self.default
+
+        return self.current
 
     @computed_field
     @property
@@ -25,5 +29,5 @@ class Argument(Object):
     def implementation(self) -> Any:
         return self.current
 
-    def assertions(self) -> bool:
+    def checkAssertions(self):
         return True

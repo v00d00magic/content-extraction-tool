@@ -52,11 +52,10 @@ class Comparer(Object):
         argument.current = inputs
         fallback = argument.sensitive_default
 
-        value = argument.value
+        value = argument.value()
         if value == None and self.default_on_none == True:
             value = argument.default
 
-        print(argument.value)
         try:
             app.logger.log(f"ArgsComparer: {name}={inputs}={str(value)}", section=["Comparer"])
         except:
@@ -64,7 +63,7 @@ class Comparer(Object):
 
         if check_assertions == True:
             try:
-                argument.assertions()
+                argument.checkAssertions()
             except Exception as assertion:
                 try:
                     app.logger.log(assertion, "Executables!Declaration")

@@ -3,8 +3,8 @@ import asyncio
 def category_check(func):
     def wrapper(self, *args, **kwargs):
         category = args[0]
-        if self._hooks.get(category) == None:
-            self._hooks[category] = []
+        if self.hooks.get(category) == None:
+            self.hooks[category] = []
 
         return func(self, *args, **kwargs)
     return wrapper
@@ -18,7 +18,7 @@ class Hookable:
         return []
 
     def getHooks(self, category) -> list:
-        return self._hooks.get(category)
+        return self.hooks.get(category)
 
     def runHook(self, hook_func, *args, **kwargs):
         try:

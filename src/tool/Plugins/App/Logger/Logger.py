@@ -1,4 +1,4 @@
-from .LogParts import LogMessage, LogKind, LogSection, LogLimiter, LogFile, LogSkipSection
+from .LogParts import LogMessage, LogKind, LogSection, LogLimiter, LogFile, LogSkipSection, LogPrefix
 from Plugins.Arguments.ArgumentList import ArgumentList
 
 from Objects.Configurable import Configurable
@@ -17,23 +17,36 @@ class Logger(Object, Hookable, Configurable):
     file: LogFile.LogFile = Field(default=None)
 
     def logMessage(self, msg: LogMessage):
-        #self.file.add(msg)
-        self.trigger("log", message=msg)
+        self.trigger("log", message = msg)
 
-    def log(self, message, section: str = "App", kind: str = "message", silent: bool = False, prefix: str = "", id_prefix: int = None):
-        print(message)
+    def log(self, 
+            message: str, 
+            section: str = ["App"], 
+            kind: str = "message",
+            exception_prefix: str = "",
+            prefix: dict[str, str] = None):
+
         write_message = message
         if isinstance(message, BaseException):
             exc = traceback.format_exc()
-            write_message = prefix + type(message).__name__ + " " + exc
+            write_message = exception_prefix + type(message).__name__ + " " + exc
 
-        msg = LogMessage({
-            "time": (datetime.now()).timestamp(),
-            "message": write_message,
-            "section": LogSection({"section": section}),
-            "kind": LogKind({"kind": kind}),
-            "id_prefix": id_prefix,
-        })
+        _dict = {}
+        _dict["message"] = write_message
+        _dict["kind"] = LogKind.LogKind(
+            kind = kind
+        )
+        _dict["section"] = LogSection.LogSection(
+            section = section
+        )
+
+        if prefix != None:
+            _dict["prefix"] = LogPrefix.LogPrefix(
+                name = prefix.get("name"),
+                id = prefix.get("id"),
+            )
+
+        msg = LogMessage.LogMessage(**_dict)
 
         self.logMessage(msg)
 
@@ -42,8 +55,7 @@ class Logger(Object, Hookable, Configurable):
         return ["log"]
 
     def constructor(self):
-        super().__init__()
-
+        print(self.skip_file)
         if self.skip_file != True:
             self.file = LogFile.LogFile.new()
 
@@ -77,11 +89,11 @@ class Logger(Object, Hookable, Configurable):
 
         return ArgumentList([
             BooleanArgument(
-                name = "logger.external_watching.allow",
+                name = "logger.editing.allow",
                 default = True
             ),
             ListArgument(
-                name = "logger.skip_categories",
+                name = "logger.output.filters",
                 default = [
                     LogSkipSection.LogSkipSection(
                         name = ["Executables", "Initialization"],
@@ -104,7 +116,7 @@ class Logger(Object, Hookable, Configurable):
                 )
             ),
             BooleanArgument(
-                name = "logger.skip_file",
-                default = 0,
+                name = "logger.output.to_file",
+                default = True,
             )
         ])
