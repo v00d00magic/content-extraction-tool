@@ -9,7 +9,8 @@ class Configurable:
 
     @classmethod
     def update(cls):
-        app.settings.update(cls.options.toDict())
+        for name, item in cls.options.toDict().items():
+            app.settings[name] = item
 
     def __init_subclass__(cls):
         cls.update()

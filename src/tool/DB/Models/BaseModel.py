@@ -1,6 +1,5 @@
 from peewee import Model
 from Plugins.App.Logger.LogParts.LogKind import LogKind
-from DB.DBWrapper import DBWrapper
 from DB.ModelDTO import ModelDTO
 from App import app
 

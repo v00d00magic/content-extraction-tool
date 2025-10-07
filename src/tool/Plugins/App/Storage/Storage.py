@@ -8,16 +8,14 @@ from pathlib import Path
 
 class Storage(Object, Configurable):
     items: dict = Field(default={})
-    common: str = Field(default=None)
+    common: Path = Field(default=None)
 
-    def __init__(self):
-        super().__init__()
-
+    def register(self):
         for name in ["config", "db", "storage_units", "temp_storage_units", "exports", "temp_exports", "logs", "binary"]:
-            self.register(name)
-
-    def register(self, name):
-        self.items[name] = StorageItem(self.common, name)
+            self.items[name] = StorageItem(
+                root = self.common, 
+                dir_name = name
+            )
 
     def get(self, name):
         return self.items.get(name)

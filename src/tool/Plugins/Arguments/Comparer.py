@@ -53,8 +53,9 @@ class Comparer(Object):
         fallback = argument.sensitive_default
 
         value = argument.value()
+
         if value == None and self.default_on_none == True:
-            value = argument.default
+            value = fallback
 
         try:
             app.logger.log(f"ArgsComparer: {name}={inputs}={str(value)}", section=["Comparer"])
@@ -72,9 +73,6 @@ class Comparer(Object):
 
                 if self.raise_on_assertions == True:
                     raise assertion
-                else:
-                    if self.default_on_none == True:
-                        value = fallback
 
         return value
 

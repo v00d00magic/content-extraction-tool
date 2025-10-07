@@ -2,15 +2,18 @@ from pydantic import Field
 from Objects.Object import Object
 from pathlib import Path
 
-class StorageItem:
-    root: Path = Field()
-    dir_name: str = Field()
+class StorageItem(Object):
+    root: Path = Field(default=None)
+    dir_name: str = Field(default=None)
+    make_dir: bool = Field(default=True)
 
     def dir(self):
         return self.root.joinpath(self.dir_name)
 
-    def __init__(self, root: str, dir_name: str = None, make_dir: bool = True):
-        if make_dir == True and self.dir.is_dir() == False:
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        if self.make_dir == True and self.dir().is_dir() == False:
             self.dir().mkdir()
 
     def extend(self, dir: str):

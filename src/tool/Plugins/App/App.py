@@ -54,34 +54,29 @@ class App(Hookable, Namespace):
         def initStorage(self, outer):
             from Plugins.App.Storage import Storage
 
-            texts = Text()
-            _common = texts.NTFSNormalizer(outer.Config.get("storage.path"))
-            _common = texts.cwdReplacement(_common)
-            _common = texts.cwdReplacement(_common)
+            outer.Storage = Storage.Storage()
 
-            outer.Storage = Storage.Storage(
-                common = _common
-            )
+            texts = Text()
+
+            _common = texts.cwdReplacement(outer.Config.get("storage.path"))
+
+            outer.Storage.common = Path(_common)
+            outer.Storage.register()
 
         def initDB(self, outer):
             from Plugins.DB.Connection import Connection
-            from Plugins.DB.ConnectionWrapper import ConnectionWrapper
-            from Plugins.DB.ConnectionConfig import ConnectionConfig
 
             outer.DbConnection = Connection(
-                temp_db = ConnectionWrapper(
-                    name = "temp",
-                    db = ConnectionConfig(protocol = "sqlite", content = ":memory:").getConnection()
-                ),
-                db = self.Config.get("db.content.connection").getConnection(),
-                instance_db = self.Config.get("db.instance.connection").getConnection()
+                temp_db = outer.Config.get("db.temp.connection").getWrapper("temp"),
+                db = outer.Config.get("db.content.connection").getWrapper("content"),
+                instance_db = outer.Config.get("db.instance.connection").getWrapper("instance")
             )
             outer.DbConnection.createTables()
 
         def __init__(self, outer):
             self.initConfig(outer)
             self.initLogger(outer)
-            outer.Logger.log("Loading globals", section = self.section_name)
+            outer.Logger.log("Init app, loading globals", section = self.section_name)
 
             self.initStorage(outer)
             self.initDB(outer)

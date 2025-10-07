@@ -55,7 +55,6 @@ class Logger(Object, Hookable, Configurable):
         return ["log"]
 
     def constructor(self):
-        print(self.skip_file)
         if self.skip_file != True:
             self.file = LogFile.LogFile.new()
 

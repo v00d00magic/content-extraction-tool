@@ -30,6 +30,14 @@ class Connection(Object, Configurable):
 
         return ArgumentList([
             ObjectArgument(
+                name = "db.temp.connection",
+                object = ConnectionConfig,
+                default = ConnectionConfig(
+                    protocol = "sqlite",
+                    content = ":memory:"
+                )
+            ),
+            ObjectArgument(
                 name = "db.content.connection",
                 object = ConnectionConfig,
                 default = ConnectionConfig(
