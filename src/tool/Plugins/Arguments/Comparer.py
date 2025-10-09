@@ -52,7 +52,7 @@ class Comparer(Object):
         argument.current = inputs
         fallback = argument.sensitive_default
 
-        value = argument.value()
+        value = argument.getValue()
 
         if value == None and self.default_on_none == True:
             value = fallback

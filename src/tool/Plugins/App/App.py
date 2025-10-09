@@ -56,9 +56,8 @@ class App(Hookable, Namespace):
 
             outer.Storage = Storage.Storage()
 
-            texts = Text()
-
-            _common = texts.cwdReplacement(outer.Config.get("storage.path"))
+            texts = Text(outer.Config.get("storage.path"))
+            _common = texts.cwdReplacement()
 
             outer.Storage.common = Path(_common)
             outer.Storage.register()
@@ -79,7 +78,7 @@ class App(Hookable, Namespace):
             outer.Logger.log("Init app, loading globals", section = self.section_name)
 
             self.initStorage(outer)
-            self.initDB(outer)
+            #self.initDB(outer)
 
             #from Utils.Web.DownloadManager import DownloadManager
 

@@ -1,4 +1,4 @@
-from Utils.Data.Random import Random
+from Plugins.Data.Random.Random import Random
 from peewee import SqliteDatabase
 from DB.Export.ExportItem import ExportItem
 from DB.Links.ContentUnitRelation import ContentUnitRelation

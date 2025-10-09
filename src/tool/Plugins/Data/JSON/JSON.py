@@ -1,11 +1,5 @@
-from Objects.Executables.Types.Representation import Representation
+from Plugins.Executables.Types.Representation import Representation
 import json
-
-locale_keys = {
-    "json.name": {
-        "en_US": "JSON"
-    }
-}
 
 class JSON(Representation):
     def parse(self, data):
@@ -24,9 +18,3 @@ class JSON(Representation):
             return False
         except TypeError:
             return False
-
-    @classmethod
-    def defineMeta(cls):
-        return {
-            'name': cls.key("json.name")
-        }

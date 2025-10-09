@@ -6,7 +6,7 @@ from Objects.Object import Object
 from Plugins.App.App import App
 
 class View(Object):
-    name: str = Field(default="na")
+    name: str = Field(default="View")
     app_wrapper: Any = None
     runner: Any = None
 
@@ -23,11 +23,14 @@ class View(Object):
     class Runner(Section):
         section_name = ["View", "Run"]
 
+        def __init__(self, outer):
+            self.outer = outer
+
         async def wrapper(self, raw_arguments):
             pass
 
         async def call(self, raw_arguments):
-            from Executables.list.Executables.Execute.Execute import Implementation as Execute
+            from Plugins.Executables.Call import Call
             from Executables.ExecutableCall import ExecutableCall
 
             assert "i" in raw_arguments, "i not passed"
@@ -47,7 +50,7 @@ class View(Object):
         self.app_wrapper = self.AppWrapper(self.name)
         self.setAsCommon()
         self.app_wrapper.app.consturctor()
-        self.runner = self.Runner()
+        self.runner = self.Runner(self)
 
     def setAsCommon(self):
         from App import app
@@ -55,4 +58,4 @@ class View(Object):
         app.setView(self)
 
     def loopSelf(self):
-        self.app_wrapper.run_until_complete(self.runner.wrapper())
+        self.app_wrapper.run_until_complete(self.runner.wrapper(self.app_wrapper.app.argv))

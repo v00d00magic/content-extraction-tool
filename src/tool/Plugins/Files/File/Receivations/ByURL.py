@@ -1,6 +1,6 @@
 from Declarable.Arguments import ListArgument, StringArgument
 from .. import Implementation as File
-from Utils.Web.URL import URL
+from Plugins.Web.URL import URL
 from pathlib import Path
 
 locale_keys = {

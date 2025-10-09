@@ -9,7 +9,7 @@ class ObjectArgument(Argument):
 
     def implementation(self):
         lists = []
-        if type(self.current) == list:
+        if type(self.value) == list:
             lists = self.current
-        if type(self.current) == str:
+        if type(self.value) == str:
             is_json = JSON(self.passed_value).isValid()

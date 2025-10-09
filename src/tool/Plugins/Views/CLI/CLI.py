@@ -6,13 +6,12 @@ class CLI(View):
         async def wrapper(self, raw_arguments):
             ColoramaInit()
 
-            argv = self.app.argv
-            if "i" not in argv:
+            if "i" not in raw_arguments:
                 self.log("--i not passed.", kind = "error")
                 return
 
             output = await self.call(raw_arguments)
-            if 'silent' not in argv:
+            if 'silent' not in raw_arguments:
                 from Plugins.Data.JSON.JSON import JSON
 
                 print(JSON(output.display()).dump(indent=4))

@@ -1,4 +1,3 @@
-from Utils.Data.List import List
 from Objects.Object import Object
 from pydantic import Field
 

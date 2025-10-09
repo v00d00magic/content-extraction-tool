@@ -7,19 +7,19 @@ from pydantic import Field, computed_field
 class Argument(Object):
     name: str = Field()
     default: Any = Field(default=None)
-    current: str = Field(default=None)
+    value: str = Field(default=None)
     is_sensitive: bool = Field(default=False)
     docs: Documentation = Field(default=None)
     assertions: Assertions = Field(default=None)
 
-    def value(self) -> Any:
+    def getValue(self) -> Any:
         return self.implementation()
 
     def inputs(self) -> Any:
-        if self.current == None:
+        if self.value == None:
             return self.default
 
-        return self.current
+        return self.value
 
     @computed_field
     @property
@@ -27,7 +27,7 @@ class Argument(Object):
         return self.default
 
     def implementation(self) -> Any:
-        return self.current
+        return self.value
 
     def checkAssertions(self):
         return True
