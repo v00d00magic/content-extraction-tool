@@ -10,9 +10,7 @@ class StorageItem(Object):
     def dir(self):
         return self.root.joinpath(self.dir_name)
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
+    def constructor(self):
         if self.make_dir == True and self.dir().is_dir() == False:
             self.dir().mkdir()
 

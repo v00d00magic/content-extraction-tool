@@ -4,22 +4,24 @@ from pydantic import Field, computed_field
 
 class ListArgument(Argument):
     orig: Argument = Field()
-    total_count: int = Field()
+    total_count: int = Field(default=0)
 
-    def implementation(self):
+    def implementation(self, i = {}):
         lists = []
-        if type(self.value) == list:
-            lists = self.value
-        if type(self.value) == str:
-            is_json = JSON(self.passed_value).isValid()
+        value = self.inputs
 
-        return []
+        if type(value) == list:
+            lists = value
+        if type(value) == str:
+            is_json = JSON(value).isValid()
+
+        return value
 
     def getCount(self):
-        return len(self.value)
+        return len(self.current)
 
     def getCompleteness(self):
         return self.getCount() / self.total_count
 
     def append(self, item):
-        self.value.append(item)
+        self.current.append(item)

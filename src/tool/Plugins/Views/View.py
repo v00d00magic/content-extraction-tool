@@ -12,16 +12,21 @@ class View(Object):
 
     # not asynco
     class AppWrapper(Section):
-        section_name = ["View", "App"]
+        @property
+        def section_name(self) -> list:
+            return ["View", "App"]
 
         def __init__(self, name):
-            self.app = App(context_name=name)
+            self.app = App()
+            self.app.context_name = name
 
         def run_until_complete(self, coroutine):
             self.app.loop.run_until_complete(coroutine)
 
     class Runner(Section):
-        section_name = ["View", "Run"]
+        @property
+        def section_name(self) -> list:
+            return ["View", "Run"]
 
         def __init__(self, outer):
             self.outer = outer
@@ -42,9 +47,7 @@ class View(Object):
 
             return output
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs),
-
+    def constructor(self):
         # Sorry but this is necessary :(
 
         self.app_wrapper = self.AppWrapper(self.name)

@@ -49,7 +49,7 @@ class Comparer(Object):
             else:
                 return None
 
-        argument.current = inputs
+        argument.setInput(inputs)
         fallback = argument.sensitive_default
 
         value = argument.getValue()

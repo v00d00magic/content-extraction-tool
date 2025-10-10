@@ -1,4 +1,5 @@
 from .Executable import Executable
+from typing import Any
 
 class RepresentationMeta(type):
     def __init__(cls, name, bases, attrs):
@@ -9,6 +10,23 @@ class RepresentationMeta(type):
 class Representation(Executable):
     __metaclass__ = RepresentationMeta
     self_name: str = "Representation"
+
+    def useAsClass(self) -> None:
+        '''
+        if you want to use this class not only in ui (view), but at code
+        '''
+        pass
+
+    def getSelf(self):
+        '''
+        if you have used "useAtClass()" and want to get result
+        '''
+        return None
+
+    def setSelf(self, new: Any):
+        # code with setting self
+        
+        return self.getSelf()
 
     @classmethod
     def doDefaultAppending(cls):

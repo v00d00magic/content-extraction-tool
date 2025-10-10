@@ -1,20 +1,22 @@
 from .Template import Template
-from Plugins.Arguments.ArgumentList import ArgumentList
+from Plugins.Arguments.ApplyArgumentList import ApplyArgumentList
 from Plugins.Arguments.Argument import Argument
 from typing import List, Any
+import functools
 
 class Variables(Template):
-    items: ArgumentList = ArgumentList([])
+    items: ApplyArgumentList = ApplyArgumentList([])
 
     def get(self, name) -> Any:
-        return self.items.get(name)
+        return self.all_variables.get(name)
 
+    @functools.cached_property
     def all_variables(self) -> List[Argument]:
-        items: list = []
+        items: dict = {}
 
         for ext in self.outer.__mro__:
             if hasattr(ext, 'variables'):
                 for _item in ext.variables.items.toList():
-                    items.append(_item)
+                    items[_item.name] = _item
 
         return items

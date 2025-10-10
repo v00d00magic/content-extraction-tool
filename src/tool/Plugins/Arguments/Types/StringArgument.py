@@ -1,8 +1,8 @@
 from Plugins.Arguments.Argument import Argument
 
 class StringArgument(Argument):
-    def implementation(self):
-        if self.value == None:
+    def implementation(self, i = {}):
+        if self.inputs == None:
             return None
 
-        return str(self.value)
+        return str(self.inputs)

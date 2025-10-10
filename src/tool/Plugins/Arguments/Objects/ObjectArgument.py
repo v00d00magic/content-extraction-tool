@@ -7,7 +7,7 @@ from pydantic import Field, computed_field
 class ObjectArgument(Argument):
     object: Any = Field()
 
-    def implementation(self):
+    def implementation(self, i = {}):
         lists = []
         if type(self.value) == list:
             lists = self.current

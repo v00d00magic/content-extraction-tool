@@ -32,3 +32,6 @@ class Executable(Object, Namespace):
         self.env_variables = self.EnvVariables(self)
 
     # you can use __init__ as you want
+
+    def constructor(self):
+        pass

@@ -8,26 +8,30 @@ import os
 
 from Plugins.Data.Text.Text import Text
 
-class App(Hookable, Namespace):
-    events = ["progress"]
+class App(Hookable, Section, Namespace):
+    events: list = ["progress"]
+
+    @property
+    def section_name(self) -> list:
+        return ["App"]
 
     class ExecutablesTable(Section):
-        section_name = ["App", "Executables"]
+        @property
+        def section_name(self) -> list:
+            return ["App", "Executables"]
 
-        def __init__(self):
+        def __init__(self, outer):
+            from .Index.PluginsList import PluginsList
+
             self.executable_index = Increment()
-            self.list = []
+            self.list = PluginsList()
+            self.list.load()
             self.calls = []
 
-        def loadList(self):
-            from Executables.ExecutableList import ExecutableList
-
-            self.log("Loading list")
-
-            self.list = ExecutableList()
-
     class Globals(Section):
-        section_name = ["App", "Globals"]
+        @property
+        def section_name(self) -> list:
+            return ["App", "Globals"]
 
         def initConfig(self, outer):
             from Plugins.App.Config import Config
@@ -49,17 +53,17 @@ class App(Hookable, Namespace):
                 skip_file = outer.Config.get("logger.output.to_file"),
                 limiter = LogLimiter(skip_categories = outer.Config.get("logger.output.filters")),
             )
-            outer.Logger.constructor()
 
         def initStorage(self, outer):
             from Plugins.App.Storage import Storage
 
             outer.Storage = Storage.Storage()
 
-            texts = Text(outer.Config.get("storage.path"))
-            _common = texts.cwdReplacement()
+            texts = Text()
+            texts.useAsClass(text = outer.Config.get("storage.path"))
+            texts.cwdReplacement()
 
-            outer.Storage.common = Path(_common)
+            outer.Storage.common = Path(texts.getSelf())
             outer.Storage.register()
 
         def initDB(self, outer):
@@ -75,6 +79,9 @@ class App(Hookable, Namespace):
         def __init__(self, outer):
             self.initConfig(outer)
             self.initLogger(outer)
+
+            # you can't use self.log there
+            # cuz of recursion :(
             outer.Logger.log("Init app, loading globals", section = self.section_name)
 
             self.initStorage(outer)
@@ -84,17 +91,14 @@ class App(Hookable, Namespace):
 
             #outer.DownloadManager = DownloadManager(max_concurrent_downloads = 2)
 
-    def __init__(self, context_name = "None"):
-        super().__init__()
-
-        self.context = context_name
+            outer.Logger.log("Loaded globals", section = self.section_name)
 
     def consturctor(self):
         self.cwd = Path(os.getcwd())
         self.src = self.cwd.parent
         self.loop = asyncio.get_event_loop()
         self.globals = self.Globals(self)
-        self.executables = self.ExecutablesTable()
+        self.executables = self.ExecutablesTable(self)
         self.argv = self._parse_argv()
 
     def _parse_argv(self):

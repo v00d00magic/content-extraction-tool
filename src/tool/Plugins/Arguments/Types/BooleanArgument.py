@@ -1,5 +1,5 @@
 from Plugins.Arguments.Argument import Argument
 
 class BooleanArgument(Argument):
-    def implementation(self):
-        return int(self.inputs()) == 1
+    def implementation(self, i = {}):
+        return int(self.inputs) == 1
