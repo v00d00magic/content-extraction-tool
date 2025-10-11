@@ -1,6 +1,6 @@
 from urllib.parse import urlparse
 import os, mimetypes
-from Plugins.Web.DownloadManager import DownloadManagerItem
+from Plugins.Media.DownloadManager.DownloadManager import DownloadManagerItem
 from App import app
 
 class URL():

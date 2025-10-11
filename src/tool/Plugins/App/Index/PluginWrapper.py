@@ -1,8 +1,10 @@
 from typing import List
 from Objects.Object import Object
+from Objects.Section import Section
 from pathlib import Path
 from pydantic import Field, computed_field
 from enum import Enum
+import importlib
 
 class PluginWrapperEnum(Enum):
     module = 1
@@ -11,32 +13,35 @@ class PluginWrapperEnum(Enum):
     verdict_module = "module"
     verdict_js = "js"
 
-class PluginWrapper(Object):
+class PluginWrapper(Object, Section):
     path: Path = Field(default=None)
     all_parts: list = []
     category_parts: list = []
-    file_name: str = None
+    stem: str = None
+    ext: str = None
     plugin: Object = None
+
+    @property
+    def section_name(self) -> list:
+        return ["Plugins", "Initialization", "Object"]
 
     def constructor(self):
         self.all_parts = self.path.parts
+        self.stem = self.path.stem
+        self.ext = self.path.suffix[1:]
 
-        print(self.all_parts)
         for part in self.all_parts:
-            if ".js" in part:
-                verdict = PluginWrapperEnum.verdict_js.value
+            if f".{self.ext}" in part:
                 continue
 
-            if ".py" in part:
-                self.file_name = part
-            else:
-                self.category_parts.append(part)
+            self.category_parts.append(part)
+
+        self.log(f"Importing object {self.name}")
 
     @staticmethod
     def scan(dirs: Path) -> List[Object]:
         items: list = []
 
-        # for some reason it goes backwards LOOOL !!!
         for plugin in dirs.rglob('*.py'):
             if plugin.name in ['', '__pycache__', 'Base.py']:
                 continue
@@ -48,24 +53,20 @@ class PluginWrapper(Object):
     @computed_field
     @property
     def name(self) -> str:
-        return ".".join(self.parts)
+        parts = self.category_parts.copy()
+        parts.append(self.stem)
 
-    def doImport(self):
-        is_end = self.name == "__init__.py"
-        title = "Implementation"
-        module_path = f'Executables.list.' + self.getName()
-        if is_end == False:
-            module_path += "." + self.name[:-3]
+        return ".".join(parts)
 
-        module = importlib.import_module(module_path)
-        assert module != None, f"module {module_path} not found"
+    def _import(self):
+        is_end = self.stem == "__init__"
+        title = self.stem
+        path: str = f'Plugins.' + self.name
+
+        module = importlib.import_module(path)
+        assert module != None, f"module {path} not found"
 
         common_object = getattr(module, title, None)
-        assert common_object != None, f"{module_path} > {title} not found"
-
-        if hasattr(module, "locale_keys") == True:
-            common_object.loadKeys(getattr(module, "locale_keys"))
-
-        common_object.docs = common_object.defineMeta()
+        assert common_object != None, f"{path} > {title} not found"
 
         return common_object

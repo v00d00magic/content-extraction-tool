@@ -18,10 +18,10 @@ class PluginsList(Object, Section):
 
     @property
     def section_name(self) -> list:
-        return ["Executables", "Initialization"]
+        return ["Plugins", "Initialization"]
 
     def load(self):
-        self.log("Creating executables list...")
+        self.log("Loading plugins list")
 
         counters = PluginsCounter()
         search_dir: Path = app.cwd.joinpath("Plugins")
@@ -29,37 +29,19 @@ class PluginsList(Object, Section):
 
         for item in plguins: # iterating
             module = None
-            result = PluginWrapper.partsToResult(item)
-            counters["total"] += 1
+            counters.total += 1
 
             try:
-                match(result.verdict):
-                    case ExecutableListResult.VERDICT_MODULE:
-                        module = result.doImport()
+                item.plugin = item._import()
 
-                        app.logger.log(f"Imported module {module.getName()}", section=self.section_name)
-                        counters["success"] +=1
-
-                        match(ExecutableListResult.getType(module)):
-                            case ExecutableListResult.MODULE:
-                                self.items[module.getName()] = module
-                            case ExecutableListResult.SUBMODULE:
-                                app.logger.log(f"Injected module {module.getName()} into {module.main_module.getName()} as submodule", section=self.section_name)
-
-                                self.items[module.getName()] = module
-                                self.items[module.main_module.getName()].addSubmodule(module)
-
-                                counters["submodules"] += 1
-                    case ExecutableListResult.VERDICT_JS:
-                        pass
-
+                counters.success += 1
             except AssertionError as e:
-                app.logger.log(f"AssertionError when importing {result.getName()}: {str(e) }, probaly not an executable", section=self.section_name, kind = LogKind.KIND_ERROR)
+                self.log_error(f"AssertionError when importing {item.name}: {str(e)}, probaly not an executable")
             except Exception as e:
-                counters["errors"] += 1
-                app.logger.log(e, section=self.section_name, prefix=f"Did not imported module {result.getName()}: ", kind = LogKind.KIND_ERROR)
+                counters.errors += 1
+                self.log_error(e, exception_prefix=f"Did not imported module {item.name}: ")
 
-        app.logger.log(f"Found total {counters["total"]} scripts, {counters["success"]} successfully, {counters["submodules"]} submodules, {counters["errors"]} errors", section=self.section_name)
+        self.log(f"Found total {counters.total} objects, {counters.success} successfully, {counters.submodules} submodules, {counters.errors} errors")
 
     def listByClass(self, class_name = None):
         output = []

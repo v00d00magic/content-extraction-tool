@@ -87,9 +87,13 @@ class App(Hookable, Section, Namespace):
             self.initStorage(outer)
             #self.initDB(outer)
 
-            #from Utils.Web.DownloadManager import DownloadManager
+            from Plugins.Media.DownloadManager.DownloadManager import DownloadManager
 
-            #outer.DownloadManager = DownloadManager(max_concurrent_downloads = 2)
+            outer.DownloadManager = DownloadManager(
+                max_concurrent_downloads = outer.Config.get("media.download_manager.max_concurrent_downloads"),
+                max_kbps_speed = outer.Config.get("media.download_manager.max_kbps_speed"),
+                connection_timeout = outer.Config.get("media.download_manager.connection_timeout"),
+            )
 
             outer.Logger.log("Loaded globals", section = self.section_name)
 

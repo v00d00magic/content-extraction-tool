@@ -24,7 +24,7 @@ class Logger(Object, Hookable, Configurable):
             section: str = ["App"], 
             kind: str = "message",
             exception_prefix: str = "",
-            prefix: dict[str, str] = None):
+            prefix: LogPrefix.LogPrefix = None):
 
         write_message = message
         if isinstance(message, BaseException):
@@ -41,10 +41,7 @@ class Logger(Object, Hookable, Configurable):
         )
 
         if prefix != None:
-            _dict["prefix"] = LogPrefix.LogPrefix(
-                name = prefix.get("name"),
-                id = prefix.get("id"),
-            )
+            _dict["prefix"] = prefix
 
         msg = LogMessage.LogMessage(**_dict)
 
