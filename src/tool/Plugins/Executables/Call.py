@@ -50,14 +50,14 @@ class Call(Act, Hookable, Section):
         async def implementation(self, i = {}) -> Response:
             plugin_wrapper = i.get('i')
             assert plugin_wrapper != None, 'plugin not found'
-            executable = plugin_wrapper.plugin
+            executable = plugin_wrapper.plugin()
 
             assert executable.meta.name != self.outer.meta.name, "can't call this (you are calling a method that calls itself)"
 
-            response = None
-            
+            response: Response = None
+
             match (i.get('execution_type')):
-                case 'await':
+                case _:
                     response = await self.outer.execute_as_await(executable, i)
 
             return response
@@ -71,7 +71,7 @@ class Call(Act, Hookable, Section):
     async def execute_as_await(self, executable, i: ArgumentDict = {}) -> Response:
         print(self)
         #self.hooks.trigger("start")
-        self.log(f"Calling {executable.name} execute() with args...")
+        self.log(f"Calling {executable.meta.name} execute() with args...")
 
         return await executable.execute.execute(i)
 
@@ -80,6 +80,7 @@ class Call(Act, Hookable, Section):
         return ["Executables", "ExecutableCall"]
 
     def constructor(self):
+        super().constructor()
         self.id = app.executables.executable_index.getIndex()
 
     class HooksManager(Hookable.HooksManager):

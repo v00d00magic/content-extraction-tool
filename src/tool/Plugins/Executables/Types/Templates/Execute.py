@@ -14,9 +14,9 @@ class Execute(Outer):
         _list = NameDictList([])
 
         for _class in self.outer.mro:
-            if hasattr(_class, 'execute') == True:
-                if hasattr(_class.execute, 'args') == True:
-                    new_arguments = _class.execute.args
+            if hasattr(_class, 'Execute') == True:
+                if hasattr(_class.Execute, 'args') == True:
+                    new_arguments = _class.Execute(None).args
                     if new_arguments == None:
                         continue
 

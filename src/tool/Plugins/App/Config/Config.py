@@ -57,7 +57,6 @@ class Config(Object, Configurable):
 
     def checkFile(self):
         self.path.mkdir(parents=True,exist_ok=True)
-        print(self.file)
         if self.file.exists() == False:
             t = open(self.file, 'w', encoding='utf-8')
             json.dump({}, t)

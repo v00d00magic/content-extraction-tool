@@ -13,6 +13,9 @@ class Text(Representation):
             )
         ])
 
+    class Execute(Representation.Execute):
+        pass
+
     def useAsClass(self, text: str):
         self.variables.get("text").current = text
 

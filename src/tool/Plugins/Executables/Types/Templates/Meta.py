@@ -63,7 +63,5 @@ class Meta(Outer):
         _module = _class.__module__
         _parts = _module.split('.')
         _parts = _parts[1:] # cut off "Plugins."
-        if _parts[-1] == _parts[-2]:
-            return ".".join(_parts[2:-1])
 
         return ".".join(_parts)

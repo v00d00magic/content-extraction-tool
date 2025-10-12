@@ -7,11 +7,9 @@ from pydantic import Field
 class Executable(Object, Namespace):
     self_name: str = "None"
     call: Any = Field(default = None)
-    meta: Any = None
-    variables: Any = None
-    env_variables: Any = None
-    execute: Any = None
-    saver: Any = None
+    meta: Any = Field(default = None)
+    execute: Any = Field(default = None)
+    saver: Any = Field(default = None)
 
     class Meta(Meta.Meta):
         pass
@@ -28,10 +26,10 @@ class Executable(Object, Namespace):
     class EnvVariables(EnvVariables.EnvVariables):
         pass
 
-    def init_subclass(self):
-        self.meta = self.Meta(self)
-        self.variables = self.Variables(self)
-        self.env_variables = self.EnvVariables(self)
+    def init_subclass(cls):
+        cls.meta = cls.Meta(cls)
+        cls.variables = cls.Variables(cls)
+        cls.env_variables = cls.EnvVariables(cls)
 
     def constructor(self):
         self.execute = self.Execute(self)

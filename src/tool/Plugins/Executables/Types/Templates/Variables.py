@@ -14,7 +14,7 @@ class Variables(Outer):
     def all_variables(self) -> List[Argument]:
         items: dict = {}
 
-        for ext in self.outer.__mro__:
+        for ext in self.outer.mro:
             if hasattr(ext, 'variables'):
                 for _item in ext.variables.items.toList():
                     items[_item.name] = _item
