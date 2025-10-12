@@ -1,15 +1,15 @@
 from Plugins.Arguments.Argument import Argument
-from Plugins.Data.JSON.JSON import JSON
 from typing import Any
-from Objects.Object import Object
 from pydantic import Field, computed_field
 
 class ObjectArgument(Argument):
-    object: Any = Field()
+    object: Any = Field(default = None)
 
     def implementation(self, i = {}):
-        lists = []
-        if type(self.value) == list:
-            lists = self.current
-        if type(self.value) == str:
-            is_json = JSON(self.passed_value).isValid()
+        if self.object == None:
+            return self.inputs
+        
+        _item = self.object
+        _item.model_validate(self.inputs)
+
+        return _item(**self.inputs)

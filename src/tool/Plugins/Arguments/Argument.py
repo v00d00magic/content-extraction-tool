@@ -1,7 +1,7 @@
 from Plugins.Documentation.Documentation import Documentation
-from Plugins.Arguments.Assertions import Assertions
+from Plugins.Arguments.Assertions.Assertion import Assertion
 from Objects.Object import Object
-from typing import Any
+from typing import Any, List
 from pydantic import Field, computed_field
 
 class Argument(Object):
@@ -10,12 +10,13 @@ class Argument(Object):
     input_value: str = Field(default=None) # can't find name for this but its about an input value (!). I think it is a string in the most cases
     is_sensitive: bool = Field(default=False)
     docs: Documentation = Field(default=None)
-    assertions: Assertions = Field(default=None)
+    assertions: List[Assertion] = Field(default=[])
 
     auto_apply: bool = Field(default=False)
     current: Any = Field(default=None)
 
-    # This is an abstract method!
+    # This is an abstract method.
+    # I think it should pass self.inputs in i ? i={} as settings will not be used anyway
     def implementation(self, i = {}) -> Any:
         return self.value
 
@@ -39,7 +40,8 @@ class Argument(Object):
         return self.default
 
     def checkAssertions(self):
-        return True
+        for assertion in self.assertions:
+            assert assertion.check(self)
 
     def constructor(self):
         if self.auto_apply == True:

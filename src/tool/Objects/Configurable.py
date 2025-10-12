@@ -1,16 +1,20 @@
-from Plugins.Arguments.ArgumentList import ArgumentList
+from Plugins.Data.NameDictList import NameDictList
 from Objects.classproperty import classproperty
 from App import app
 
 class Configurable:
     @classproperty
-    def options(cls) -> ArgumentList:
+    def options(cls) -> NameDictList:
         pass
 
     @classmethod
     def update(cls):
-        for name, item in cls.options.toDict().items():
+        options = cls.options
+        if options == None:
+            return
+
+        for name, item in options.toDict().items():
             app.settings[name] = item
 
-    def __init_subclass__(cls):
+    def init_subclass(cls):
         cls.update()

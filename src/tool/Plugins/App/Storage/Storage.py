@@ -1,6 +1,6 @@
 from Plugins.App.Storage.StorageItem import StorageItem
 from Objects.Configurable import Configurable
-from Plugins.Arguments.ArgumentList import ArgumentList
+from Plugins.Data.NameDictList import NameDictList
 from Objects.Object import Object
 from Objects.classproperty import classproperty
 from pydantic import Field
@@ -21,10 +21,10 @@ class Storage(Object, Configurable):
         return self.items.get(name)
 
     @classproperty
-    def options(cls) -> ArgumentList:
+    def options(cls) -> NameDictList:
         from Plugins.Arguments.Types.StringArgument import StringArgument
 
-        return ArgumentList([
+        return NameDictList([
             StringArgument(
                 name = "storage.path",
                 default = "?cwd?/storage",

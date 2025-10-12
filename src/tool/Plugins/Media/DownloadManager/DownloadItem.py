@@ -7,6 +7,7 @@ from enum import Enum
 from typing import Type
 import os, time, asyncio, aiohttp
 
+# i think it is dataclass ??
 class DownloadManagerItemStat():
     downloaded: int = 0
     total_size: int = 0

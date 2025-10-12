@@ -1,7 +1,7 @@
-from .Template import Template
+from Objects.Outer import Outer
 from App import app
 
-class Saver(Template):
+class Saver(Outer):
     def ContentUnit(self):
         app.logger.log("Created new ContentUnit", section="Saveable")
 

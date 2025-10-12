@@ -1,106 +1,105 @@
-from Executables.Responses.Response import Response
-from Executables.Responses.ItemsResponse import ItemsResponse
-from Executables.Templates.Acts import Act
-from DB.Models.Content.ContentUnit import ContentUnit
-from Executables.ExecutableCall import ExecutableCall
+from .Types.Executable import Executable
+from .Types.Act import Act
+from Objects.Hookable import Hookable
+from Objects.Section import Section
+from typing import Type
+
+from Plugins.Arguments.Objects.ExecutableArgument import ExecutableArgument
+from Plugins.Arguments.Objects.ValuesArgument import ValuesArgument
+from Plugins.Arguments.Types.StringArgument import StringArgument
+from Plugins.Arguments.Assertions.NotNoneAssertion import NotNoneAssertion
+from Plugins.Data.NameDictList import NameDictList
+from Plugins.Arguments.ArgumentDict import ArgumentDict
+from Plugins.Executables.Response.Response import Response
+
+from pydantic import Field
 from App import app
+import asyncio
 
-locale_keys = {
-    "name": {
-        "en_US": "Link to",
-    }
-}
+class Call(Act, Hookable, Section):
+    id: int = 0
 
-class Implementation(Act):
-    @classmethod
-    def executable_cfg(cls):
-        return ExecutableConfig({
-            'free_args': True
-        })
+    executable_class: Type[Executable] = None
+    args: dict = Field(default = {})
 
-    @classmethod
-    def declare(cls):
-        params = {}
-        params["i"] = ExecutableArgument({
-            "assertion": {
-                "not_null": True,
-                "can_be_executed": True
-            }
-        })
-        params["links"] = ListArgument({
-            "orig": ContentUnitArgument({}),
-            "docs": {
-                "name": Act.key("name"),
-            },
-            "default": []
-        })
-        params["create_internal_collections"] = BooleanArgument({
-            "default": False
-        })
-        params["save_all"] = BooleanArgument({
-            "default": True
-        })
-        params["confirm"] = BooleanArgument({
-            "default": True
-        })
-        params["dump"] = BooleanArgument({
-            "default": False
-        })
-        params["check_requirements"] = BooleanArgument({
-            'default': True,
-        })
+    class Execute(Act.Execute):
+        @property
+        def args(self) -> NameDictList:
+            return NameDictList([
+                ExecutableArgument(
+                    name = 'i',
+                    default = None,
+                    assertions = [
+                        NotNoneAssertion()
+                    ]
+                ),
+                ValuesArgument(
+                    name = "execution_type",
+                    default = "await",
+                    values = [
+                        StringArgument(
+                            name = "await",
+                        ),
+                        StringArgument(
+                            name = "thread",
+                        )
+                    ]
+                )
+            ])
 
-        return params
+        async def implementation(self, i = {}) -> Response:
+            plugin_wrapper = i.get('i')
+            assert plugin_wrapper != None, 'plugin not found'
+            executable = plugin_wrapper.plugin
 
-    async def implementation(self, i = {}):
-        executable = i.get('i')
-        is_save = i.get('save_all')
-        links = i.get('links')
+            assert executable.meta.name != self.outer.meta.name, "can't call this (you are calling a method that calls itself)"
 
-        assert executable.canBeExecuted(), "sorry!"
+            response = None
+            
+            match (i.get('execution_type')):
+                case 'await':
+                    response = await self.outer.execute_as_await(executable, i)
 
-        if i.get("dump") == True:
-            self.call.dump()
+            return response
 
-        if i.get("check_requirements") == True:
-            assert executable.isModulesInstalled(), "requirements not satisfied"
+    def run_threaded(self):
+        asyncio.get_event_loop().run_in_executor(
+            None, 
+            lambda: asyncio.run(self.execute_as_await()) 
+        )
 
-        if len(executable.confirmations) > 0:
-            if int(i.get("confirm")) == 1 == False:
-                res = await executable.confirmations[0]().execute_with_validation(i)
-                _out = {
-                    "preferred_receivation": None,
-                    "args": {},
-                    "data": {},
-                }
-                _out["data"] = res.get("data")
-                for item_name, item in res.get("args").items():
-                    _out["args"][item_name] = item.getStructure()
+    async def execute_as_await(self, executable, i: ArgumentDict = {}) -> Response:
+        print(self)
+        #self.hooks.trigger("start")
+        self.log(f"Calling {executable.name} execute() with args...")
 
-                return _out
+        return await executable.execute.execute(i)
 
-        link_to = []
-        if links != None and len(links) > 0:
-            for link in ContentUnit.ids(links):
-                link_to.append(link)
+    @property
+    def section_name(self) -> list:
+        return ["Executables", "ExecutableCall"]
 
-        this_call = ExecutableCall(executable=executable)
-        this_call.passArgs(i.__dict__(exclude=self.__class__.declare().keys()))
+    def constructor(self):
+        self.id = app.executables.executable_index.getIndex()
 
-        result = await this_call.run_asyncely()
-        for link in this_call.getCollections():
-            link_to.append(link)
+    class HooksManager(Hookable.HooksManager):
+        @property
+        def events(self) -> list:
+            return ["start", "progress"]
 
-        if isinstance(result, ItemsResponse) == True:
-            if is_save == True:
-                items = result.items()
+    '''
+    def dump(self):
+        from Plugins.Executables.Dump import Dump
 
-                app.logger.log(f"Moving {len(items)} to common db", section=["Executables", "DBMovement"])
+        dump = Dump()
+        dump.executable = self.executable_class
 
-                for item in items:
-                    app.logger.log(f"Moving {item.name_db_id} to common db", section=["Executables", "DBMovement"])
+        _data = {}
+        for key, val in self.args.items():
+            _data[key] = str(val)
 
-                    item.changeWrapper(app.db_connection.db)
-                    #item.linkTo(link_to)
+        dump.data = JSON(_data).dump()
+        dump.save()
 
-        return result
+        self.log(f"Dumped {self.executable.getName()}, id {dump.id}", section = self.section_name)
+    '''

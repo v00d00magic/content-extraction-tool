@@ -2,7 +2,7 @@ from pathlib import Path
 from Objects.Object import Object
 from Objects.Configurable import Configurable
 from Plugins.Arguments.Comparer import Comparer
-from Plugins.Arguments.ArgumentList import ArgumentList
+from Plugins.Data.NameDictList import NameDictList
 from Objects.classproperty import classproperty
 from pydantic import Field, computed_field
 import json
@@ -14,6 +14,9 @@ class Config(Object, Configurable):
         raise_on_assertions = False,
         default_on_none = True
     )
+
+    def constructor(self):
+        self.checkFile()
 
     @computed_field
     @property
@@ -27,10 +30,10 @@ class Config(Object, Configurable):
             pass
 
     @classproperty
-    def options(cls) -> ArgumentList:
+    def options(cls) -> NameDictList:
         from Plugins.Arguments.Types.BooleanArgument import BooleanArgument
 
-        return ArgumentList([
+        return NameDictList([
             BooleanArgument(
                 name = "config.external_editing.allow",
                 default = True
@@ -54,6 +57,7 @@ class Config(Object, Configurable):
 
     def checkFile(self):
         self.path.mkdir(parents=True,exist_ok=True)
+        print(self.file)
         if self.file.exists() == False:
             t = open(self.file, 'w', encoding='utf-8')
             json.dump({}, t)

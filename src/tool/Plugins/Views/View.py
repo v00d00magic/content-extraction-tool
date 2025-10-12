@@ -36,14 +36,9 @@ class View(Object):
 
         async def call(self, raw_arguments):
             from Plugins.Executables.Call import Call
-            from Executables.ExecutableCall import ExecutableCall
 
-            assert "i" in raw_arguments, "i not passed"
-
-            call = ExecutableCall(executable=Execute)
-            call.passArgs(raw_arguments)
-
-            output = await call.run_asyncely()
+            call = Call()
+            output = await call.execute.execute(raw_arguments)
 
             return output
 
@@ -54,11 +49,12 @@ class View(Object):
         self.setAsCommon()
         self.app_wrapper.app.consturctor()
         self.runner = self.Runner(self)
+        self.app_wrapper.app.Logger.log("Loaded view")
 
     def setAsCommon(self):
         from App import app
 
         app.setView(self)
 
-    def loopSelf(self):
+    def loopSelfAndRunExecute(self):
         self.app_wrapper.run_until_complete(self.runner.wrapper(self.app_wrapper.app.argv))

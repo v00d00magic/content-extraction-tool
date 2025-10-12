@@ -1,10 +1,10 @@
-from .Template import Template
+from Objects.Outer import Outer
 from Plugins.Arguments.ApplyArgumentList import ApplyArgumentList
 from Plugins.Arguments.Argument import Argument
 from typing import List, Any
 import functools
 
-class Variables(Template):
+class Variables(Outer):
     items: ApplyArgumentList = ApplyArgumentList([])
 
     def get(self, name) -> Any:

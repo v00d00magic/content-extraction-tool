@@ -7,15 +7,24 @@ class ListArgument(Argument):
     total_count: int = Field(default=0)
 
     def implementation(self, i = {}):
-        lists = []
-        value = self.inputs
+        results: list = []
+        value: list = self.inputs
 
-        if type(value) == list:
-            lists = value
         if type(value) == str:
-            is_json = JSON(value).isValid()
+            _json = JSON(value)
+            if _json.isValid() == True:
+                value = _json.getSelf()
 
-        return value
+        if self.orig == None:
+            return value
+
+        for item in value:
+            _orig = self.orig
+            _orig.setInput(item)
+
+            results.append(_orig.getValue())
+
+        return results
 
     def getCount(self):
         return len(self.current)

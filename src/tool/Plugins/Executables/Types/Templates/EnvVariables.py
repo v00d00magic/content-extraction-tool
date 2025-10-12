@@ -1,9 +1,9 @@
-from .Template import Template
-from Plugins.Arguments.ArgumentList import ArgumentList
+from Objects.Outer import Outer
+from Plugins.Data.NameDictList import NameDictList
 from typing import Any
 
-class EnvVariables(Template):
-    items: ArgumentList = ArgumentList([])
+class EnvVariables(Outer):
+    items: NameDictList = NameDictList([])
 
     def get(self, name):
         return self.items.get(name)

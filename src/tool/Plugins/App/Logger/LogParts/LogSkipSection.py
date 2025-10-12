@@ -6,7 +6,6 @@ from pydantic import Field
 class LogSkipSection(Object):
     name: list = Field()
     wildcard: bool = Field(default=False)
-    wildcard_all: bool = Field(default=False)
     inactive: bool = Field(default=False)
     kinda: list = Field(default=[])
     where: list = Field(default=["console"])
@@ -21,15 +20,14 @@ class LogSkipSection(Object):
             for _section in section.section:
                 if _section in self.name:
                     section_check = True
-        elif self.wildcard_all == True:
-            section_check = True
+                    break
         else:
-            section_check = self.name == section.section
+            section_check = "!".join(self.name) ==  "!".join(section.section)
 
         if section_check == False:
             return False
 
-        if kind != None and self.kinda != None:
-            return kind.kind in self.kinda
+        if kind != None and self.kinda != None and len(self.kinda) > 0:
+            return kind.kind.value in self.kinda
 
         return True

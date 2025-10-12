@@ -1,15 +1,32 @@
+from Objects.Object import Object
+from pydantic import Field
 from Objects.Increment import Increment
 from Objects.Namespace import Namespace
 from Objects.Hookable import Hookable
 from Objects.Section import Section
 from pathlib import Path
+from typing import Any
 import asyncio, sys
 import os
 
 from Plugins.Data.Text.Text import Text
 
-class App(Hookable, Section, Namespace):
-    events: list = ["progress"]
+class App(Object, Hookable, Section, Namespace):
+    context_name: str = Field(default = 'none')
+    cwd: str = None
+    src: str = None
+    loop: Any = None
+
+    Config: Any = None
+    Env: Any = None
+    Storage: Any = None
+    Logger: Any = None
+    Storage: Any = None
+    DownloadManager: Any = None
+
+    _globals: Any = None
+    executables: Any = None
+    argv: dict = None
 
     @property
     def section_name(self) -> list:
@@ -42,12 +59,13 @@ class App(Hookable, Section, Namespace):
             )
             outer.Config.comparer.compare = outer.settings
             outer.Env = Env.Env(
-                path = outer.cwd.parent
+                path = outer.cwd.parent.joinpath("storage").joinpath("env"),
+                name = "env.json"
             )
 
         def initLogger(self, outer):
             from Plugins.App.Logger import Logger
-            from Plugins.App.Logger.LogParts.LogLimiter import LogLimiter
+            from Plugins.App.Logger.LogLimiter import LogLimiter
 
             outer.Logger = Logger.Logger(
                 skip_file = outer.Config.get("logger.output.to_file"),
@@ -97,11 +115,16 @@ class App(Hookable, Section, Namespace):
 
             outer.Logger.log("Loaded globals", section = self.section_name)
 
+    class HooksManager(Hookable.HooksManager):
+        @property
+        def events(self) -> list:
+            return ["progress"]
+
     def consturctor(self):
         self.cwd = Path(os.getcwd())
         self.src = self.cwd.parent
         self.loop = asyncio.get_event_loop()
-        self.globals = self.Globals(self)
+        self._globals = self.Globals(self)
         self.executables = self.ExecutablesTable(self)
         self.argv = self._parse_argv()
 

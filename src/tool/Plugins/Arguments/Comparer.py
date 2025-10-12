@@ -1,31 +1,33 @@
 from Objects.Object import Object
-from Plugins.Arguments.ArgumentList import ArgumentList
+from Plugins.Data.NameDictList import NameDictList
 from Plugins.Arguments.ArgumentDict import ArgumentDict
 from pydantic import Field
 from App import app
 
 class Comparer(Object):
-    compare: ArgumentDict = Field(default=None)
-    values: dict = Field(default={})
+    compare: NameDictList = Field(default=None)
+    values: dict | ArgumentDict = Field(default={})
     raise_on_assertions: bool = Field(default=False)
     missing_args_inclusion: bool = Field(default=False)
     default_on_none: bool = Field(default=True)
     none_values_skipping: bool = Field(default=True)
 
-    def toDict(self):
+    def toDict(self) -> ArgumentDict:
         if self.compare == None:
             return self.values
 
         table = ArgumentDict()
-        iteration_options = {}
-        if getattr(self.args, "__dict__", None) != None:
-            iteration_options = self.args.__dict__()
+        names = []
+        if getattr(self.values, "toDict", None) != None:
+            names = self.values.toDict()
         else:
-            iteration_options = dict(self.args)
+            for name, val in self.values.items():
+                names.append(name)
 
-        iteration_options.update(self.compare)
+        for name in self.compare.toNames():
+            names.append(name)
 
-        for param_name, param_item in iteration_options.items():
+        for param_name in names:
             try:
                 app.logger.log(f"ArgsComparer: getting name={param_name}", section=["Comparer"])
             except:
@@ -37,7 +39,7 @@ class Comparer(Object):
 
             table.add(param_name, got_value)
 
-        return
+        return table
 
     def byName(self, name, check_assertions = True):
         inputs = self.values.get(name)
@@ -64,6 +66,7 @@ class Comparer(Object):
 
         if check_assertions == True:
             try:
+                argument.current = value
                 argument.checkAssertions()
             except Exception as assertion:
                 try:

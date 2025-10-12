@@ -1,6 +1,4 @@
-from Executables.Templates.Executable import Executable
-from Executables.Responses.ItemsResponse import ItemsResponse
-from Executables.Variables.ResultsVariable import ResultsVariable
+from Plugins.Executables.Types.Executable import Executable
 
 class Extractor(Executable):
     self_name: str = "Extractor"

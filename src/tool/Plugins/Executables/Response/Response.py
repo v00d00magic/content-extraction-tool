@@ -1,4 +1,4 @@
 from Objects.Object import Object
 
-class Assertions(Object):
+class Response(Object):
     pass

@@ -1,4 +1,4 @@
-from Executables.Templates.Executable import Executable
+from .Executable import Executable
 
 class Act(Executable):
-    self_name = "Act"
+    self_name: str = "Act"

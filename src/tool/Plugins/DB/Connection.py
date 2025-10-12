@@ -2,7 +2,7 @@ from Objects.Object import Object
 from Objects.Configurable import Configurable
 
 from Objects.classproperty import classproperty
-from Plugins.Arguments.ArgumentList import ArgumentList
+from Plugins.Data.NameDictList import NameDictList
 from .ConnectionConfig import ConnectionConfig
 from .ConnectionWrapper import ConnectionWrapper
 from pydantic import Field
@@ -25,10 +25,10 @@ class Connection(Object, Configurable):
         self.instance_db.create([Stat, ServiceInstance, ArgumentsDump])
 
     @classproperty
-    def options(cls) -> ArgumentList:
+    def options(cls) -> NameDictList:
         from Plugins.Arguments.Objects.ObjectArgument import ObjectArgument
 
-        return ArgumentList([
+        return NameDictList([
             ObjectArgument(
                 name = "db.temp.connection",
                 object = ConnectionConfig,

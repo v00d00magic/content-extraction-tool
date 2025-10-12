@@ -8,7 +8,7 @@ from Objects.Configurable import Configurable
 from Objects.Increment import Increment
 from Objects.classproperty import classproperty
 
-from Plugins.Arguments.ArgumentList import ArgumentList
+from Plugins.Data.NameDictList import NameDictList
 from Plugins.Web.Http.Headers import Headers
 from .DownloadManagerItems import DownloadManagerItems
 from .DownloadItem import DownloadItem
@@ -65,11 +65,11 @@ class DownloadManager(Object, Section, Hookable, Configurable):
         return ["DownloadManager"]
 
     @classproperty
-    def options(cls) -> ArgumentList:
+    def options(cls) -> NameDictList:
         from Plugins.Arguments.Types.StringArgument import StringArgument
         from Plugins.Arguments.Types.IntArgument import IntArgument
 
-        return ArgumentList([
+        return NameDictList([
             IntArgument(
                 name = "media.download_manager.max_concurrent_downloads",
                 default = 3,
