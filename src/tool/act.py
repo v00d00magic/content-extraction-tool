@@ -1,5 +1,4 @@
-from Views.CLI import CLI
+from Plugins.Views.CLI.CLI import CLI
 
-cli = CLI()
-
-cli.app.loop.run_until_complete(cli.call())
+cli = CLI(name="cli")
+cli.loopSelfAndRunExecute()

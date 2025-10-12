@@ -1,11 +1,14 @@
-class AppWrapper:
+class ViewWrapper:
     def __init__(self):
-        self._app = None
+        self._view = None
 
-    def setApp(self, app):
-        self._app = app
+    def setView(self, view):
+        self._view = view
 
     def __getattr__(self, name):
-        return getattr(self._app, name, None)
+        if name == "settings":
+            return self._view.app_wrapper.app.settings
 
-app = AppWrapper()
+        return getattr(self._view.app_wrapper.app, name, None)
+
+app = ViewWrapper()
