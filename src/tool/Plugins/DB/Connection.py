@@ -1,7 +1,7 @@
 from Objects.Object import Object
 from Objects.Configurable import Configurable
 
-from Objects.classproperty import classproperty
+from Objects.ClassProperty import classproperty
 from Plugins.Data.NameDictList import NameDictList
 from .ConnectionConfig import ConnectionConfig
 from .ConnectionWrapper import ConnectionWrapper

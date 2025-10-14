@@ -6,7 +6,7 @@ from Objects.Object import Object
 from Objects.Section import Section
 from Objects.Configurable import Configurable
 from Objects.Increment import Increment
-from Objects.classproperty import classproperty
+from Objects.ClassProperty import classproperty
 
 from Plugins.Data.NameDictList import NameDictList
 from Plugins.Web.Http.Headers import Headers

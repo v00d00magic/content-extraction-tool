@@ -12,8 +12,8 @@ class JSON(Representation):
             )
         ])
 
-    def useAsClass(self, text: str):
-        self.variables.get("json").current = text
+    def useAsClass(self, data: dict):
+        self.variables.get("json").current = data
 
     def getSelf(self) -> str:
         return self.variables.items.get("json").current
@@ -23,18 +23,18 @@ class JSON(Representation):
 
         return self.getSelf()
 
-    def parse(self, data: dict):
-        if type(data) == str:
-            return json.loads(data)
+    def parse(self) -> dict:
+        if type(self.getSelf()) == str:
+            return self.setSelf(json.loads(self.getSelf()))
 
-        return data
+        return self.getSelf()
 
-    def dump(self, data: dict, indent = None):
-        return json.dumps(data, ensure_ascii = False, indent = indent)
+    def dump(self, indent = None) -> str:
+        return json.dumps(self.getSelf(), ensure_ascii = False, indent = indent)
 
-    def isValid(self, data: dict):
+    def isValid(self):
         try:
-            return data != None and type(data) != int and type(data) != str
+            return self.getSelf() != None and type(self.getSelf()) != int and type(self.getSelf()) != str
         except json.JSONDecodeError:
             return False
         except TypeError:

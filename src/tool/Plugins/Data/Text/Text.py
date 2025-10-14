@@ -1,6 +1,9 @@
 from Plugins.Executables.Types.Representation import Representation
 from Plugins.Arguments.Types.StringArgument import StringArgument
 from Plugins.Arguments.ApplyArgumentList import ApplyArgumentList
+
+from Plugins.Executables.Response.Response import Response
+
 from App import app
 import re
 
@@ -14,7 +17,8 @@ class Text(Representation):
         ])
 
     class Execute(Representation.Execute):
-        pass
+        async def implementation(self, i = {}) -> Response:
+            return Response(data = {"text": ":)"})
 
     def useAsClass(self, text: str):
         self.variables.get("text").current = text

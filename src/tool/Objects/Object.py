@@ -1,5 +1,5 @@
 from pydantic import BaseModel, computed_field
-from .classproperty import classproperty
+from .ClassProperty import classproperty
 
 class Object(BaseModel):
     # we can't use __init__ because of fields initialization, so we creating second constructor

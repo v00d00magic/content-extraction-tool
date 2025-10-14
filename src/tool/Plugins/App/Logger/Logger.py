@@ -4,7 +4,7 @@ from Plugins.Data.NameDictList import NameDictList
 
 from Objects.Configurable import Configurable
 from Objects.Hookable import Hookable
-from Objects.classproperty import classproperty
+from Objects.ClassProperty import classproperty
 from datetime import datetime
 
 from pydantic import Field

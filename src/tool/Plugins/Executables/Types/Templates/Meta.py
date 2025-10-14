@@ -1,5 +1,5 @@
 from Objects.Outer import Outer
-from Objects.classproperty import classproperty
+from Objects.ClassProperty import classproperty
 from importlib.metadata import distributions
 
 class Meta(Outer):

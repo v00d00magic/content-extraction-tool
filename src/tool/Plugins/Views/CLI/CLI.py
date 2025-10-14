@@ -14,4 +14,7 @@ class CLI(View):
             if 'silent' not in raw_arguments:
                 from Plugins.Data.JSON.JSON import JSON
 
-                print(JSON(output.display()).dump(indent=4))
+                _json = JSON()
+                _json.useAsClass(data = output.toDict())
+
+                print(_json.dump(indent=4))

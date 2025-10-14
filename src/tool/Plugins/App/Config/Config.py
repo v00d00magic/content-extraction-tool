@@ -3,7 +3,7 @@ from Objects.Object import Object
 from Objects.Configurable import Configurable
 from Plugins.Arguments.Comparer import Comparer
 from Plugins.Data.NameDictList import NameDictList
-from Objects.classproperty import classproperty
+from Objects.ClassProperty import classproperty
 from pydantic import Field, computed_field
 import json
 

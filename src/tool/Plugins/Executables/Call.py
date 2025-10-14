@@ -60,6 +60,8 @@ class Call(Act, Hookable, Section):
                 case _:
                     response = await self.outer.execute_as_await(executable, i)
 
+            assert response != None, "no response"
+
             return response
 
     def run_threaded(self):
@@ -69,8 +71,7 @@ class Call(Act, Hookable, Section):
         )
 
     async def execute_as_await(self, executable, i: ArgumentDict = {}) -> Response:
-        print(self)
-        #self.hooks.trigger("start")
+        self.hooks.trigger("start")
         self.log(f"Calling {executable.meta.name} execute() with args...")
 
         return await executable.execute.execute(i)

@@ -1,5 +1,5 @@
 from Plugins.Data.NameDictList import NameDictList
-from Objects.classproperty import classproperty
+from Objects.ClassProperty import classproperty
 from App import app
 
 class Configurable:

@@ -2,7 +2,7 @@ from Plugins.App.Storage.StorageItem import StorageItem
 from Objects.Configurable import Configurable
 from Plugins.Data.NameDictList import NameDictList
 from Objects.Object import Object
-from Objects.classproperty import classproperty
+from Objects.ClassProperty import classproperty
 from pydantic import Field
 from pathlib import Path
 
