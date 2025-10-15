@@ -36,18 +36,25 @@ class TextExtractor(Extractor):
         async def implementation(self, i = {}) -> ModelsResponse:
             text = i.get('text')
             name = text[0:i.get('title_cut')]
-            res = ContentUnit(
+            res = Text.ContentUnit(
                 original_name = name,
-                content = Text.Content(
+                content = Text.ContentUnit.ContentData(
                     text = text
+                ),
+                source = Text.ContentUnit.Source(
+                    types = "input",
+                    content = "text"
                 )
             )
 
             return ModelsResponse(data = [res])
 
 class Text(Representation):
-    class Content(Representation.Content):
-        text: str
+    class ContentUnit(Representation.ContentUnit):
+        class ContentData(Representation.ContentUnit.ContentData):
+            text: str
+
+        content: ContentData
 
     class Submodules(Representation.Submodules):
         items: list = [TextExtractor]

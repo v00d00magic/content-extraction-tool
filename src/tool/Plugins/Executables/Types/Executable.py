@@ -7,8 +7,11 @@ from pydantic import Field
 
 class Executable(Object, Namespace, Section):
     self_name: ClassVar[str] = "None"
-    call: Any = Field(default = None)
-    meta: Any = Field(default = None)
+    call: ClassVar[Any] = Field(default = None)
+    meta: ClassVar[Any] = Field(default = None)
+    submodules: ClassVar[Any] = Field(default = None)
+    variables: ClassVar[Any] = Field(default = None)
+    env_variables: ClassVar[Any] = Field(default = None)
     execute: Any = Field(default = None)
     saver: Any = Field(default = None)
 
