@@ -12,6 +12,9 @@ class Object(BaseModel):
     def constructor(self):
         pass
 
+    def toJson(self):
+        return self.model_dump(mode='json')
+
     @classproperty
     def mro(cls) -> list:
         return cls.__mro__

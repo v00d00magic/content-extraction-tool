@@ -65,3 +65,7 @@ class Meta(Outer):
         _parts = _parts[1:] # cut off "Plugins."
 
         return ".".join(_parts)
+
+    @property
+    def class_name(self):
+        return self.name + "." + self.outer.__name__

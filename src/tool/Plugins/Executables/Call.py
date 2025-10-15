@@ -22,7 +22,11 @@ class Call(Act, Hookable, Section):
     executable_class: Type[Executable] = None
     args: dict = Field(default = {})
 
-    class Execute(Act.Execute):
+    class Arguments(Act.Arguments):
+        @property
+        def do_m_a_i(self) -> bool:
+            return True
+
         @property
         def args(self) -> NameDictList:
             return NameDictList([
@@ -47,6 +51,7 @@ class Call(Act, Hookable, Section):
                 )
             ])
 
+    class Execute(Act.Execute):
         async def implementation(self, i = {}) -> Response:
             plugin_wrapper = i.get('i')
             assert plugin_wrapper != None, 'plugin not found'

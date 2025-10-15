@@ -1,13 +1,57 @@
 from Plugins.Executables.Types.Representation import Representation
+from Plugins.Executables.Types.Extractor import Extractor
 from Plugins.Arguments.Types.StringArgument import StringArgument
 from Plugins.Arguments.ApplyArgumentList import ApplyArgumentList
 
 from Plugins.Executables.Response.Response import Response
+from Plugins.Executables.Response.ModelsResponse import ModelsResponse
+from Plugins.DB.Content.ContentUnit import ContentUnit
+
+from Plugins.Data.NameDictList import NameDictList
+from Plugins.Arguments.Types.StringArgument import StringArgument
+from Plugins.Arguments.Types.IntArgument import IntArgument
+from Plugins.Arguments.Assertions.NotNoneAssertion import NotNoneAssertion
 
 from App import app
 import re
 
+class TextExtractor(Extractor):
+    class Arguments(Extractor.Arguments):
+        @property
+        def args(self) -> NameDictList:
+            return NameDictList([
+                StringArgument(
+                    name = "text",
+                    assertions = [
+                        NotNoneAssertion()
+                    ]
+                ),
+                IntArgument(
+                    name = "title_cut",
+                    default = 100
+                )
+            ])
+
+    class Execute(Extractor.Execute):
+        async def implementation(self, i = {}) -> ModelsResponse:
+            text = i.get('text')
+            name = text[0:i.get('title_cut')]
+            res = ContentUnit(
+                original_name = name,
+                content = Text.Content(
+                    text = text
+                )
+            )
+
+            return ModelsResponse(data = [res])
+
 class Text(Representation):
+    class Content(Representation.Content):
+        text: str
+
+    class Submodules(Representation.Submodules):
+        items: list = [TextExtractor]
+
     class Variables(Representation.Variables):
         items = ApplyArgumentList([
             StringArgument(
@@ -15,10 +59,6 @@ class Text(Representation):
                 default = ""
             )
         ])
-
-    class Execute(Representation.Execute):
-        async def implementation(self, i = {}) -> Response:
-            return Response(data = {"text": ":)"})
 
     def useAsClass(self, text: str):
         self.variables.get("text").current = text

@@ -1,126 +1,59 @@
 from .Executable import Executable
-from typing import Any
-
-class RepresentationMeta(type):
-    def __init__(cls, name, bases, attrs):
-        if not name.startswith('_') and bases != (object,):
-            cls._build_submodules()
-        super().__init__(name, bases, attrs)
+from Plugins.Executables.Response.Response import Response
+from Plugins.DB.Content.Items.Content import Content
+from Plugins.Data.NameDictList import NameDictList
+from Plugins.Arguments.Comparer import Comparer
+from typing import ClassVar
+from pydantic import Field
 
 class Representation(Executable):
-    __metaclass__ = RepresentationMeta
-    self_name: str = "Representation"
+    self_name: ClassVar[str] = "Representation"
 
-    def useAsClass(self) -> None:
-        '''
-        if you want to use this class not only in ui (view), but at code
-        '''
+    class Content(Content):
         pass
 
-    def getSelf(self):
-        '''
-        if you have used "useAtClass()" and want to get result
-        '''
-        return None
+    class Arguments(Executable.Arguments):
+        @property
+        def args(self) -> NameDictList:
+            _dict = NameDictList(items = [])
 
-    def setSelf(self, new: Any):
-        # code with setting self
-        
-        return self.getSelf()
+            for item in self.outer.submodules.get(["Extractor", "Receivation"]):
+                for arg in item.arguments.args.toList():
+                    _dict.append(arg)
 
-    @classmethod
-    def doDefaultAppending(cls):
-        return False
+            return _dict
 
-    @classmethod
-    def outerList(cls):
-        return []
+    class Execute(Executable.Execute):
+        async def implementation(self, i) -> Response:
+            '''
+            Overrides the default Executable.Execute "implementation()" and allows for automatic extractor choosing
+            You should not override this too, it's better to create single extractor
+            '''
 
-    @classmethod
-    def declareRecursive(cls):
-        _extractors_args = cls.sumArguments(cls.receivations)
+            extractors = []
+            for submodule in self.outer.submodules.get(type_in=["Extractor", "Receivation"]):
+                extractors.append(submodule)
 
-        _fnl = _extractors_args
-        _fnl.update(super().declareRecursive())
+            extractor = self._getSuitableExtractor(extractors, i)
+            assert extractor != None, "can't find suitable extractor"
 
-        return _fnl
+            extract = extractor()
+            self.log(f"Using extractor: {extract.meta.class_name}")
 
-    @classmethod
-    def sumArguments(cls, extractors):
-        _sum = {}
-        for extractor_item in extractors:
-            rec = extractor_item.declareRecursive()
-            for name, item in rec.items():
-                _sum[name] = item
+            return await extract.execute.execute(i)
 
-        return _sum
+        def _getSuitableExtractor(self, items: list, values: dict):
+            #if len(items) == 1:
+            #    return items[0]
+            # ^^^ Not the best code practics
 
-    @classmethod
-    def divideArguments(cls, extractors):
-        _sum = {}
-        for extractor_item in extractors:
-            _sum[extractor_item.getName()] = extractor_item.declareRecursive()
+            for item in items:
+                decl = Comparer(compare = item.arguments.recursive_args, values = values)
 
-        return _sum
+                if decl.diff():
+                    return item
 
-    @classmethod
-    def findSuitableExtractor(cls, args):
-        if getattr(cls, "singleExtractor", None) != None:
-            return cls.singleExtractor()
+            return None
 
-        if getattr(cls, "extractorWheel", None) != None:
-            return cls.extractorWheel(args)
-
-        if len(cls.receivations) == 1:
-            return cls.receivations[0]
-
-        # dumb way
-        # Checking all the recieve classes: if it has similar arguments, returning it
-        for item in cls.receivations:
-            decl = item.comparerShortcut(None, args)
-
-            if decl.diff():
-                return item
-
-    async def getOptimalStrategy(self, i: dict = {}):
-        strategy = self.findSuitableExtractor(i)
-
-        assert strategy != None, "cant find correct extractor"
-
-        strategy_class = ExecutableCall(None, strategy)
-        strategy_class.executable.setOuter(self.__class__)
-
-        return strategy_class
-
-    def variable(self, name):
-        return self.strategy.executable.variable(name).get()
-
-    def getResult(self):
-        return self.variable("items")
-
-    async def execute(self, i: dict = {}):
-        if hasattr(self, "beforeExecute") == True:
-            self.beforeExecute(i)
-
-        if getattr(self, "implementation", None) != None:
-            return await self.implementation(i)
-
-        self.strategy = await self.getOptimalStrategy(i)
-        compares = self.strategy.executable.comparerShortcut(None, i)
-
-        if getattr(self.strategy, "beforeExecute", None) != None:
-            self.strategy.beforeExecute(compares.dict())
-
-        response = await self.strategy.executable.execute(compares.dict())
-        result = self.getResult()
-
-        return ItemsResponse(result)
-
-    class Source():
-        source = {
-            "type": "none",
-            "content": "str"
-        }
-
-    class Content():
-        content = {}
+        def _getOptimalStrategy(self):
+            pass

@@ -3,4 +3,4 @@ from ..Argument import Argument
 
 class NotNoneAssertion(Assertion):
     def check(self, argument: Argument):
-        return argument.current != None
+        assert argument.current != None, f"{argument.name} not passed"

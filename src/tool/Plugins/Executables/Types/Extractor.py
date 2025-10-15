@@ -1,14 +1,5 @@
 from Plugins.Executables.Types.Executable import Executable
+from typing import ClassVar
 
 class Extractor(Executable):
-    self_name: str = "Extractor"
-
-    def getResult(self):
-        return ItemsResponse(self.variable("items").get())
-
-    def defineVariables(self):
-        variables = {}
-        variables["items"] = ResultsVariable()
-        variables["collections"] = ResultsVariable()
-
-        return variables
+    self_name: ClassVar[str] = "Extractor"

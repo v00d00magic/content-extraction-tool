@@ -18,6 +18,13 @@ class ArgumentDict(Object):
         else:
             return _out
 
+    def toNames(self) -> list:
+        items = []
+        for name, item in self.items.items():
+            items.append(name)
+        
+        return items
+
     def toDict(self, exclude: list = []):
         _items = {}
         for name, item in self.items.items():

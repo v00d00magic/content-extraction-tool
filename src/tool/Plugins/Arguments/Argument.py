@@ -41,7 +41,7 @@ class Argument(Object):
 
     def checkAssertions(self):
         for assertion in self.assertions:
-            assert assertion.check(self)
+            assertion.check(self)
 
     def constructor(self):
         if self.auto_apply == True:

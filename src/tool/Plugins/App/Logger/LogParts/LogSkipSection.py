@@ -17,10 +17,7 @@ class LogSkipSection(Object):
             return False
 
         if self.wildcard == True:
-            for _section in section.section:
-                if _section in self.name:
-                    section_check = True
-                    break
+            section_check = "!".join(section.section).startswith("!".join(self.name))
         else:
             section_check = "!".join(self.name) ==  "!".join(section.section)
 

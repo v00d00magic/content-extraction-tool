@@ -1,30 +1,9 @@
 from Objects.Outer import Outer
 from Plugins.Executables.Response.Response import Response
-from Plugins.Data.NameDictList import NameDictList
 from Plugins.Arguments.ArgumentDict import ArgumentDict
-from Plugins.Arguments.Comparer import Comparer
+from Objects.Section import Section
 
-class Execute(Outer):
-    @property
-    def args(self) -> NameDictList:
-        return None
-
-    @property
-    def recursive_args(self) -> NameDictList:
-        _list = NameDictList([])
-
-        for _class in self.outer.mro:
-            if hasattr(_class, 'Execute') == True:
-                if hasattr(_class.Execute, 'args') == True:
-                    new_arguments = _class.Execute(None).args
-                    if new_arguments == None:
-                        continue
-
-                    for ag in new_arguments.items:
-                        _list.append(ag)
-
-        return _list
-
+class Execute(Outer, Section):
     async def implementation(self, i: ArgumentDict) -> Response:
         pass
 
@@ -34,20 +13,16 @@ class Execute(Outer):
     async def after(self, i: ArgumentDict) -> None:
         pass
 
-    async def execute(self, i: dict, check_arguments: bool = True) -> Response:
+    async def execute(self, i: dict, check_arguments: bool = True, raise_on_assertions: bool = True) -> Response:
         '''
         Internal method. Calls module-defined implementation() and returns what it returns
         '''
 
-        passing = None
-        if check_arguments == True:
-            _c = Comparer(
-                compare = self.recursive_args,
-                values = i
-            )
-            passing = _c.toDict()
-        else:
-            passing = ArgumentDict(items = i)
+        passing = self.outer.arguments.get(
+            check_arguments = check_arguments,
+            i = i,
+            raise_on_assertions = raise_on_assertions,
+        )
 
         await self.before(passing)
 
@@ -56,3 +31,7 @@ class Execute(Outer):
         await self.after(passing)
 
         return response
+
+    @property
+    def section_name(self) -> list:
+        return self.outer.section_name
