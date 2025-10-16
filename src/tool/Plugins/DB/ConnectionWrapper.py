@@ -6,3 +6,10 @@ from pydantic import Field
 class ConnectionWrapper(Object):
     name: str = Field()
     db: Any = Field()
+
+    def create(self, items: list):
+        for item in items:
+            item._meta.database = self.db
+            item._meta.table_name = item.table_name
+
+        self.db.create_tables(items)

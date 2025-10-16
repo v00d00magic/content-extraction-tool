@@ -46,6 +46,7 @@ class TextExtractor(Extractor):
                     content = "text"
                 )
             )
+            res.flush()
 
             return ModelsResponse(data = [res])
 

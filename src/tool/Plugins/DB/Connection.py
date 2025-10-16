@@ -13,16 +13,15 @@ class Connection(Object, Configurable):
     instance_db: ConnectionWrapper = Field()
 
     def createTables(self):
-        from DB.Models.Content.ContentUnit import ContentUnit
-        from DB.Links.ContentUnitRelation import ContentUnitRelation
-        from DB.Models.Instances.Stat import Stat
-        from DB.Models.Content.StorageUnit import StorageUnit
-        from DB.Models.Instances.ServiceInstance import ServiceInstance
-        from DB.Models.Instances.ArgumentsDump import ArgumentsDump
+        from DB.Models.ContentUnit import ContentUnit
+        from DB.Models.ContentUnitRelation import ContentUnitRelation
+        #from DB.Models.Instances.Stat import Stat
+        #from DB.Models.Instances.ServiceInstance import ServiceInstance
+        from DB.Models.ArgumentsDump import ArgumentsDump
 
-        self.db.create([ContentUnitRelation, ContentUnit, StorageUnit])
-        self.temp_db.create([ContentUnitRelation, ContentUnit, StorageUnit])
-        self.instance_db.create([Stat, ServiceInstance, ArgumentsDump])
+        self.db.create([ContentUnitRelation, ContentUnit])
+        self.temp_db.create([ContentUnitRelation, ContentUnit])
+        self.instance_db.create([ArgumentsDump])
 
     @classproperty
     def options(cls) -> NameDictList:

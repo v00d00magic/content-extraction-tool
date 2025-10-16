@@ -22,6 +22,7 @@ class App(Object, Hookable, Section, Namespace):
     Storage: Any = None
     Logger: Any = None
     Storage: Any = None
+    DbConnection: Any = None
     DownloadManager: Any = None
 
     _globals: Any = None
@@ -103,7 +104,7 @@ class App(Object, Hookable, Section, Namespace):
             outer.Logger.log("Init app, loading globals", section = self.section_name)
 
             self.initStorage(outer)
-            #self.initDB(outer)
+            self.initDB(outer)
 
             from Plugins.Media.DownloadManager.DownloadManager import DownloadManager
 

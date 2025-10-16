@@ -18,8 +18,8 @@ class ConnectionConfig(Object):
         match(self.protocol.value):
             case ConnectionEnum.sqlite.value:
                 _t = Text()
-                _t = _t.cwdReplacement(self.content)
-                db = SqliteDatabase(_t)
+                _t.useAsClass(self.content)
+                db = SqliteDatabase(_t.cwdReplacement())
 
         return db
 

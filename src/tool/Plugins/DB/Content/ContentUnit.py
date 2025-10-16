@@ -1,9 +1,14 @@
 from ..Model import Model
 from datetime import datetime
 from Objects.Object import Object
-from pydantic import Field, ConfigDict
+from pydantic import Field, ConfigDict, field_serializer
+from DB.Models.ContentUnit import ContentUnit as _cu
+from typing import ClassVar
 
+# you need to extend this in representations
 class ContentUnit(Model):
+    orm: ClassVar = _cu
+
     class ContentData(Object):
         model_config = ConfigDict(extra='allow')
 
@@ -40,3 +45,10 @@ class ContentUnit(Model):
     is_unlisted: bool = Field(default=False)
 
     links: Links = Field(default=None)
+
+    @field_serializer('created_at', 'declared_created_at', 'edited_at')
+    def serialize_date(self, dt: datetime) -> float:
+        if dt == None:
+            return None
+
+        return float(dt.timestamp())

@@ -9,6 +9,9 @@ class ObjectArgument(Argument):
         if self.object == None:
             return self.inputs
         
+        if isinstance(self.inputs, self.object):
+            return self.inputs
+
         _item = self.object
         _item.model_validate(self.inputs)
 
