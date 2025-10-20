@@ -1,6 +1,5 @@
 from Plugins.Executables.Types.Representation import Representation
 from Plugins.Executables.Types.Extractor import Extractor
-from Plugins.Arguments.Types.StringArgument import StringArgument
 from Plugins.Arguments.ApplyArgumentList import ApplyArgumentList
 
 from Plugins.Executables.Response.Response import Response

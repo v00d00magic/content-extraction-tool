@@ -1,7 +1,10 @@
 from .Model import Model
 from snowflake import SnowflakeGenerator
+from peewee import IntegerField
 
 class ContentModel(Model):
+    uuid = IntegerField(unique=True, primary_key=True)
+
     def generateId(self):
         gen = SnowflakeGenerator(0)
         return str(next(gen))

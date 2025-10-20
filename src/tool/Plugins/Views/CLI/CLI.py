@@ -12,7 +12,7 @@ class CLI(View):
 
             output = await self.call(raw_arguments)
             if 'silent' not in raw_arguments:
-                from Plugins.Data.JSON.JSON import JSON
+                from Plugins.Data.JSON import JSON
 
                 _json = JSON()
                 _json.useAsClass(data = output.toDict())

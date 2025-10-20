@@ -1,9 +1,31 @@
 from Plugins.Executables.Types.Representation import Representation
 from Plugins.Arguments.Objects.ObjectArgument import ObjectArgument
 from Plugins.Arguments.ApplyArgumentList import ApplyArgumentList
+
+from Plugins.Executables.Types.Extractor import Extractor
+from Plugins.Data.NameDictList import NameDictList
+from Plugins.Arguments.Types.StringArgument import StringArgument
+from Plugins.Arguments.Assertions.NotNoneAssertion import NotNoneAssertion
+
 import json
 
+class JSONFromObject(Extractor):
+    class Arguments(Extractor.Arguments):
+        @property
+        def args(self) -> NameDictList:
+            return NameDictList([
+                StringArgument(
+                    name = "text",
+                    assertions = [
+                        NotNoneAssertion()
+                    ]
+                )
+            ])
+
 class JSON(Representation):
+    class Submodules(Representation.Submodules):
+        items: list = [JSONFromObject]
+
     class Variables(Representation.Variables):
         items = ApplyArgumentList([
             ObjectArgument(

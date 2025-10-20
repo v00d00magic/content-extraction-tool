@@ -32,7 +32,7 @@ class ContentUnit(Model):
     original_description: str = Field(default=None)
     index_description: str = Field(default=None)
 
-    content: ContentData
+    content: ContentData # if you extend ContentData you should duplicate annotation too
     source: Source
     outer: Outer = Field(default = Outer())
     saved: Saved

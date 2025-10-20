@@ -9,7 +9,7 @@ from typing import Any
 import asyncio, sys
 import os
 
-from Plugins.Data.Text.Text import Text
+from Plugins.Data.Text import Text
 
 class App(Object, Hookable, Section, Namespace):
     context_name: str = Field(default = 'none')

@@ -1,7 +1,7 @@
 from peewee import SqliteDatabase, MySQLDatabase, PostgresqlDatabase, DatabaseProxy, Database
 from .ConnectionWrapper import ConnectionWrapper
 from Objects.Object import Object
-from Plugins.Data.Text.Text import Text
+from Plugins.Data.Text import Text
 from pydantic import Field
 from enum import Enum
 

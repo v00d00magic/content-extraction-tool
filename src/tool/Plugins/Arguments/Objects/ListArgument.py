@@ -1,5 +1,5 @@
 from Plugins.Arguments.Argument import Argument
-from Plugins.Data.JSON.JSON import JSON
+from Plugins.Data.JSON import JSON
 from pydantic import Field, computed_field
 
 class ListArgument(Argument):

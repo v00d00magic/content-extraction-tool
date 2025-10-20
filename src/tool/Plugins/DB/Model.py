@@ -24,6 +24,7 @@ class Model(Object):
         # todo: save links
         new.save()
 
+        print(new.original_name)
         return new
 
     def fromORM(self, item: PeeweeModel) -> Object:
