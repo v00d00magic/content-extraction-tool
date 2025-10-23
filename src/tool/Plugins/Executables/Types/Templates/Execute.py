@@ -7,6 +7,9 @@ class Execute(Outer, Section):
     async def implementation(self, i: ArgumentDict) -> Response:
         pass
 
+    async def implementation_wrap(self, i: ArgumentDict) -> Response:
+        return await self.implementation(i)
+
     async def before(self, i: ArgumentDict) -> None:
         pass
 
@@ -26,7 +29,7 @@ class Execute(Outer, Section):
 
         await self.before(passing)
 
-        response = await self.implementation(i = passing)
+        response = await self.implementation_wrap(i = passing)
 
         await self.after(passing)
 

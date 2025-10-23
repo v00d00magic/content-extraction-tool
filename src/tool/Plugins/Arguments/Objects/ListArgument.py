@@ -1,5 +1,4 @@
 from Plugins.Arguments.Argument import Argument
-from Plugins.Data.JSON import JSON
 from pydantic import Field, computed_field
 
 class ListArgument(Argument):
@@ -10,10 +9,17 @@ class ListArgument(Argument):
         results: list = []
         value: list = self.inputs
 
-        if type(value) == str:
-            _json = JSON(value)
-            if _json.isValid() == True:
-                value = _json.getSelf()
+        # WORKAROUND
+
+        try:
+            from Plugins.Data.JSON import JSON
+
+            if type(value) == str:
+                _json = JSON(value)
+                if _json.isValid() == True:
+                    value = _json.getSelf()
+        except:
+            pass
 
         if self.orig == None:
             return value

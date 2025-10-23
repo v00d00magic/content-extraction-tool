@@ -3,7 +3,6 @@ from Plugins.Executables.Types.Extractor import Extractor
 from Plugins.Arguments.ApplyArgumentList import ApplyArgumentList
 
 from Plugins.Executables.Response.Response import Response
-from Plugins.Executables.Response.ModelsResponse import ModelsResponse
 from Plugins.DB.Content.ContentUnit import ContentUnit
 
 from Plugins.Data.NameDictList import NameDictList
@@ -32,10 +31,10 @@ class TextExtractor(Extractor):
             ])
 
     class Execute(Extractor.Execute):
-        async def implementation(self, i = {}) -> ModelsResponse:
+        async def implementation(self, i = {}) -> None:
             text = i.get('text')
             name = text[0:i.get('title_cut')]
-            res = self.outer.parent.saver.ContentUnit(
+            self.append(self.outer.parent.saver.ContentUnit(
                 original_name = name,
                 content = Text.ContentUnit.ContentData(
                     text = text
@@ -44,9 +43,7 @@ class TextExtractor(Extractor):
                     types = "input",
                     content = "text"
                 )
-            )
-
-            return ModelsResponse(data = [res])
+            ))
 
 class Text(Representation):
     class ContentUnit(Representation.ContentUnit):

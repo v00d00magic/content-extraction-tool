@@ -45,4 +45,7 @@ class Argument(Object):
 
     def constructor(self):
         if self.auto_apply == True:
-            self.current = self.getValue()
+            self.autoApply()
+
+    def autoApply(self):
+        self.current = self.getValue()
