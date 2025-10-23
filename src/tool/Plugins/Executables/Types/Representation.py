@@ -1,27 +1,14 @@
 from .Executable import Executable
 from Plugins.Executables.Response.Response import Response
-from Plugins.DB.Content.ContentUnit import ContentUnit as OrigContentUnit
 from Plugins.Data.NameDictList import NameDictList
+from Plugins.DB.Content.ContainsContentUnit import ContainsContentUnit
 from Plugins.Arguments.Comparer import Comparer
 from Plugins.Arguments.Objects.ValuesArgument import ValuesArgument
 from Plugins.Arguments.Types.StringArgument import StringArgument
 from typing import ClassVar
-from pydantic import Field
 
-class Representation(Executable):
+class Representation(Executable, ContainsContentUnit):
     self_name: ClassVar[str] = "Representation"
-
-    def init_subclass(cls):
-        super().init_subclass(cls)
-
-        class ContentUnit(OrigContentUnit):
-            class Saved(OrigContentUnit.Saved):
-                representation: str = Field(default = cls.meta.name)
-                method: str = Field(default = cls.meta.name)
-
-            saved: Saved = Field(default = Saved())
-
-        cls.ContentUnit = ContentUnit
 
     class Arguments(Executable.Arguments):
         @property
@@ -54,7 +41,7 @@ class Representation(Executable):
         async def implementation(self, i) -> Response:
             '''
             Overrides the default Executable.Execute "implementation()" and allows for automatic extractor choosing
-            You should not override this too, it's better to create single extractor
+            You should not override this too. it's better to create single extractor
             '''
 
             extractors = []

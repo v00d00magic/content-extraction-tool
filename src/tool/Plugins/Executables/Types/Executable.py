@@ -1,7 +1,7 @@
 from Objects.Object import Object
 from Objects.Namespace import Namespace
 from Objects.Section import Section
-from .Templates import Arguments, Meta, Execute, Saver, Variables, EnvVariables, Submodules
+from .Templates import Arguments, Execute, Saver, Variables, EnvVariables, Submodules
 from typing import Any, ClassVar
 from pydantic import Field
 
@@ -21,8 +21,18 @@ class Executable(Object, Namespace, Section):
     class Arguments(Arguments.Arguments):
         pass
 
-    class Meta(Meta.Meta):
-        pass
+    class Meta(Object.Meta):
+        @classmethod
+        def doDefaultAppending(cls):
+            return True
+
+        @classmethod
+        def canBeExecuted(cls):
+            return cls.isAbstract() == False and cls.isHidden() == False
+
+        @classmethod
+        def canBeUsedAt(cls, at):
+            return at in cls.available
 
     class Execute(Execute.Execute):
         pass

@@ -1,7 +1,6 @@
 from Objects.Object import Object
 from pydantic import Field
 from Objects.Increment import Increment
-from Objects.Namespace import Namespace
 from Objects.Hookable import Hookable
 from Objects.Section import Section
 from pathlib import Path
@@ -11,8 +10,9 @@ import os
 
 from Plugins.Data.Text import Text
 
-class App(Object, Hookable, Section, Namespace):
+class App(Object, Hookable, Section):
     context_name: str = Field(default = 'none')
+    settings: dict = {}
     cwd: str = None
     src: str = None
     loop: Any = None
