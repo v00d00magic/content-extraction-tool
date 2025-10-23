@@ -7,7 +7,7 @@ from typing import ClassVar
 
 # you need to extend this in representations
 class ContentUnit(Model):
-    orm: ClassVar = _cu
+    orm_model: ClassVar = _cu
 
     class ContentData(Object):
         model_config = ConfigDict(extra='allow')

@@ -15,13 +15,19 @@ class Connection(Object, Configurable):
     def createTables(self):
         from DB.Models.ContentUnit import ContentUnit
         from DB.Models.ContentUnitRelation import ContentUnitRelation
-        #from DB.Models.Instances.Stat import Stat
-        #from DB.Models.Instances.ServiceInstance import ServiceInstance
-        from DB.Models.ArgumentsDump import ArgumentsDump
 
         self.db.create([ContentUnitRelation, ContentUnit])
         self.temp_db.create([ContentUnitRelation, ContentUnit])
-        self.instance_db.create([ArgumentsDump])
+        self.instance_db.create([ContentUnit])
+
+    def getConnectionByName(self, name: str) -> ConnectionWrapper:
+        match (name):
+            case 'tmp':
+                return self.temp_db
+            case 'instance':
+                return self.instance_db
+            case 'content':
+                return self.db
 
     @classproperty
     def options(cls) -> NameDictList:

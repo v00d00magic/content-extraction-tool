@@ -1,12 +1,28 @@
+from Plugins.DB.Content.ContentUnit import ContentUnit
 from Objects.Outer import Outer
 from App import app
 
 class Saver(Outer):
-    def ContentUnit(self):
-        app.logger.log("Created new ContentUnit", section="Saveable")
+    def ContentUnit(self, *args, **kwargs):
+        do_flush = kwargs.get('_do_flush', True)
+        db_name = self.outer.call.args.get('save')
+        db = None
 
-        out = ContentUnit()
-        self.outer.meta.selfInsert(out)
+        if kwargs.get('save', None) != None:
+            db_name = kwargs.get('save')
+
+        out: ContentUnit = self.outer.ContentUnit(*args, **kwargs)
+        app.Logger.log(f"Created new ContentUnit {out}", section=["Saveable"])
+
+        if do_flush == True:
+            if kwargs.get('db', None) != None:
+                db = kwargs.get('db')
+            else:
+                db = app.DbConnection.getConnectionByName(db_name)
+
+            out.flush(db)
+
+            app.Logger.log(f"Flushed ContentUnit to db {db_name} (id {out.uuid})", section=["Saveable"])
 
         return out
 

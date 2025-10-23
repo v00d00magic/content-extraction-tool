@@ -38,7 +38,7 @@ class Call(Act, Hookable, Section):
                     ]
                 ),
                 ValuesArgument(
-                    name = "execution_type",
+                    name = 'execution_type',
                     default = "await",
                     values = [
                         StringArgument(
@@ -58,6 +58,9 @@ class Call(Act, Hookable, Section):
             executable = plugin_wrapper.plugin()
 
             assert executable.meta.name != self.outer.meta.name, "can't call this (you are calling a method that calls itself)"
+            executable.call = self.outer
+
+            self.outer.args = i
 
             response: Response = None
 

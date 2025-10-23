@@ -9,7 +9,7 @@ class ConnectionWrapper(Object):
 
     def create(self, items: list):
         for item in items:
-            item._meta.database = self.db
-            item._meta.table_name = item.table_name
+            item.setClsDB(self.db)
+            item.setClsTableName(item.table_name)
 
         self.db.create_tables(items)

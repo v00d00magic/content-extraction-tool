@@ -35,7 +35,7 @@ class TextExtractor(Extractor):
         async def implementation(self, i = {}) -> ModelsResponse:
             text = i.get('text')
             name = text[0:i.get('title_cut')]
-            res = Text.ContentUnit(
+            res = self.outer.parent.saver.ContentUnit(
                 original_name = name,
                 content = Text.ContentUnit.ContentData(
                     text = text
@@ -45,7 +45,6 @@ class TextExtractor(Extractor):
                     content = "text"
                 )
             )
-            res.flush()
 
             return ModelsResponse(data = [res])
 

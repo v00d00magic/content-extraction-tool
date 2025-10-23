@@ -3,16 +3,22 @@ from App import app
 from pydantic import Field
 from typing import ClassVar
 from DB.Models.Model import Model as PeeweeModel
+from Plugins.DB.ConnectionWrapper import ConnectionWrapper
 
 class Model(Object):
-    uuid: int = Field(default=None)
-    orm: ClassVar = None
+    uuid: str = Field(default=None) # actually int but using str because of js JSON.parse int issues
+    orm_model: ClassVar = None
 
-    def flush(self) -> PeeweeModel:
-        return self.toORM()
+    def flush(self, connection: ConnectionWrapper) -> PeeweeModel:
+        new = self.toORM(connection)
+        new.save()
 
-    def toORM(self) -> PeeweeModel:
-        db_model = self.orm
+        self.uuid = str(new.uuid)
+
+        return new
+
+    def toORM(self, connection: ConnectionWrapper) -> PeeweeModel:
+        db_model = self.orm_model
         new = db_model()
 
         for name, val in self.toJson().items():
@@ -21,10 +27,8 @@ class Model(Object):
 
             setattr(new, name, val)
 
-        # todo: save links
-        new.save()
+        new.setDb(connection.db)
 
-        print(new.original_name)
         return new
 
     def fromORM(self, item: PeeweeModel) -> Object:

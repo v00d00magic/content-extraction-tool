@@ -6,8 +6,11 @@ from typing import Any, ClassVar
 from pydantic import Field
 
 class Executable(Object, Namespace, Section):
+    parent: Object = Field(default = None)
+    call: Any = Field(default = None)
+
     self_name: ClassVar[str] = "None"
-    call: ClassVar[Any] = Field(default = None)
+
     meta: ClassVar[Any] = Field(default = None)
     submodules: ClassVar[Any] = Field(default = None)
     variables: ClassVar[Any] = Field(default = None)

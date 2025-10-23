@@ -3,6 +3,8 @@ from Plugins.Executables.Response.Response import Response
 from Plugins.DB.Content.ContentUnit import ContentUnit as OrigContentUnit
 from Plugins.Data.NameDictList import NameDictList
 from Plugins.Arguments.Comparer import Comparer
+from Plugins.Arguments.Objects.ValuesArgument import ValuesArgument
+from Plugins.Arguments.Types.StringArgument import StringArgument
 from typing import ClassVar
 from pydantic import Field
 
@@ -24,13 +26,29 @@ class Representation(Executable):
     class Arguments(Executable.Arguments):
         @property
         def args(self) -> NameDictList:
-            _dict = NameDictList(items = [])
+            lists = NameDictList(items = [
+                ValuesArgument(
+                    name = 'save',
+                    default = 'tmp',
+                    values = [
+                        StringArgument(
+                            name = 'tmp'
+                        ),
+                        StringArgument(
+                            name = 'content'
+                        ),
+                        StringArgument(
+                            name = 'instance'
+                        )
+                    ]
+                )
+            ])
 
             for item in self.outer.submodules.get(["Extractor", "Receivation"]):
                 for arg in item.arguments.args.toList():
-                    _dict.append(arg)
+                    lists.append(arg)
 
-            return _dict
+            return lists
 
     class Execute(Executable.Execute):
         async def implementation(self, i) -> Response:
@@ -47,6 +65,7 @@ class Representation(Executable):
             assert extractor != None, "can't find suitable extractor"
 
             extract = extractor()
+            extract.parent = self.outer
             self.log(f"Using extractor: {extract.meta.class_name}")
 
             return await extract.execute.execute(i)
