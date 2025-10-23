@@ -2,3 +2,7 @@
 - [ ] Representation: wheel of extract methods
 - [ ] Representation: aftersave classes
 - [ ] Representation: external_submodules
+- [ ] Executable: Move `meta` to `Objects.Object`
+- [ ] Executable: Move representation functions to Object
+- [ ] Representation: Do not use return
+- [ ] Remove "namespace"
