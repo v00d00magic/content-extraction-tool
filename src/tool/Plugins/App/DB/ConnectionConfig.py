@@ -19,7 +19,7 @@ class ConnectionConfig(Object):
             case ConnectionEnum.sqlite.value:
                 _t = Text()
                 _t.useAsClass(self.content)
-                db = SqliteDatabase(_t.cwdReplacement())
+                db = SqliteDatabase(_t.replaceCwd())
 
         return db
 

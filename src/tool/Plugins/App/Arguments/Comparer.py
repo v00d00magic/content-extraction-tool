@@ -62,7 +62,7 @@ class Comparer(Object):
             value = fallback
 
         try:
-            app.Logger.log(f"{name}={inputs}={str(value)}", section=["Comparer"])
+            app.Logger.log(f"comparing {name}; i = {inputs}, o = {str(value)}", section=["Comparer"])
         except:
             pass
 

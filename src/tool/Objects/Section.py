@@ -5,7 +5,8 @@ from App import app
 class Section:
     @property
     def section_name(self) -> list:
-        return ["App"]
+        # it implies that you have extended Object
+        return self.meta.name
 
     @property
     def prefix(self) -> LogPrefix:

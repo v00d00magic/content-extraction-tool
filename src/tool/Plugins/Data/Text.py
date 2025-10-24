@@ -91,8 +91,8 @@ class Text(Representation):
 
         return self.setSelf(newString + ("..." if self.data != newString else ""))
 
-    def cwdReplacement(self) -> str:
-        return self.replaceCwd(str(app.src))
+    def replaceCwd(self) -> str:
+        return self.replaceCwdStrWith(str(app.src))
 
-    def replaceCwd(self, withs: str) -> str:
+    def replaceCwdStrWith(self, withs: str) -> str:
         return self.setSelf(self.getSelf().replace("?cwd?", withs))

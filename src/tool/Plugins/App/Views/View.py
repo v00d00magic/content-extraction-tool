@@ -1,21 +1,18 @@
 from pydantic import Field
 
-from typing import Any
+from typing import Any, ClassVar
 from Objects.Section import Section
 from Objects.Object import Object
 from Plugins.App.App import App
 
 class View(Object):
-    name: str = Field(default="View")
+    name: ClassVar[str] = "No name defined, so None."
     app_wrapper: Any = None
     runner: Any = None
+    subclass: Any = None
 
     # not asynco
     class AppWrapper(Section):
-        @property
-        def section_name(self) -> list:
-            return ["View", "App"]
-
         def __init__(self, name):
             self.app = App()
             self.app.context_name = name
@@ -24,10 +21,6 @@ class View(Object):
             self.app.loop.run_until_complete(coroutine)
 
     class Runner(Section):
-        @property
-        def section_name(self) -> list:
-            return ["View", "Run"]
-
         def __init__(self, outer):
             self.outer = outer
 
@@ -42,14 +35,19 @@ class View(Object):
 
             return output
 
+    class Subclass(Section):
+        def __init__(self, outer):
+            self.outer = outer
+
     def constructor(self):
         # Sorry but this is necessary :(
 
         self.app_wrapper = self.AppWrapper(self.name)
         self.setAsCommon()
-        self.app_wrapper.app.consturctor()
+        self.app_wrapper.app._constructor()
         self.runner = self.Runner(self)
-        self.app_wrapper.app.Logger.log("Loaded view")
+        self.app_wrapper.app.Logger.log(f"Loaded view {self.name}")
+        self.subclass = self.Subclass(self)
 
     def setAsCommon(self):
         from App import app

@@ -53,7 +53,7 @@ class Representation(Executable, ContainsContentUnit):
 
             extract = extractor()
             extract.parent = self.outer
-            self.log(f"Using extractor: {extract.meta.class_name}")
+            self.log(f"Using extractor: {extract.meta.class_name_str}")
 
             return await extract.execute.execute(i)
 

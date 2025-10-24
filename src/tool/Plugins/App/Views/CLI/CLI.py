@@ -1,7 +1,10 @@
 from colorama import init as ColoramaInit
-from Plugins.App.Views.View import View
+from typing import ClassVar
+from ..View import View
 
 class CLI(View):
+    name: ClassVar[str] = "CLI"
+
     class Runner(View.Runner):
         async def wrapper(self, raw_arguments):
             ColoramaInit()

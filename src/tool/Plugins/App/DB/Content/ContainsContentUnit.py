@@ -8,8 +8,8 @@ class ContainsContentUnit():
     def init_subclass(cls):
         class ContentUnit(OrigContentUnit):
             class Saved(OrigContentUnit.Saved):
-                representation: str = Field(default = cls.meta.name)
-                method: str = Field(default = cls.meta.name)
+                representation: str = Field(default = cls.meta.name_str)
+                method: str = Field(default = cls.meta.name_str)
 
             saved: Saved = Field(default = Saved())
 

@@ -1,5 +1,5 @@
 from App import app
-from Views.App.Web import WebApp
+from Plugins.App.Views.Web.Web import Web
 
-web = WebApp()
+web = Web()
 web.run()

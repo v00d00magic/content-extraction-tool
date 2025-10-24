@@ -22,7 +22,7 @@ class Object(BaseModel):
         return cls.__mro__
 
     def init_subclass(cls):
-        pass
+        cls.meta = cls.Meta(cls)
 
     def __init_subclass__(cls):
         for item in cls.mro:
@@ -51,7 +51,6 @@ class Object(BaseModel):
         def isHidden(cls):
             return getattr(cls, "hidden", False) == True
 
-
         @classmethod
         def isModulesInstalled(cls):
             all_installed = {dist.metadata["Name"].lower() for dist in distributions()}
@@ -76,14 +75,22 @@ class Object(BaseModel):
                     return item.outer
 
         @property
+        def name_str(self):
+            return ".".join(self.name)
+
+        @property
         def name(self):
             _class = self.outer.__mro__[0]
             _module = _class.__module__
             _parts = _module.split('.')
             _parts = _parts[1:] # cut off "Plugins."
 
-            return ".".join(_parts)
+            return _parts
 
         @property
         def class_name(self):
-            return self.name + "." + self.outer.__name__
+            return self.name + [self.outer.__name__]
+
+        @property
+        def class_name_str(self):
+            return ".".join(self.class_name)

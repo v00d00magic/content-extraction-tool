@@ -51,7 +51,6 @@ class Executable(Object, Namespace, Section):
 
     def init_subclass(cls):
         cls.arguments = cls.Arguments(cls)
-        cls.meta = cls.Meta(cls)
         cls.submodules = cls.Submodules(cls)
         cls.variables = cls.Variables(cls)
         cls.env_variables = cls.EnvVariables(cls)

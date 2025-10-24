@@ -30,10 +30,6 @@ class App(Object, Hookable, Section):
     executables: Any = None
     argv: dict = None
 
-    @property
-    def section_name(self) -> list:
-        return ["App"]
-
     class ExecutablesTable(Section):
         @property
         def section_name(self) -> list:
@@ -48,18 +44,17 @@ class App(Object, Hookable, Section):
             self.calls = []
 
     class Globals(Section):
-        @property
-        def section_name(self) -> list:
-            return ["App", "Globals"]
-
         def initConfig(self, outer):
             from Plugins.App.Config import Config
-            from Plugins.App.Env import Env
 
             outer.Config = Config.Config(
                 path = outer.cwd.parent.joinpath("storage").joinpath("config")
             )
             outer.Config.comparer.compare = outer.settings
+
+        def initEnv(self, outer):
+            from Plugins.App.Env import Env
+            
             outer.Env = Env.Env(
                 path = outer.cwd.parent.joinpath("storage").joinpath("env"),
                 name = "env.json"
@@ -81,7 +76,7 @@ class App(Object, Hookable, Section):
 
             texts = Text()
             texts.useAsClass(text = outer.Config.get("storage.path"))
-            texts.cwdReplacement()
+            texts.replaceCwd()
 
             outer.Storage.common = Path(texts.getSelf())
             outer.Storage.register()
@@ -96,18 +91,8 @@ class App(Object, Hookable, Section):
             )
             outer.DbConnection.createTables()
 
-        def __init__(self, outer):
-            self.initConfig(outer)
-            self.initLogger(outer)
-
-            # you can't use self.log there
-            # cuz of recursion :(
-            outer.Logger.log("Init app, loading globals", section = self.section_name)
-
-            self.initStorage(outer)
-            self.initDB(outer)
-
-            from Plugins.Media.DownloadManager.DownloadManager import DownloadManager
+        def initDownloadManager(self, outer):
+            from Plugins.Web.DownloadManager.DownloadManager import DownloadManager
 
             outer.DownloadManager = DownloadManager(
                 max_concurrent_downloads = outer.Config.get("media.download_manager.max_concurrent_downloads"),
@@ -115,14 +100,29 @@ class App(Object, Hookable, Section):
                 connection_timeout = outer.Config.get("media.download_manager.connection_timeout"),
             )
 
-            outer.Logger.log("Loaded globals", section = self.section_name)
+        def __init__(self, outer):
+            section_name = ["App", "Globals"]
+
+            self.initConfig(outer)
+            self.initEnv(outer)
+            self.initLogger(outer)
+
+            # you can't use self.log there
+            # cuz of recursion :(
+            outer.Logger.log("Init app, loading globals", section = section_name)
+
+            self.initStorage(outer)
+            self.initDB(outer)
+            self.initDownloadManager(outer)
+
+            outer.Logger.log("Loaded globals", section = section_name)
 
     class HooksManager(Hookable.HooksManager):
         @property
         def events(self) -> list:
             return ["progress"]
 
-    def consturctor(self):
+    def _constructor(self):
         self.cwd = Path(os.getcwd())
         self.src = self.cwd.parent
         self.loop = asyncio.get_event_loop()

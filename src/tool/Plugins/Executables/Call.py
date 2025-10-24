@@ -57,7 +57,7 @@ class Call(Act, Hookable, Section):
             assert plugin_wrapper != None, 'plugin not found'
             executable = plugin_wrapper.plugin()
 
-            assert executable.meta.name != self.outer.meta.name, "can't call this (you are calling a method that calls itself)"
+            assert executable.meta.name_str != self.outer.meta.name_str, "can't call this (you are calling a method that calls itself)"
             executable.call = self.outer
 
             self.outer.args = i
@@ -80,7 +80,7 @@ class Call(Act, Hookable, Section):
 
     async def execute_as_await(self, executable, i: ArgumentDict = {}) -> Response:
         self.hooks.trigger("start")
-        self.log(f"Calling {executable.meta.name} execute() with args...")
+        self.log(f"Calling {executable.meta.name_str} execute() with args...")
 
         return await executable.execute.execute(i)
 

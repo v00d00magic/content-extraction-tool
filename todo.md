@@ -6,3 +6,5 @@
 - [x] Representation: Do not use return
 - [ ] i think it will be a lot of code dup (json.fromUrl, xml.fromUrl, file.fromUrl), so move extractors somewhere or idk
 - [ ] add "adapter" executable
+- [ ] execution queue
+- [ ] __getattr__: if exist act with this name, allow to use as def
