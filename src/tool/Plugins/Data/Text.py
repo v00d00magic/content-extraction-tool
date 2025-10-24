@@ -1,14 +1,14 @@
 from Plugins.Executables.Types.Representation import Representation
 from Plugins.Executables.Types.Extractor import Extractor
-from Plugins.Arguments.ApplyArgumentList import ApplyArgumentList
+from Plugins.App.Arguments.ApplyArgumentList import ApplyArgumentList
 
 from Plugins.Executables.Response.Response import Response
-from Plugins.DB.Content.ContentUnit import ContentUnit
+from Plugins.App.DB.Content.ContentUnit import ContentUnit
 
 from Plugins.Data.NameDictList import NameDictList
-from Plugins.Arguments.Types.StringArgument import StringArgument
-from Plugins.Arguments.Types.IntArgument import IntArgument
-from Plugins.Arguments.Assertions.NotNoneAssertion import NotNoneAssertion
+from Plugins.App.Arguments.Types.StringArgument import StringArgument
+from Plugins.App.Arguments.Types.IntArgument import IntArgument
+from Plugins.App.Arguments.Assertions.NotNoneAssertion import NotNoneAssertion
 
 from App import app
 import re

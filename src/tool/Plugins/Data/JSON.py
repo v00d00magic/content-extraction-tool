@@ -1,11 +1,12 @@
 from Plugins.Executables.Types.Representation import Representation
-from Plugins.Arguments.Objects.ObjectArgument import ObjectArgument
-from Plugins.Arguments.ApplyArgumentList import ApplyArgumentList
+from Plugins.App.Arguments.Objects.ObjectArgument import ObjectArgument
+from Plugins.App.Arguments.ApplyArgumentList import ApplyArgumentList
 
 from Plugins.Executables.Types.Extractor import Extractor
 from Plugins.Data.NameDictList import NameDictList
-from Plugins.Arguments.Types.StringArgument import StringArgument
-from Plugins.Arguments.Assertions.NotNoneAssertion import NotNoneAssertion
+from Plugins.App.Arguments.Types.StringArgument import StringArgument
+from Plugins.App.Arguments.Objects.ObjectArgument import ObjectArgument
+# from Plugins.App.Arguments.Assertions.NotNoneAssertion import NotNoneAssertion
 
 import json
 
@@ -14,17 +15,56 @@ class JSONFromObject(Extractor):
         @property
         def args(self) -> NameDictList:
             return NameDictList([
-                StringArgument(
-                    name = "text",
-                    assertions = [
-                        NotNoneAssertion()
-                    ]
+                ObjectArgument(
+                    name = "object"
                 )
             ])
 
+    class Execute(Extractor.Execute):
+        async def implementation(self, i = {}) -> None:
+            self.append(self.outer.parent.saver.ContentUnit(
+                original_name = 'json data',
+                content = JSON.ContentUnit.ContentData(
+                    data = i.get('object')
+                ),
+                source = JSON.ContentUnit.Source(
+                    types = "input",
+                    content = "object"
+                )
+            ))
+
+class JSONFromText(Extractor):
+    class Arguments(Extractor.Arguments):
+        @property
+        def args(self) -> NameDictList:
+            return NameDictList([
+                StringArgument(
+                    name = "text"
+                )
+            ])
+
+    class Execute(Extractor.Execute):
+        async def implementation(self, i = {}) -> None:
+            _json = JSON()
+            _json.useAsClass(data = i.get('text'))
+
+            self.append(self.outer.parent.saver.ContentUnit(
+                original_name = 'json data',
+                content = JSON.ContentUnit.ContentData(
+                    data = _json.parse()
+                ),
+                source = JSON.ContentUnit.Source(
+                    types = "input",
+                    content = "text"
+                )
+            ))
+
 class JSON(Representation):
+    class ContentUnit(Representation.ContentUnit):
+        data: list | dict = None
+
     class Submodules(Representation.Submodules):
-        items: list = [JSONFromObject]
+        items: list = [JSONFromObject, JSONFromText]
 
     class Variables(Representation.Variables):
         items = ApplyArgumentList([

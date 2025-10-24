@@ -1,4 +1,4 @@
-from Plugins.DB.Content.ContentUnit import ContentUnit
+from Plugins.App.DB.Content.ContentUnit import ContentUnit
 from Objects.Outer import Outer
 from App import app
 

@@ -66,8 +66,8 @@ class DownloadManager(Object, Section, Hookable, Configurable):
 
     @classproperty
     def options(cls) -> NameDictList:
-        from Plugins.Arguments.Types.StringArgument import StringArgument
-        from Plugins.Arguments.Types.IntArgument import IntArgument
+        from Plugins.App.Arguments.Types.StringArgument import StringArgument
+        from Plugins.App.Arguments.Types.IntArgument import IntArgument
 
         return NameDictList([
             IntArgument(

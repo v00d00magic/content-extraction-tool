@@ -1,4 +1,4 @@
-from Plugins.DB.Content.ContentUnit import ContentUnit
+from Plugins.App.DB.Content.ContentUnit import ContentUnit
 
 class StorageUnit(ContentUnit):
     class ContentData(ContentUnit.ContentData):

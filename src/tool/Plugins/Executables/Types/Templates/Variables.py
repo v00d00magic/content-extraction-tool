@@ -1,6 +1,6 @@
 from Objects.Outer import Outer
-from Plugins.Arguments.ApplyArgumentList import ApplyArgumentList
-from Plugins.Arguments.Argument import Argument
+from Plugins.App.Arguments.ApplyArgumentList import ApplyArgumentList
+from Plugins.App.Arguments.Argument import Argument
 from typing import List, Any
 import functools
 

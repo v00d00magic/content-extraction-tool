@@ -1,7 +1,7 @@
 from pathlib import Path
 from Objects.Object import Object
 from Objects.Configurable import Configurable
-from Plugins.Arguments.Comparer import Comparer
+from Plugins.App.Arguments.Comparer import Comparer
 from Plugins.Data.NameDictList import NameDictList
 from Objects.ClassProperty import classproperty
 from pydantic import Field, computed_field
@@ -31,7 +31,7 @@ class Config(Object, Configurable):
 
     @classproperty
     def options(cls) -> NameDictList:
-        from Plugins.Arguments.Types.BooleanArgument import BooleanArgument
+        from Plugins.App.Arguments.Types.BooleanArgument import BooleanArgument
 
         return NameDictList([
             BooleanArgument(

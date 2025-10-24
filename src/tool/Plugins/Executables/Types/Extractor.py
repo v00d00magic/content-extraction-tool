@@ -1,8 +1,8 @@
 from Plugins.Executables.Types.Executable import Executable
-from Plugins.Arguments.ApplyArgumentList import ApplyArgumentList
+from Plugins.App.Arguments.ApplyArgumentList import ApplyArgumentList
 from Plugins.Executables.Response.ModelsResponse import ModelsResponse
-from Plugins.Arguments.Objects.ObjectArgument import ObjectArgument
-from Plugins.DB.Content.ContentUnit import ContentUnit
+from Plugins.App.Arguments.Objects.ObjectArgument import ObjectArgument
+from Plugins.App.DB.Content.ContentUnit import ContentUnit
 
 from typing import ClassVar
 
@@ -10,7 +10,7 @@ class Extractor(Executable):
     self_name: ClassVar[str] = "Extractor"
 
     class Variables(Executable.Variables):
-        from Plugins.Arguments.Objects.ListArgument import ListArgument
+        from Plugins.App.Arguments.Objects.ListArgument import ListArgument
 
         items = ApplyArgumentList([
             ListArgument(

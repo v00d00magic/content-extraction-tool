@@ -22,7 +22,7 @@ class Storage(Object, Configurable):
 
     @classproperty
     def options(cls) -> NameDictList:
-        from Plugins.Arguments.Types.StringArgument import StringArgument
+        from Plugins.App.Arguments.Types.StringArgument import StringArgument
 
         return NameDictList([
             StringArgument(

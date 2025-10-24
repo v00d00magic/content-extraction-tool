@@ -56,9 +56,9 @@ class Logger(Object, Hookable, Configurable):
 
     @classproperty
     def options(cls) -> NameDictList:
-        from Plugins.Arguments.Types.BooleanArgument import BooleanArgument
-        from Plugins.Arguments.Objects.ListArgument import ListArgument
-        from Plugins.Arguments.Objects.ObjectArgument import ObjectArgument
+        from Plugins.App.Arguments.Types.BooleanArgument import BooleanArgument
+        from Plugins.App.Arguments.Objects.ListArgument import ListArgument
+        from Plugins.App.Arguments.Objects.ObjectArgument import ObjectArgument
 
         return NameDictList([
             BooleanArgument(

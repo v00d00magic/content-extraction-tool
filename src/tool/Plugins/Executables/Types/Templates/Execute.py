@@ -1,6 +1,6 @@
 from Objects.Outer import Outer
 from Plugins.Executables.Response.Response import Response
-from Plugins.Arguments.ArgumentDict import ArgumentDict
+from Plugins.App.Arguments.ArgumentDict import ArgumentDict
 from Objects.Section import Section
 
 class Execute(Outer, Section):

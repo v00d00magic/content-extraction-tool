@@ -4,12 +4,12 @@ from Objects.Hookable import Hookable
 from Objects.Section import Section
 from typing import Type
 
-from Plugins.Arguments.Objects.ExecutableArgument import ExecutableArgument
-from Plugins.Arguments.Objects.ValuesArgument import ValuesArgument
-from Plugins.Arguments.Types.StringArgument import StringArgument
-from Plugins.Arguments.Assertions.NotNoneAssertion import NotNoneAssertion
+from Plugins.App.Arguments.Objects.ExecutableArgument import ExecutableArgument
+from Plugins.App.Arguments.Objects.ValuesArgument import ValuesArgument
+from Plugins.App.Arguments.Types.StringArgument import StringArgument
+from Plugins.App.Arguments.Assertions.NotNoneAssertion import NotNoneAssertion
 from Plugins.Data.NameDictList import NameDictList
-from Plugins.Arguments.ArgumentDict import ArgumentDict
+from Plugins.App.Arguments.ArgumentDict import ArgumentDict
 from Plugins.Executables.Response.Response import Response
 
 from pydantic import Field

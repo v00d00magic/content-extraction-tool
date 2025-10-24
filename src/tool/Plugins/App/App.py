@@ -1,5 +1,4 @@
 from Objects.Object import Object
-from pydantic import Field
 from Objects.Increment import Increment
 from Objects.Hookable import Hookable
 from Objects.Section import Section
@@ -9,6 +8,8 @@ import asyncio, sys
 import os
 
 from Plugins.Data.Text import Text
+
+from pydantic import Field
 
 class App(Object, Hookable, Section):
     context_name: str = Field(default = 'none')
@@ -86,7 +87,7 @@ class App(Object, Hookable, Section):
             outer.Storage.register()
 
         def initDB(self, outer):
-            from Plugins.DB.Connection import Connection
+            from Plugins.App.DB.Connection import Connection
 
             outer.DbConnection = Connection(
                 temp_db = outer.Config.get("db.temp.connection").getWrapper("temp"),

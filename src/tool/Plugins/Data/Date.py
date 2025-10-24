@@ -1,15 +1,19 @@
-from Objects.Util import Util
 from datetime import datetime
+from Plugins.App.Arguments.ApplyArgumentList import ApplyArgumentList
+from Plugins.App.Arguments.Objects.ObjectArgument import ObjectArgument
+from Plugins.Executables.Types.Representation import Representation
 
-class Date(Util):
-    def timestamp_or_float(self):
-        if self.data == None:
-            return None
+class Date(Representation):
+    class Variables(Representation.Variables):
+        items = ApplyArgumentList([
+            ObjectArgument(
+                name = "date",
+                default = {}
+            )
+        ])
 
-        if getattr(self.data, 'timestamp', None) != None:
-            return float(self.data.timestamp())
-        else:
-            return float(self.data)
+    def useAsClass(self, data: int = None):
+        self.variables.get("date").current = int
 
-    def now(self):
-        return datetime.now().timestamp()
+    def setNow(self):
+        return self.setSelf(datetime.now().timestamp())

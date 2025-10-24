@@ -1,7 +1,7 @@
 from Objects.Outer import Outer
 from Plugins.Data.NameDictList import NameDictList
-from Plugins.Arguments.Comparer import Comparer
-from Plugins.Arguments.ArgumentDict import ArgumentDict
+from Plugins.App.Arguments.Comparer import Comparer
+from Plugins.App.Arguments.ArgumentDict import ArgumentDict
 
 class Arguments(Outer):
     @property

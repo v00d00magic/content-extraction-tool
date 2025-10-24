@@ -1,10 +1,10 @@
 from .Executable import Executable
 from Plugins.Executables.Response.Response import Response
 from Plugins.Data.NameDictList import NameDictList
-from Plugins.DB.Content.ContainsContentUnit import ContainsContentUnit
-from Plugins.Arguments.Comparer import Comparer
-from Plugins.Arguments.Objects.ValuesArgument import ValuesArgument
-from Plugins.Arguments.Types.StringArgument import StringArgument
+from Plugins.App.DB.Content.ContainsContentUnit import ContainsContentUnit
+from Plugins.App.Arguments.Comparer import Comparer
+from Plugins.App.Arguments.Objects.ValuesArgument import ValuesArgument
+from Plugins.App.Arguments.Types.StringArgument import StringArgument
 from typing import ClassVar
 
 class Representation(Executable, ContainsContentUnit):

@@ -4,3 +4,5 @@
 - [ ] Representation: external_submodules
 - [x] Executable: Move `meta` to `Objects.Object`
 - [x] Representation: Do not use return
+- [ ] i think it will be a lot of code dup (json.fromUrl, xml.fromUrl, file.fromUrl), so move extractors somewhere or idk
+- [ ] add "adapter" executable
