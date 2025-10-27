@@ -8,7 +8,7 @@ class Configurable:
         pass
 
     @classmethod
-    def update(cls):
+    def applyToGlobalSettings(cls):
         options = cls.options
         if options == None:
             return
@@ -17,4 +17,4 @@ class Configurable:
             app.settings[name] = item
 
     def init_subclass(cls):
-        cls.update()
+        cls.applyToGlobalSettings()

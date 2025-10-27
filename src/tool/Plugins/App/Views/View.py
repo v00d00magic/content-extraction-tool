@@ -1,12 +1,13 @@
 from pydantic import Field
 
 from typing import Any, ClassVar
+from Objects.Configurable import Configurable
 from Objects.Section import Section
 from Objects.Object import Object
 from Plugins.App.App import App
 
-class View(Object):
-    name: ClassVar[str] = "No name defined, so None."
+class View(Object, Configurable):
+    name: ClassVar[str] = "None"
     app_wrapper: Any = None
     runner: Any = None
     subclass: Any = None
@@ -38,6 +39,10 @@ class View(Object):
     class Subclass(Section):
         def __init__(self, outer):
             self.outer = outer
+            self.constructor()
+
+        def constructor(self):
+            pass
 
     def constructor(self):
         # Sorry but this is necessary :(
@@ -46,8 +51,8 @@ class View(Object):
         self.setAsCommon()
         self.app_wrapper.app._constructor()
         self.runner = self.Runner(self)
-        self.app_wrapper.app.Logger.log(f"Loaded view {self.name}")
         self.subclass = self.Subclass(self)
+        self.app_wrapper.app.Logger.log(f"Loaded view {self.name}")
 
     def setAsCommon(self):
         from App import app

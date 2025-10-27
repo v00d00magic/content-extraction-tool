@@ -22,7 +22,7 @@ class ExportItem(Object):
         return self.flags.get("link_depth")
 
     def getModel(self):
-        match (selfclass_name_str):
+        match (self.meta.class_name):
             case ClassNameEnum.CONTENT_UNIT.value:
                 return ContentUnit.ids(self.id)
             case ClassNameEnum.STORAGE_UNIT.value:
