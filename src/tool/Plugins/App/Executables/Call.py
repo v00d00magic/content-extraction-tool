@@ -25,7 +25,7 @@ class Call(Object, Hookable, Section):
         _i = 0
 
         for item in self.queue.items:
-            result = await item.run()
+            result = await item.run(item.getReplacedArguments(self.queue))
             results_table[_i] = result
 
             _i += 1

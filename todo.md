@@ -8,4 +8,3 @@
 - [ ] add "adapter" executable
 - [ ] execution queue
 - [ ] __getattr__: if exist act with this name, allow to use as def
-- [x] разобраться с наследованием аргументов при выполнении runqueueitem

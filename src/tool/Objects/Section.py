@@ -23,9 +23,9 @@ class Section:
         try:
             return app.Logger.log(*args, **kwargs)
         except:
-            print_before_init = False
+            print_before_init = True
             if print_before_init == True:
-                print(args[0], end = '; ')
+                print(args[0])
 
     def log_error(self, *args, **kwargs):
         kwargs["kind"] = LogKindEnum.error.value

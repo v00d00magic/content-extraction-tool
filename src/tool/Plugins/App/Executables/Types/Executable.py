@@ -59,21 +59,22 @@ class Executable(Object, Namespace, Section):
         self.execute = self.Execute(self)
         self.saver = self.Saver(self)
 
-    def useAsClass(self) -> None:
+    def useAsClass(self, data: Any) -> None:
         '''
         if you want to use this class not only in ui (view) but at code
         '''
-        pass
+
+        return self.setSelf(data)
 
     def getSelf(self):
         '''
         if you have used "useAtClass()" and want to get result
         '''
-        return None
+        return self.variables.items.get(self.variables.common_variable).current
 
     def setSelf(self, new: Any):
-        # code with setting self
-        
+        self.variables.items.get(self.variables.common_variable).current = new
+
         return self.getSelf()
 
     @property

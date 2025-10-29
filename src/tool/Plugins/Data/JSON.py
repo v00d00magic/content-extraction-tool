@@ -74,16 +74,9 @@ class JSON(Representation):
             )
         ])
 
-    def useAsClass(self, data: dict):
-        self.variables.get("json").current = data
-
-    def getSelf(self) -> str:
-        return self.variables.items.get("json").current
-
-    def setSelf(self, new: str) -> str:
-        self.variables.items.get("json").current = new
-
-        return self.getSelf()
+        @property
+        def common_variable(self):
+            return "json"
 
     def parse(self) -> dict:
         if type(self.getSelf()) == str:

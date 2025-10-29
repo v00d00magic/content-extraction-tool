@@ -63,16 +63,9 @@ class Text(Representation):
             )
         ])
 
-    def useAsClass(self, text: str):
-        self.variables.get("text").current = text
-
-    def getSelf(self) -> str:
-        return self.variables.items.get("text").current
-
-    def setSelf(self, new: str) -> str:
-        self.variables.items.get("text").current = new
-
-        return self.getSelf()
+        @property
+        def common_variable(self):
+            return "text"
 
     def NTFSNormalizer(self):
         safe_filename = re.sub(r'[\\/*?:"<>| ]', '_', self.getSelf())

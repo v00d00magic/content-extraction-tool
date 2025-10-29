@@ -12,8 +12,9 @@ class Date(Representation):
             )
         ])
 
-    def useAsClass(self, data: int = None):
-        self.variables.get("date").current = int
+        @property
+        def common_variable(self):
+            return "date"
 
     def setNow(self):
         return self.setSelf(datetime.now().timestamp())

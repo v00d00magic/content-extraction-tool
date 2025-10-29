@@ -40,6 +40,7 @@ class PluginsList(Object, Section):
             except AssertionError as e:
                 self.log_error(f"AssertionError when importing {item.name}: {str(e)}, probaly not an executable")
             except Exception as e:
+                raise e
                 counters.errors += 1
                 self.log_error(e, exception_prefix=f"Did not imported module {item.name}: ")
 

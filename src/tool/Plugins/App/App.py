@@ -75,7 +75,7 @@ class App(Object, Hookable, Section):
             outer.Storage = Storage.Storage()
 
             texts = Text()
-            texts.useAsClass(text = outer.Config.get("storage.path"))
+            texts.useAsClass(data = outer.Config.get("storage.path"))
             texts.replaceCwd()
 
             outer.Storage.common = Path(texts.getSelf())

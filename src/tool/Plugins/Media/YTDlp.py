@@ -1,5 +1,4 @@
 from App import app
-import yt_dlp
 
 class YTDlp:
     def download_hook(self, d):
@@ -14,6 +13,8 @@ class YTDlp:
            app.logger.log(kind="success",message=f"Successfully downloaded",section="YtDlp")
     
     def __init__(self, opts):
+        import yt_dlp
+
         # 'outtmpl': 'downloads/%(title)s.mp4',
         self.ydl_opts = {'quiet': True, 'progress_hooks': [self.download_hook], "ratelimit": float(app.config.get("net.max_speed")) * 1024}
         #self.ydl_opts["quiet"] = False

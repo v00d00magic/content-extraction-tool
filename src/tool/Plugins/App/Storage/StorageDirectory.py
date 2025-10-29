@@ -2,7 +2,7 @@ from Objects.Object import Object
 from .StorageItem import StorageItem
 from pathlib import Path
 from Plugins.Data.Random import Random
-from Utils.Data.JSON import JSON
+from Plugins.Data.JSON import JSON
 import os
 
 class StorageDirectory(Object):

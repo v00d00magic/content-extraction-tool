@@ -10,6 +10,10 @@ class Variables(Outer):
     def get(self, name) -> Any:
         return self.all_variables.get(name)
 
+    @property
+    def common_variable(self):
+        return ""
+
     @functools.cached_property
     def all_variables(self) -> List[Argument]:
         items: dict = {}
