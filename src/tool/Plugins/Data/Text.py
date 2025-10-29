@@ -1,8 +1,8 @@
-from Plugins.Executables.Types.Representation import Representation
-from Plugins.Executables.Types.Extractor import Extractor
+from Plugins.App.Executables.Types.Representation import Representation
+from Plugins.App.Executables.Types.Extractor import Extractor
 from Plugins.App.Arguments.ApplyArgumentList import ApplyArgumentList
 
-from Plugins.Executables.Response.Response import Response
+from Plugins.App.Executables.Response.Response import Response
 from Plugins.App.DB.Content.ContentUnit import ContentUnit
 
 from Plugins.Data.NameDictList import NameDictList

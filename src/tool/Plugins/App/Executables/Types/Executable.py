@@ -61,7 +61,7 @@ class Executable(Object, Namespace, Section):
 
     def useAsClass(self) -> None:
         '''
-        if you want to use this class not only in ui (view), but at code
+        if you want to use this class not only in ui (view) but at code
         '''
         pass
 

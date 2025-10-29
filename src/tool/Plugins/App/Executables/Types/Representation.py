@@ -1,5 +1,5 @@
 from .Executable import Executable
-from Plugins.Executables.Response.Response import Response
+from Plugins.App.Executables.Response.Response import Response
 from Plugins.Data.NameDictList import NameDictList
 from Plugins.App.DB.Content.ContainsContentUnit import ContainsContentUnit
 from Plugins.App.Arguments.Comparer import Comparer

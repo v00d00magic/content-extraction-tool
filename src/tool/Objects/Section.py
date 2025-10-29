@@ -20,7 +20,12 @@ class Section:
         if self.prefix != None:
             kwargs["prefix"] = self.prefix
 
-        return app.Logger.log(*args, **kwargs)
+        try:
+            return app.Logger.log(*args, **kwargs)
+        except:
+            print_before_init = False
+            if print_before_init == True:
+                print(args[0], end = '; ')
 
     def log_error(self, *args, **kwargs):
         kwargs["kind"] = LogKindEnum.error.value

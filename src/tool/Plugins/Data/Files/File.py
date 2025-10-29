@@ -1,4 +1,4 @@
-from Plugins.Executables.Types.Representation import Representation
+from Plugins.App.Executables.Types.Representation import Representation
 import os, shutil
 from pathlib import Path
 

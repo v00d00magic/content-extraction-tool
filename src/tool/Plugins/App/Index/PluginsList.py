@@ -23,7 +23,7 @@ class PluginsList(Object, Section):
         return ["Plugins", "Initialization"]
 
     def load(self):
-        self.log("Loading plugins list")
+        self.log("Loading plugins list: ")
 
         counters = PluginsCounter()
         search_dir: Path = app.cwd.joinpath("Plugins")

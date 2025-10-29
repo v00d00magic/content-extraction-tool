@@ -126,8 +126,8 @@ class App(Object, Hookable, Section):
         self.cwd = Path(os.getcwd())
         self.src = self.cwd.parent
         self.loop = asyncio.get_event_loop()
-        self._globals = self.Globals(self)
         self.executables = self.ExecutablesTable(self)
+        self._globals = self.Globals(self)
         self.argv = self._parse_argv()
 
     def _parse_argv(self):

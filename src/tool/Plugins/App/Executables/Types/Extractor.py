@@ -1,6 +1,6 @@
-from Plugins.Executables.Types.Executable import Executable
+from Plugins.App.Executables.Types.Executable import Executable
 from Plugins.App.Arguments.ApplyArgumentList import ApplyArgumentList
-from Plugins.Executables.Response.ModelsResponse import ModelsResponse
+from Plugins.App.Executables.Response.ModelsResponse import ModelsResponse
 from Plugins.App.Arguments.Objects.ObjectArgument import ObjectArgument
 from Plugins.App.DB.Content.ContentUnit import ContentUnit
 

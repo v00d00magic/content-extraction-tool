@@ -1,5 +1,5 @@
 from Objects.Outer import Outer
-from Plugins.Executables.Response.Response import Response
+from Plugins.App.Executables.Response.Response import Response
 from Plugins.App.Arguments.ArgumentDict import ArgumentDict
 from Objects.Section import Section
 

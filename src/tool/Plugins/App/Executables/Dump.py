@@ -1,5 +1,5 @@
 from Objects.Object import Object
-from Plugins.Executables.Types.Executable import Executable
+from Plugins.App.Executables.Types.Executable import Executable
 from pydantic import Field
 
 class Dump(Object):

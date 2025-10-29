@@ -1,7 +1,7 @@
 from datetime import datetime
 from Plugins.App.Arguments.ApplyArgumentList import ApplyArgumentList
 from Plugins.App.Arguments.Objects.ObjectArgument import ObjectArgument
-from Plugins.Executables.Types.Representation import Representation
+from Plugins.App.Executables.Types.Representation import Representation
 
 class Date(Representation):
     class Variables(Representation.Variables):

@@ -1,3 +1,5 @@
+from Plugins.App.Executables.Queue.RunQueue import RunQueue
+from Plugins.App.Executables.Queue.RunQueueItem import RunQueueItem
 from colorama import init as ColoramaInit
 from typing import ClassVar
 from ..View import View
@@ -7,16 +9,38 @@ class CLI(View):
 
     class Runner(View.Runner):
         async def wrapper(self, raw_arguments):
+            from Plugins.Data.JSON import JSON
+
             ColoramaInit()
 
-            if "i" not in raw_arguments:
+            common_input = raw_arguments.get('i')
+            common_args = raw_arguments.copy()
+            common_args.pop('i')
+            is_silent = raw_arguments.get('silent') == "1"
+
+            if common_input == None:
+                # I think we should raise there?
                 self.log("--i not passed.", kind = "error")
                 return
 
-            output = await self.call(raw_arguments)
-            if 'silent' not in raw_arguments:
-                from Plugins.Data.JSON import JSON
+            queue = RunQueue()
+            # TODO change this check
+            if common_input.startswith("["):
+                _json = JSON()
+                _json.useAsClass(common_input)
 
+                queue_items = _json.parse()
+                for item in queue_items:
+                    queue.append(RunQueueItem(**item))
+            else:
+                queue.append(RunQueueItem(
+                    name = common_input,
+                    arguments = common_args,
+                    db = "content"
+                ))
+
+            output = await self.call(queue)
+            if is_silent == False:
                 _json = JSON()
                 _json.useAsClass(data = output.toDict())
 

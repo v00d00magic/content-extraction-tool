@@ -27,7 +27,8 @@ class Model(Object):
 
             setattr(new, name, val)
 
-        new.setDb(connection.db)
+        if connection != None:
+            new.setDb(connection.db)
 
         return new
 

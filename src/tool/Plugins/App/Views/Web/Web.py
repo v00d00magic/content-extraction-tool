@@ -28,7 +28,7 @@ class Web(View):
                 ('/', self.SPA, 'get'),
                 ('/static/{path:.*}', self.getAsset, 'get'),
                 ('/storage/{id:.*}/{path:.*}', self.getStorageUnit, 'get'),
-                ('/api/execute', self.getExecuteResults, 'post')
+                ('/api/execute', self.getExecuteResults, 'post'),
                 ('/api/ws', self.getWSConnection, 'get'),
                 ('/api/upload', self.uploadAsStorageUnit, 'post')
             ]

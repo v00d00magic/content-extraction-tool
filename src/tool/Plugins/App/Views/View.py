@@ -1,6 +1,6 @@
 from pydantic import Field
 
-from typing import Any, ClassVar
+from typing import Any, ClassVar, List
 from Objects.Configurable import Configurable
 from Objects.Section import Section
 from Objects.Object import Object
@@ -25,14 +25,18 @@ class View(Object, Configurable):
         def __init__(self, outer):
             self.outer = outer
 
+        @property
+        def section_name(self) -> list:
+            return ["View", "Runner"]
+
         async def wrapper(self, raw_arguments):
             pass
 
-        async def call(self, raw_arguments):
-            from Plugins.Executables.Call import Call
+        async def call(self, queue: List):
+            from Plugins.App.Executables.Call import Call
 
-            call = Call()
-            output = await call.execute.execute(raw_arguments)
+            call = Call(queue = queue)
+            output = await call.run()
 
             return output
 

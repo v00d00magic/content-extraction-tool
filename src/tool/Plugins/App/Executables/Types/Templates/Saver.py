@@ -5,11 +5,8 @@ from App import app
 class Saver(Outer):
     def ContentUnit(self, *args, **kwargs):
         do_flush = kwargs.get('_do_flush', True)
-        db_name = self.outer.call.args.get('save')
         db = None
-
-        if kwargs.get('save', None) != None:
-            db_name = kwargs.get('save')
+        db_name = None
 
         out: ContentUnit = self.outer.ContentUnit(*args, **kwargs)
         app.Logger.log(f"Created new ContentUnit {out}", section=["Saveable"])
@@ -18,6 +15,10 @@ class Saver(Outer):
             if kwargs.get('db', None) != None:
                 db = kwargs.get('db')
             else:
+                db_name = self.outer.call.db
+                if kwargs.get('save', None) != None:
+                    db_name = kwargs.get('save')
+
                 db = app.DbConnection.getConnectionByName(db_name)
 
             out.flush(db)
