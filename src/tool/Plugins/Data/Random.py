@@ -10,16 +10,6 @@ import random
 import secrets
 
 class Random(Extractor):
-    def getRandomNumber(self, min, max):
-        num: int = random.randint(min, max)
-
-        return self.setSelf(num)
-
-    def getRandomHash(self, bytes = 32):
-        _hash: str = secrets.token_urlsafe(bytes)
-
-        return self.setSelf(_hash)
-
     class Arguments(Extractor.Arguments):
         @property
         def args(self) -> NameDictList:
@@ -42,8 +32,11 @@ class Random(Extractor):
 
     class Execute(Extractor.Execute):
         async def implementation(self, i = {}) -> None:
-            num = self.outer.getRandomNumber(i.get('min'), i.get('max'))
-            num_rep = Number()
+            num: int = random.randint(i.get('min'), i.get('max'))
+            # I don't like it. I think it can be simplified? TODO
+            num_rep = Number(
+                call = self.outer.call
+            )
 
             self.append(num_rep.saver.ContentUnit(
                 original_name = str(num),
@@ -55,14 +48,3 @@ class Random(Extractor):
                     content = "random"
                 )
             ))
-
-    class Variables(Extractor.Variables):
-        items = ApplyArgumentList([
-            IntArgument(
-                name = "number",
-            )
-        ])
-
-        @property
-        def common_variable(self):
-            return "number"

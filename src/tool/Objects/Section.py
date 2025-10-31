@@ -23,7 +23,7 @@ class Section:
         try:
             return app.Logger.log(*args, **kwargs)
         except:
-            print_before_init = True
+            print_before_init = False
             if print_before_init == True:
                 print(args[0])
 

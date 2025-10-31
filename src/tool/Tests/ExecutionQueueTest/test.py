@@ -9,19 +9,37 @@ cli = CLI(name="cli")
     "text": "^_^",
 }'''
 # Getting random number
-cli.app_wrapper.app.argv = {
+'''cli.app_wrapper.app.argv = {
     "i": "Data.Random",
     "min": 0,
     "max": 100000
-}
-# Creating text from random numbers
-'''cli.app_wrapper.app.argv = {
-    "i": json.dumps(
-    [
-        {
-            "name": "Data.Random",
-
-        }
-    ])
 }'''
+# Random URL
+cli.app_wrapper.app.argv = {
+    "i": json.dumps(
+    {
+        "variables": [],
+        "queue": [
+            {
+                "name": "Data.Random",
+                "arguments": {
+                    "min": 0,
+                    "max": 10000
+                }
+            },
+            {
+                "name": "Web.URL",
+                "arguments": {
+                    "url": {
+                        "value": "https://example.com/.jpeg",
+                        "replacements": [{
+                            "position": (33, 33),
+                            "value": "$0.data.$0.content.number"
+                        }]
+                    }
+                }
+            }
+        ]
+    })
+}
 cli.loopSelfAndRunExecute()

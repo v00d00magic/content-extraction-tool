@@ -29,7 +29,7 @@ class Web(View):
                 ('/static/{path:.*}', self.getAsset, 'get'),
                 ('/storage/{id:.*}/{path:.*}', self.getStorageUnit, 'get'),
                 ('/api/execute', self.getExecuteResults, 'post'),
-                ('/api/ws', self.getWSConnection, 'get'),
+                ('/rpc', self.getWSConnection, 'get'),
                 ('/api/upload', self.uploadAsStorageUnit, 'post')
             ]
 
