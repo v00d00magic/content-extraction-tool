@@ -52,40 +52,33 @@ class Text(Representation):
 
         content: ContentData
 
+        def NTFSNormalizer(self):
+            safe_filename = re.sub(r'[\\/*?:"<>| ]', '_', self.content.text)
+            safe_filename = re.sub(r'_+', '_', safe_filename)
+            safe_filename = safe_filename.strip('_')
+            if not safe_filename:
+                safe_filename = "unnamed"
+
+            self.content.text = safe_filename
+
+        def cut(self, length: int = 100, multipoint: bool = True) -> str:
+            newString = self.content.text[:length]
+            if multipoint == False:
+                return newString
+
+            output = newString + ("..." if self.data != newString else "")
+
+            self.content.text = output
+
+        def replaceCwd(self) -> str:
+            self.replaceCwdStrWith(str(app.src))
+
+        def replaceCwdStrWith(self, withs: str) -> str:
+            self.content.text = self.content.text.replace("?cwd?", withs)
+
     class Submodules(Representation.Submodules):
         items: list = [TextExtractor]
 
-    class Variables(Representation.Variables):
-        items = ApplyArgumentList([
-            StringArgument(
-                name = "text",
-                default = ""
-            )
-        ])
-
-        @property
-        def common_variable(self):
-            return "text"
-
-    def NTFSNormalizer(self):
-        safe_filename = re.sub(r'[\\/*?:"<>| ]', '_', self.getSelf())
-        safe_filename = re.sub(r'_+', '_', safe_filename)
-        safe_filename = safe_filename.strip('_')
-        if not safe_filename:
-            safe_filename = "unnamed"
-
-        return self.setSelf(safe_filename)
-
-    def cut(self, length: int = 100, multipoint: bool = True) -> str:
-        newString = self.getSelf()[:length]
-
-        if multipoint == False:
-            return newString
-
-        return self.setSelf(newString + ("..." if self.data != newString else ""))
-
-    def replaceCwd(self) -> str:
-        return self.replaceCwdStrWith(str(app.src))
-
-    def replaceCwdStrWith(self, withs: str) -> str:
-        return self.setSelf(self.getSelf().replace("?cwd?", withs))
+    @classmethod
+    def _callFromCode(cls, text: str) -> ContentUnit:
+        return cls.ContentUnit(content = cls.ContentUnit.ContentData(text = text))

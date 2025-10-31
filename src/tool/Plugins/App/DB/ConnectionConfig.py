@@ -14,12 +14,13 @@ class ConnectionConfig(Object):
 
     def getConnection(self) -> Database:
         db = None
-
         match(self.protocol.value):
             case ConnectionEnum.sqlite.value:
-                _t = Text()
-                _t.useAsClass(self.content)
-                db = SqliteDatabase(_t.replaceCwd())
+                text = Text.use(
+                    text = self.content
+                )
+                text.replaceCwd()
+                db = SqliteDatabase(text.content.text)
 
         return db
 

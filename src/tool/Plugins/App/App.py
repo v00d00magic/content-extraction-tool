@@ -74,11 +74,12 @@ class App(Object, Hookable, Section):
 
             outer.Storage = Storage.Storage()
 
-            texts = Text()
-            texts.useAsClass(data = outer.Config.get("storage.path"))
-            texts.replaceCwd()
+            text = Text.use(
+                text = outer.Config.get('storage.path')
+            )
+            text.replaceCwd()
 
-            outer.Storage.common = Path(texts.getSelf())
+            outer.Storage.common = Path(text.content.text)
             outer.Storage.register()
 
         def initDB(self, outer):

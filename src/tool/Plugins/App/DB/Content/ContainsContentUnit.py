@@ -1,16 +1,5 @@
-from .ContentUnit import ContentUnit as OrigContentUnit
-from typing import ClassVar
-from pydantic import Field
+from .ContentUnit import ContentUnit
 
 class ContainsContentUnit():
-    ContentUnit: ClassVar[OrigContentUnit] = None
-
-    def init_subclass(cls):
-        class ContentUnit(OrigContentUnit):
-            class Saved(OrigContentUnit.Saved):
-                representation: str = Field(default = cls.meta.name_str)
-                method: str = Field(default = cls.meta.name_str)
-
-            saved: Saved = Field(default = Saved())
-
-        cls.ContentUnit = ContentUnit
+    class ContentUnit(ContentUnit):
+        pass

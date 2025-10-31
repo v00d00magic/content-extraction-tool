@@ -45,8 +45,7 @@ class JSONFromText(Extractor):
 
     class Execute(Extractor.Execute):
         async def implementation(self, i = {}) -> None:
-            _json = JSON()
-            _json.useAsClass(data = i.get('text'))
+            _json = JSON(data = i.get('text'))
 
             self.append(self.outer.parent.saver.ContentUnit(
                 original_name = 'json data',
@@ -61,7 +60,25 @@ class JSONFromText(Extractor):
 
 class JSON(Representation):
     class ContentUnit(Representation.ContentUnit):
-        data: list | dict = None
+        class ContentData(Representation.ContentUnit.ContentData):
+            data: list | dict
+
+        content: ContentData
+
+        def parse(self) -> dict:
+            if type(self.data) == str:
+                self.content.data = json.loads(self.content.data)
+
+        def dump(self, indent = None) -> str:
+            return json.dumps(self.content.data, ensure_ascii = False, indent = indent)
+
+        def isValid(self):
+            try:
+                return self.data != None and type(self.content.data) != int and type(self.data) != str
+            except json.JSONDecodeError:
+                return False
+            except TypeError:
+                return False
 
     class Submodules(Representation.Submodules):
         items: list = [JSONFromObject, JSONFromText]
@@ -78,19 +95,6 @@ class JSON(Representation):
         def common_variable(self):
             return "json"
 
-    def parse(self) -> dict:
-        if type(self.getSelf()) == str:
-            return self.setSelf(json.loads(self.getSelf()))
-
-        return self.getSelf()
-
-    def dump(self, indent = None) -> str:
-        return json.dumps(self.getSelf(), ensure_ascii = False, indent = indent)
-
-    def isValid(self):
-        try:
-            return self.getSelf() != None and type(self.getSelf()) != int and type(self.getSelf()) != str
-        except json.JSONDecodeError:
-            return False
-        except TypeError:
-            return False
+    @classmethod
+    def _callFromCode(cls, data: list | dict) -> ContentUnit:
+        return cls.ContentUnit(content = cls.ContentUnit.ContentData(data = data))

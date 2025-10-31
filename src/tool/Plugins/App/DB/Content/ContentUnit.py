@@ -33,9 +33,9 @@ class ContentUnit(Model):
     index_description: str = Field(default=None)
 
     content: ContentData # if you extend ContentData you should duplicate annotation too
-    source: Source
+    source: Source = Field(default = None)
     outer: Outer = Field(default = Outer())
-    saved: Saved
+    saved: Saved = Field(default = None)
 
     created_at: datetime = Field(default_factory=lambda: datetime.now())
     declared_created_at: datetime = Field(default_factory=lambda: datetime.now())

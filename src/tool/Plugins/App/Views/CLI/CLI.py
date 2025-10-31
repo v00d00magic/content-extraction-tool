@@ -26,8 +26,7 @@ class CLI(View):
             queue = RunQueue()
             # TODO change this check
             if common_input.startswith("["):
-                _json = JSON()
-                _json.useAsClass(common_input)
+                _json = JSON.use(data = common_input)
 
                 queue_items = _json.parse()
                 for item in queue_items:
@@ -41,7 +40,6 @@ class CLI(View):
 
             output = await self.call(queue)
             if is_silent == False:
-                _json = JSON()
-                _json.useAsClass(data = output.toDict())
+                _json = JSON.use(data = output.toDict())
 
                 print(_json.dump(indent=4))

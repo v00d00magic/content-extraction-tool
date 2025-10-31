@@ -9,6 +9,11 @@ class Saver(Outer):
         db_name = None
 
         out: ContentUnit = self.outer.ContentUnit(*args, **kwargs)
+        out.saved = self.outer.ContentUnit.Saved(
+            representation = self.outer.meta.name_str,
+            method = self.outer.meta.name_str,
+        )
+
         app.Logger.log(f"Created new ContentUnit {out}", section=["Saveable"])
 
         if do_flush == True:

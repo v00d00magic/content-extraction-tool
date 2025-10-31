@@ -49,6 +49,13 @@ class Executable(Object, Namespace, Section):
     class EnvVariables(EnvVariables.EnvVariables):
         pass
 
+    @classmethod
+    def use(cls, *args, **kwargs):
+        return cls._callFromCode(*args, **kwargs)
+
+    def _callFromCode(self):
+        pass
+
     def init_subclass(cls):
         cls.arguments = cls.Arguments(cls)
         cls.submodules = cls.Submodules(cls)
@@ -59,28 +66,10 @@ class Executable(Object, Namespace, Section):
         self.execute = self.Execute(self)
         self.saver = self.Saver(self)
 
-    def useAsClass(self, data: Any) -> None:
-        '''
-        if you want to use this class not only in ui (view) but at code
-        '''
-
-        return self.setSelf(data)
-
-    def getSelf(self):
-        '''
-        if you have used "useAtClass()" and want to get result
-        '''
-        return self.variables.items.get(self.variables.common_variable).current
-
-    def setSelf(self, new: Any):
-        self.variables.items.get(self.variables.common_variable).current = new
-
-        return self.getSelf()
-
     @property
     def section_name(self) -> list:
-        _class = self.__class__.__mro__[0]
-        _module = _class.__module__
-        _parts = _module.split('.')
+        current_class = self.__class__.__mro__[0]
+        name_module = current_class.__module__
+        name_parts = name_module.split('.')
 
-        return ["Executables", *_parts]
+        return ["Executables", *name_parts]
