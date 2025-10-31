@@ -22,8 +22,9 @@ cli.app_wrapper.app.argv = {
 cli.app_wrapper.app.argv = {
     "i": json.dumps(
     {
+        "return_from": -1,
         "variables": [],
-        "queue": [
+        "items": [
             {
                 "name": "Data.Random",
                 "arguments": {

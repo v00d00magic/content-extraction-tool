@@ -1,48 +1,51 @@
-from Plugins.App.Executables.Queue.RunQueueItem import RunQueueItem
+from Plugins.App.Executables.Queue.RunQueueItem import RunQueueItem, RunQueueItemArguments
 from Objects.Object import Object
+from Objects.Section import Section
 from typing import List
 from pydantic import Field
 
-class RunQueue(Object):
+class RunQueue(Object, Section):
     '''
     Wrapper for RunQueueItem's. It runs items from queue and provides needed arguments
     '''
 
     items: List[RunQueueItem] = Field(default = [])
+    variables: List = Field(default = [])
     return_from: int = Field(default = 0)
+
+    @staticmethod
+    def fromJson(data: dict):
+        queue = RunQueue(
+            items = [],
+            variables = [],
+            return_from = data.get('return_from')
+        )
+
+        for item in data.get('items'):
+            queue.items.append(RunQueueItem(**item))
+
+        for variable in data.get('variables'):
+            queue.variables.append(variable)
+
+        return queue
 
     def append(self, item: RunQueueItem):
         self.items.append(item)
 
-    @staticmethod
-    def replaceArg(text, results_table_link: dict):
-        # format: $0.data.text
-        print(results_table_link)
-        items: List[str] = text.split(".")
-        common_result_link = items[0]
-        common_i = int(common_result_link.replace("$", ""))
-        result_in_table = results_table_link.get(int(common_i))
-        current_level = result_in_table
+    async def run(self):
+        results_table = {}
+        _i = 0
 
-        for item in items[1:]:
-            if "$" in item:
-                current_level = current_level[int(item.replace("$", ""))]
-            else:
-                current_level = getattr(current_level, item)
+        for item in self.items:
+            args = RunQueueItemArguments.getArguments(item.arguments, results_table)
 
-        return current_level
+            self.log(f"Queue item {_i}: running {item} with {args}")
 
-        '''
-        _iterator = 0
-        for item in items:
-            if item.startswith("$") == True:
-                _id = int(item.replace("$", ""))
-                if _iterator == 0:
-                    processed_items.append(results_table_link[_id])
+            result = await item.run(args)
+            results_table[_i] = result
 
-            _iterator += 1
+            self.log(f"Queue item {_i}: got results {result}")
 
-        for pr_item in processed_items:
-        '''
+            _i += 1
 
-        return text
+        return results_table[self.queue.return_from]

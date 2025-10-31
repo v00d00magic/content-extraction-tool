@@ -6,6 +6,7 @@ from Plugins.App.Arguments.ArgumentDict import ArgumentDict
 from Plugins.App.Executables.Response.Response import Response
 
 from Plugins.App.Executables.Queue.RunQueue import RunQueue
+from Plugins.App.Executables.Queue.RunQueueItem import RunQueueItem
 
 from pydantic import Field
 from App import app
@@ -13,7 +14,7 @@ from App import app
 # TODO dump
 class Call(Object, Hookable, Section):
     id: int = 0
-    queue: RunQueue = None
+    queue: RunQueue = Field(default = None)
 
     async def execute_as_await(self, executable, i: ArgumentDict = {}) -> Response:
         self.hooks.trigger("start")
@@ -22,22 +23,7 @@ class Call(Object, Hookable, Section):
         return await executable.execute.execute(i)
 
     async def run(self):
-        results_table = {}
-        _i = 0
-
-        for item in self.queue.items:
-            args = item.getArguments(self.queue, results_table)
-
-            self.log(f"Queue item {_i}: running {item} {args}")
-
-            result = await item.run(args)
-            results_table[_i] = result
-
-            self.log(f"Queue item {_i}: got result {result}")
-
-            _i += 1
-
-        return results_table[self.queue.return_from]
+        return await self.queue.run()
 
     @property
     def section_name(self) -> list:

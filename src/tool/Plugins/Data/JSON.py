@@ -61,12 +61,12 @@ class JSONFromText(Extractor):
 class JSON(Representation):
     class ContentUnit(Representation.ContentUnit):
         class ContentData(Representation.ContentUnit.ContentData):
-            data: list | dict
+            data: list | dict | str
 
         content: ContentData
 
         def parse(self) -> dict:
-            if type(self.data) == str:
+            if type(self.content.data) == str:
                 self.content.data = json.loads(self.content.data)
 
         def dump(self, indent = None) -> str:
@@ -74,7 +74,7 @@ class JSON(Representation):
 
         def isValid(self):
             try:
-                return self.data != None and type(self.content.data) != int and type(self.data) != str
+                return self.content.data != None and type(self.content.data) != int and type(self.content.data) != str
             except json.JSONDecodeError:
                 return False
             except TypeError:

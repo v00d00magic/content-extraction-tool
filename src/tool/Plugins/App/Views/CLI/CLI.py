@@ -25,12 +25,12 @@ class CLI(View):
 
             queue = RunQueue()
             # TODO change this check
-            if common_input.startswith("["):
+            if common_input[0] in ["[", "{"]:
                 _json = JSON.use(data = common_input)
+                _json.parse()
 
-                queue_items = _json.parse()
-                for item in queue_items:
-                    queue.append(RunQueueItem(**item))
+                queue_items = _json.content.data
+                queue = RunQueue.fromJson(queue_items)
             else:
                 queue.append(RunQueueItem(
                     name = common_input,
