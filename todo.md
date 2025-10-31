@@ -1,11 +1,15 @@
 - [x] Arguments.ArgumentList to Data.ListDictWithNameProperty
-- [ ] Representation: wheel of extract methods
+- [x] Representation: wheel of extract methods
 - [ ] Representation: aftersave classes
 - [ ] Representation: external_submodules
 - [x] Executable: Move `meta` to `Objects.Object`
 - [x] Representation: Do not use return
-- [ ] i think it will be a lot of code dup (json.fromUrl, xml.fromUrl, file.fromUrl), so move extractors somewhere or idk
-- [ ] add "adapter" executable
-- [ ] execution queue
+- [ ] ~~add "adapter" executable~~
+- [x] execution queue
 - [ ] __getattr__: if exist act with this name, allow to use as def
 - [x] remove "useAsClass()" functions
+- [ ] logger: move to executables
+- [ ] obvious submodules
+- [ ] queue: arguments
+- [ ] TOO MUCH BOILERPLATE AND HACKS
+- [ ] queue should not duplicate responses

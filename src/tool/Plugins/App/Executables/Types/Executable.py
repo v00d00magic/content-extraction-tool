@@ -2,13 +2,14 @@ from Objects.Object import Object
 from Objects.Namespace import Namespace
 from Objects.Section import Section
 from .Templates import Arguments, Execute, Saver, Variables, EnvVariables, Submodules
-from typing import Any, ClassVar
+from typing import Any, ClassVar, Literal
 from pydantic import Field
 
 class Executable(Object, Namespace, Section):
     parent: Object = Field(default = None)
     call: Any = Field(default = None)
 
+    submodule_value: ClassVar[Literal['internal', 'external']] = None
     self_name: ClassVar[str] = "None"
 
     meta: ClassVar[Any] = Field(default = None)

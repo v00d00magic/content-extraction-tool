@@ -31,7 +31,7 @@ class Representation(Executable, ContainsContentUnit):
                 )
             ])
 
-            for item in self.outer.submodules.get(["Extractor", "Receivation"]):
+            for item in self.outer.submodules.getInternal(["Extractor", "Receivation"]):
                 for arg in item.arguments.args.toList():
                     lists.append(arg)
 
@@ -45,7 +45,8 @@ class Representation(Executable, ContainsContentUnit):
             '''
 
             extractors = []
-            for submodule in self.outer.submodules.get(type_in=["Extractor", "Receivation"]):
+            print(self.outer.submodules.getInternal(type_in=["Extractor", "Receivation"]))
+            for submodule in self.outer.submodules.getInternal(type_in=["Extractor", "Receivation"]):
                 extractors.append(submodule)
 
             extractor = self._getSuitableExtractor(extractors, i)

@@ -10,54 +10,6 @@ from Plugins.App.Arguments.Objects.ObjectArgument import ObjectArgument
 
 import json
 
-class JSONFromObject(Extractor):
-    class Arguments(Extractor.Arguments):
-        @property
-        def args(self) -> NameDictList:
-            return NameDictList([
-                ObjectArgument(
-                    name = "object"
-                )
-            ])
-
-    class Execute(Extractor.Execute):
-        async def implementation(self, i = {}) -> None:
-            self.append(self.outer.parent.saver.ContentUnit(
-                original_name = 'json data',
-                content = JSON.ContentUnit.ContentData(
-                    data = i.get('object')
-                ),
-                source = JSON.ContentUnit.Source(
-                    types = "input",
-                    content = "object"
-                )
-            ))
-
-class JSONFromText(Extractor):
-    class Arguments(Extractor.Arguments):
-        @property
-        def args(self) -> NameDictList:
-            return NameDictList([
-                StringArgument(
-                    name = "text"
-                )
-            ])
-
-    class Execute(Extractor.Execute):
-        async def implementation(self, i = {}) -> None:
-            _json = JSON(data = i.get('text'))
-
-            self.append(self.outer.parent.saver.ContentUnit(
-                original_name = 'json data',
-                content = JSON.ContentUnit.ContentData(
-                    data = _json.parse()
-                ),
-                source = JSON.ContentUnit.Source(
-                    types = "input",
-                    content = "text"
-                )
-            ))
-
 class JSON(Representation):
     class ContentUnit(Representation.ContentUnit):
         class ContentData(Representation.ContentUnit.ContentData):
@@ -80,20 +32,54 @@ class JSON(Representation):
             except TypeError:
                 return False
 
-    class Submodules(Representation.Submodules):
-        items: list = [JSONFromObject, JSONFromText]
+    class Submodules(Representation.Submodules):        
+        class ByObject(Extractor):
+            class Arguments(Extractor.Arguments):
+                @property
+                def args(self) -> NameDictList:
+                    return NameDictList([
+                        ObjectArgument(
+                            name = "object"
+                        )
+                    ])
 
-    class Variables(Representation.Variables):
-        items = ApplyArgumentList([
-            ObjectArgument(
-                name = "json",
-                default = {}
-            )
-        ])
+            class Execute(Extractor.Execute):
+                async def implementation(self, i = {}) -> None:
+                    self.append(self.outer.parent.saver.ContentUnit(
+                        original_name = 'json data',
+                        content = JSON.ContentUnit.ContentData(
+                            data = i.get('object')
+                        ),
+                        source = JSON.ContentUnit.Source(
+                            types = "input",
+                            content = "object"
+                        )
+                    ))
 
-        @property
-        def common_variable(self):
-            return "json"
+        class ByText(Extractor):
+            class Arguments(Extractor.Arguments):
+                @property
+                def args(self) -> NameDictList:
+                    return NameDictList([
+                        StringArgument(
+                            name = "text"
+                        )
+                    ])
+
+            class Execute(Extractor.Execute):
+                async def implementation(self, i = {}) -> None:
+                    _json = JSON(data = i.get('text'))
+
+                    self.append(self.outer.parent.saver.ContentUnit(
+                        original_name = 'json data',
+                        content = JSON.ContentUnit.ContentData(
+                            data = _json.parse()
+                        ),
+                        source = JSON.ContentUnit.Source(
+                            types = "input",
+                            content = "text"
+                        )
+                    ))
 
     @classmethod
     def _callFromCode(cls, data: list | dict) -> ContentUnit:

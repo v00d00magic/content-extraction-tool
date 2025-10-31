@@ -13,38 +13,6 @@ from Plugins.App.Arguments.Assertions.NotNoneAssertion import NotNoneAssertion
 from App import app
 import re
 
-class TextExtractor(Extractor):
-    class Arguments(Extractor.Arguments):
-        @property
-        def args(self) -> NameDictList:
-            return NameDictList([
-                StringArgument(
-                    name = "text",
-                    assertions = [
-                        NotNoneAssertion()
-                    ]
-                ),
-                IntArgument(
-                    name = "title_cut",
-                    default = 100
-                )
-            ])
-
-    class Execute(Extractor.Execute):
-        async def implementation(self, i = {}) -> None:
-            text = i.get('text')
-            name = text[0:i.get('title_cut')]
-            self.append(self.outer.parent.saver.ContentUnit(
-                original_name = name,
-                content = Text.ContentUnit.ContentData(
-                    text = text
-                ),
-                source = Text.ContentUnit.Source(
-                    types = "input",
-                    content = "text"
-                )
-            ))
-
 class Text(Representation):
     class ContentUnit(Representation.ContentUnit):
         class ContentData(Representation.ContentUnit.ContentData):
@@ -77,7 +45,39 @@ class Text(Representation):
             self.content.text = self.content.text.replace("?cwd?", withs)
 
     class Submodules(Representation.Submodules):
-        items: list = [TextExtractor]
+        class ByText(Extractor):
+            submodule_value = "internal"
+
+            class Arguments(Extractor.Arguments):
+                @property
+                def args(self) -> NameDictList:
+                    return NameDictList([
+                        StringArgument(
+                            name = "text",
+                            assertions = [
+                                NotNoneAssertion()
+                            ]
+                        ),
+                        IntArgument(
+                            name = "title_cut",
+                            default = 100
+                        )
+                    ])
+
+            class Execute(Extractor.Execute):
+                async def implementation(self, i = {}) -> None:
+                    text = i.get('text')
+                    name = text[0:i.get('title_cut')]
+                    self.append(self.outer.parent.saver.ContentUnit(
+                        original_name = name,
+                        content = Text.ContentUnit.ContentData(
+                            text = text
+                        ),
+                        source = Text.ContentUnit.Source(
+                            types = "input",
+                            content = "text"
+                        )
+                    ))
 
     @classmethod
     def _callFromCode(cls, text: str) -> ContentUnit:

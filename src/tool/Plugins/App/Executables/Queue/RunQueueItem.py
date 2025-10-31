@@ -25,7 +25,6 @@ class RunQueueItemArguments():
                     )
 
                 returns[key] = _obj.getValue(results_table)
-                print(key, ",", returns[key])
 
         return returns
     

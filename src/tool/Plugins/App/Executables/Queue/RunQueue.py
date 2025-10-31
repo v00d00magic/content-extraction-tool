@@ -4,6 +4,19 @@ from Objects.Section import Section
 from typing import List
 from pydantic import Field
 
+class RunQueueResults():
+    items: dict = {}
+    iterator: int = 0
+
+    def get(self, index: int) -> dict:
+        if index < 0:
+            return self.items[len(self.items.keys()) + index]
+
+        return self.items[index]
+
+    def set(self, iterator: int, item: dict):
+        self.items[iterator] = item
+
 class RunQueue(Object, Section):
     '''
     Wrapper for RunQueueItem's. It runs items from queue and provides needed arguments
@@ -33,19 +46,18 @@ class RunQueue(Object, Section):
         self.items.append(item)
 
     async def run(self):
-        results_table = {}
-        _i = 0
+        results_table = RunQueueResults()
 
         for item in self.items:
             args = RunQueueItemArguments.getArguments(item.arguments, results_table)
 
-            self.log(f"Queue item {_i}: running {item} with {args}")
+            self.log(f"Queue item {results_table.iterator}: running {item} with {args}")
 
             result = await item.run(args)
-            results_table[_i] = result
+            results_table.set(results_table.iterator, result)
 
-            self.log(f"Queue item {_i}: got results {result}")
+            self.log(f"Queue item {results_table.iterator}: got results {result}")
 
-            _i += 1
+            results_table.iterator += 1
 
-        return results_table[self.queue.return_from]
+        return results_table
