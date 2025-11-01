@@ -22,24 +22,35 @@ cli.app_wrapper.app.argv = {
 cli.app_wrapper.app.argv = {
     "i": json.dumps(
     {
-        "return_from": -1,
-        "variables": [],
+        "return_from": 'join',
+        "repeat": 10,
+        "pre": [
+            {
+                "name": "App.Arguments.Types.IntArgument.IntArgument",
+                "arguments": {
+                    "name": "random",
+                    "current": 0
+                }
+            }
+        ],
         "items": [
             {
-                "name": "Data.Random",
+                "type": "executable",
+                "name": "Data.Random.Random",
                 "arguments": {
                     "min": 0,
                     "max": 10000
                 }
             },
             {
-                "name": "Web.URL",
+                "type": "executable",
+                "name": "Web.URL.URL",
                 "arguments": {
                     "url": {
                         "value": "https://example.com/.jpeg",
                         "replacements": [{
                             "position": (33, 33),
-                            "value": "$0.data.$0.content.number"
+                            "value": "#0"
                         }]
                     }
                 }

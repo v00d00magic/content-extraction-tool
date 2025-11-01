@@ -9,8 +9,10 @@
 - [ ] __getattr__: if exist act with this name, allow to use as def
 - [x] remove "useAsClass()" functions
 - [ ] logger: move to executables
-- [ ] obvious submodules
-- [ ] queue: arguments
+- [x] obvious submodules
+- [x] queue: arguments
 - [ ] TOO MUCH BOILERPLATE AND HACKS
 - [x] queue should not duplicate responses
 - [x] refactor "Variables"
+- [ ] queue: remove spaghetti code
+- [ ] queue: response format

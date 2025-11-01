@@ -1,5 +1,6 @@
-from Plugins.App.Executables.Queue.RunQueueItem import RunQueueItem, RunQueueItemArguments
+from Plugins.App.Executables.Queue.RunQueueItem import RunQueueItem, RunQueueItemArguments, RunQueueExecuteItem
 from .RunQueueResults import RunQueueResults
+from Plugins.App.Logger.LogParts.LogPrefix import LogPrefix
 from Objects.Object import Object
 from Objects.Section import Section
 from typing import List
@@ -11,41 +12,60 @@ class RunQueue(Object, Section):
     '''
 
     items: List[RunQueueItem] = Field(default = [])
-    variables: List = Field(default = [])
-    return_from: int = Field(default = 0)
+    repeat: int = Field(default = 1)
+    pre: List = Field(default = [])
+    return_from: int | str = Field(default = 'common')
 
     @staticmethod
     def fromJson(data: dict):
-        queue = RunQueue(
-            items = [],
-            variables = [],
-            return_from = data.get('return_from')
-        )
+        queue = RunQueue()
 
-        for item in data.get('items'):
-            queue.items.append(RunQueueItem(**item))
-
-        for variable in data.get('variables'):
-            queue.variables.append(variable)
+        for key, value in data.items():
+            match (key):
+                case 'items':
+                    for item in value:
+                        queue.items.append(RunQueueExecuteItem(**item))
+                case 'pre':
+                    for variable in value:
+                        queue.pre.append(RunQueueItem(**variable))
+                case _:
+                    setattr(queue, key, value)
 
         return queue
+
+    def parseVariables(self):
+        _i = 0
+        variables: dict = {}
+        for var in self.pre:
+            plugin = var.executable_class.plugin
+            variables[_i] = plugin(*[], **var.arguments)
+
+        return variables
 
     def append(self, item: RunQueueItem):
         self.items.append(item)
 
     async def run(self):
-        results_table = RunQueueResults()
+        results = RunQueueResults()
+        variables = self.parseVariables()
 
-        for item in self.items:
-            args = RunQueueItemArguments.getArguments(item.arguments, results_table)
+        for repeat in range(0, self.repeat):
+            prefix = LogPrefix(name = f'QueueItem|Repeat_{repeat}', id = results.iterator)
 
-            self.log(f"Queue item {results_table.iterator}: running {item} with {args}")
+            for item in self.items:
+                self.log(f"Starting queue item", prefix = prefix)
 
-            result = await item.run(args)
-            results_table.set(results_table.iterator, result)
+                match (item.type):
+                    case _:       
+                        args = RunQueueItemArguments.getArguments(item.arguments, results, variables)
 
-            self.log(f"Queue item {results_table.iterator}: got results {result}")
+                        result = await item.run(args, variables)
+                        results.set(results.iterator, result)
 
-            results_table.iterator += 1
+                        self.log(f"Running executable {item} with {args}", prefix = prefix)
+    
+                self.log(f"Ending queue item", prefix = prefix)
 
-        return results_table
+                results.iterator += 1
+
+        return results

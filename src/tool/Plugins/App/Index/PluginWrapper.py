@@ -36,7 +36,7 @@ class PluginWrapper(Object, Section):
 
             self.category_parts.append(part)
 
-        self.log(f"Importing object {self.name}")
+        self.log(f"Importing object {self.module_name}")
 
     @staticmethod
     def scan(dirs: Path) -> List[Object]:
@@ -46,14 +46,24 @@ class PluginWrapper(Object, Section):
             if plugin.name in ['', '__pycache__', 'Base.py']:
                 continue
 
+            # TODO import every class from file
             items.append(PluginWrapper(path = plugin.relative_to(dirs)))
 
         return items
 
     @computed_field
     @property
+    def module_name(self) -> str:
+        parts = self.category_parts.copy()
+        parts.append(self.stem)
+
+        return ".".join(parts)
+
+    @computed_field
+    @property
     def name(self) -> str:
         parts = self.category_parts.copy()
+        parts.append(self.stem)
         parts.append(self.stem)
 
         return ".".join(parts)
@@ -61,7 +71,7 @@ class PluginWrapper(Object, Section):
     def _import(self):
         is_end = self.stem == "__init__"
         title = self.stem
-        path: str = f'Plugins.' + self.name
+        path: str = f'Plugins.' + self.module_name
 
         module = importlib.import_module(path)
         assert module != None, f"module {path} not found"
