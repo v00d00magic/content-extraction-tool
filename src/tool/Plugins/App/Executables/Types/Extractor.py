@@ -33,5 +33,4 @@ class Extractor(Executable):
         async def implementation_wrap(self, i = {}) -> ModelsResponse:
             await self.implementation(i)
 
-            print("ITEMS@@@@@@@@@", self.outer.variables.get("items"))
-            return ModelsResponse(data = self.outer.variables.get("items").current)
+            return ModelsResponse(data = self.outer.variables.items.get("items").current)

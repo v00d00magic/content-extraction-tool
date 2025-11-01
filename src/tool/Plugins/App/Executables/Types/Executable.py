@@ -1,9 +1,26 @@
 from Objects.Object import Object
 from Objects.Namespace import Namespace
 from Objects.Section import Section
-from .Templates import Arguments, Execute, Saver, Variables, EnvVariables, Submodules
-from typing import Any, ClassVar, Literal
+from .Templates import Arguments, Execute, Saver, Submodules
+from typing import Any, ClassVar, Literal, List
+from Plugins.App.Arguments.ApplyArgumentList import ApplyArgumentList
+from Plugins.Data.NameDictList import NameDictList
 from pydantic import Field
+
+class VariablesList(Object):
+    items: NameDictList = None
+
+    def constructor(self):
+        self.items = NameDictList([])
+
+    def append(self, item):
+        self.items.append(item)
+
+class EnvList(Object):
+    items: NameDictList = None
+
+    def constructor(self):
+        self.items = NameDictList([])
 
 class Executable(Object, Namespace, Section):
     parent: Object = Field(default = None)
@@ -14,10 +31,11 @@ class Executable(Object, Namespace, Section):
 
     meta: ClassVar[Any] = Field(default = None)
     submodules: ClassVar[Any] = Field(default = None)
-    variables: Any = Field(default = None)
-    env_variables: ClassVar[Any] = Field(default = None)
     execute: Any = Field(default = None)
     saver: Any = Field(default = None)
+
+    variables: VariablesList = None
+    env_variables: EnvList = None
 
     class Arguments(Arguments.Arguments):
         pass
@@ -44,11 +62,11 @@ class Executable(Object, Namespace, Section):
     class Saver(Saver.Saver):
         pass
 
-    class Variables(Variables.Variables):
-        pass
+    class Variables():
+        items: ApplyArgumentList = ApplyArgumentList([])
 
-    class EnvVariables(EnvVariables.EnvVariables):
-        pass
+    class EnvVariables():
+        items: NameDictList = NameDictList([])
 
     @classmethod
     def use(cls, *args, **kwargs):
@@ -60,10 +78,24 @@ class Executable(Object, Namespace, Section):
     def init_subclass(cls):
         cls.arguments = cls.Arguments(cls)
         cls.submodules = cls.Submodules(cls)
-        cls.env_variables = cls.EnvVariables(cls)
 
     def constructor(self):
-        self.variables = self.Variables(self)
+        self.variables = VariablesList()
+        self.env_variables = EnvList()
+
+        for item in self.mro:
+            # TODO refactor to not use without constructor
+            if hasattr(item, 'Variables'):
+                for variable in self.Variables().items.toList():
+                    _var = variable.__class__(name = variable.name)
+                    _item = _var.copy(update=variable.dict(exclude={'current'}))
+                    _item.autoApply()
+                    self.variables.append(_item)
+
+            if hasattr(item, 'EnvVariables'):
+                for variable in self.EnvVariables().items.toList():
+                    self.env_variables.append(variable)
+
         self.execute = self.Execute(self)
         self.saver = self.Saver(self)
 

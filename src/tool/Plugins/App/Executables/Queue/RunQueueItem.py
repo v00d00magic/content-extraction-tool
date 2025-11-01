@@ -38,7 +38,6 @@ class RunQueueItemArguments():
         current_level = result_in_table
 
         for item in items[1:]:
-            print(item, current_level)
             if "$" in item:
                 current_level = current_level[int(item.replace("$", ""))]
             else:
@@ -47,7 +46,6 @@ class RunQueueItemArguments():
                 else:
                     current_level = getattr(current_level, item)
 
-        print("current_level!!!!!!", current_level)
         return current_level
 
 class RunQueueItemValueReplacements(Object):
@@ -62,7 +60,6 @@ class RunQueueItemValue(Object):
     replacements: List[RunQueueItemValueReplacements] = Field(default = None)
 
     def getValue(self, results_table: Object):
-        print(results_table)
         _val = self.value
         if self.replacements != None:
             for replace in self.replacements:
@@ -86,7 +83,6 @@ class RunQueueItem(Object):
         executable = plugin()
         executable.call = self
 
-        print(executable.Variables)
 
         # returning coroutine without await
         return executable.execute.execute(arguments)

@@ -9,7 +9,6 @@ class ModelsResponse(Response):
         out = []
 
         for item in self.data:
-            print(item)
             out.append(item.toJson())
 
         return out

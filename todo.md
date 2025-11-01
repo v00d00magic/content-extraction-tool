@@ -12,5 +12,5 @@
 - [ ] obvious submodules
 - [ ] queue: arguments
 - [ ] TOO MUCH BOILERPLATE AND HACKS
-- [ ] queue should not duplicate responses
-- [ ] refactor "Variables"
+- [x] queue should not duplicate responses
+- [x] refactor "Variables"
