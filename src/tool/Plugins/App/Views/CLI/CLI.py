@@ -39,7 +39,10 @@ class CLI(View):
                 ))
 
             output = await self.call(queue)
+            print(output)
             if is_silent == False:
+                print("                      !!!", output.items, output.get(queue.return_from))
+
                 _json = JSON.use(data = output.get(queue.return_from).toDict())
 
                 print(_json.dump(indent=4))

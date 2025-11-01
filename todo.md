@@ -13,3 +13,4 @@
 - [ ] queue: arguments
 - [ ] TOO MUCH BOILERPLATE AND HACKS
 - [ ] queue should not duplicate responses
+- [ ] refactor "Variables"

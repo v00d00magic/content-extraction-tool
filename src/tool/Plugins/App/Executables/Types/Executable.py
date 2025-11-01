@@ -14,7 +14,7 @@ class Executable(Object, Namespace, Section):
 
     meta: ClassVar[Any] = Field(default = None)
     submodules: ClassVar[Any] = Field(default = None)
-    variables: ClassVar[Any] = Field(default = None)
+    variables: Any = Field(default = None)
     env_variables: ClassVar[Any] = Field(default = None)
     execute: Any = Field(default = None)
     saver: Any = Field(default = None)
@@ -60,10 +60,10 @@ class Executable(Object, Namespace, Section):
     def init_subclass(cls):
         cls.arguments = cls.Arguments(cls)
         cls.submodules = cls.Submodules(cls)
-        cls.variables = cls.Variables(cls)
         cls.env_variables = cls.EnvVariables(cls)
 
     def constructor(self):
+        self.variables = self.Variables(self)
         self.execute = self.Execute(self)
         self.saver = self.Saver(self)
 

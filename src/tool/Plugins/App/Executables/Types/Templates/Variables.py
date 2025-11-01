@@ -6,21 +6,19 @@ import functools
 
 class Variables(Outer):
     items: ApplyArgumentList = ApplyArgumentList([])
+    variables: dict = {}
 
     def get(self, name) -> Any:
-        return self.all_variables.get(name)
+        return self.variables.get(name)
 
-    @property
-    def common_variable(self):
-        return ""
-
-    @functools.cached_property
-    def all_variables(self) -> List[Argument]:
-        items: dict = {}
+    def __init__(self, outer):
+        super().__init__(outer)
 
         for ext in self.outer.mro:
-            if hasattr(ext, 'variables'):
-                for _item in ext.variables.items.toList():
-                    items[_item.name] = _item
+            if hasattr(ext, 'Variables'):
+                for _item in ext.Variables.items.toList():
+                    self.variables[_item.name] = _item.__class__(
+                        name = _item.name
+                    ).copy(update=_item.dict(exclude={"current"}))
 
-        return items
+                    self.variables.get(_item.name).autoApply()

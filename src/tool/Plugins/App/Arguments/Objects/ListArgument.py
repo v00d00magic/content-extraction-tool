@@ -2,7 +2,7 @@ from ...Arguments.Argument import Argument
 from pydantic import Field, computed_field
 
 class ListArgument(Argument):
-    orig: Argument = Field()
+    orig: Argument = Field(default = None)
     total_count: int = Field(default=0)
 
     def implementation(self, i = {}):
