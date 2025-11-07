@@ -6,4 +6,4 @@ class ExecutableArgument(Argument):
     str_type: str = Field(default = None)
 
     def implementation(self, i = {}):
-        return app.executables.list.find(key = self.inputs)
+        return app.ExecutablesTable.list.find(key = self.inputs)

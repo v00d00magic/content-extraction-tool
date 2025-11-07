@@ -12,7 +12,7 @@ from aiohttp import web as aiohttp_web
 import os
 
 class Web(View):
-    class Subclass(View.Subclass, Configurable):
+    class Wrapper(View.Wrapper, Configurable):
         def constructor(self):
             self.ws = []
             self.app = aiohttp_web.Application()
@@ -187,6 +187,6 @@ class Web(View):
         # workaround
         self.subclass.applyToGlobalSettings()
         aiohttp_web.run_app(self.subclass.app,
-            host=self.app_wrapper.app.Config.get("aiohttp.host"),
-            port=self.app_wrapper.app.Config.get("aiohttp.port"),
+            host=self.app.app.Config.get("aiohttp.host"),
+            port=self.app.app.Config.get("aiohttp.port"),
         )

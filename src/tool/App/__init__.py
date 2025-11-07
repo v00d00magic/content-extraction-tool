@@ -23,8 +23,8 @@ class ViewWrapper:
         '''
 
         if name == "settings":
-            return self._view.app_wrapper.app.settings
+            return self._view.app.app.settings
 
-        return getattr(self._view.app_wrapper.app, name, None)
+        return getattr(self._view.app.app, name, None)
 
 app = ViewWrapper()

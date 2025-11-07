@@ -1,5 +1,6 @@
 from Plugins.Web.DownloadManager.DownloadItem import DownloadItem
 from Plugins.App.Executables.Types.Representation import Representation
+from Plugins.App.Executables.Types.Act import Act
 from Plugins.App.Executables.Types.Extractor import Extractor
 
 from Plugins.Data.NameDictList import NameDictList
@@ -41,7 +42,7 @@ class URL(Representation):
     class Submodules(Representation.Submodules):
         class ByString(Extractor):
             submodule_value = "internal"
-            
+
             class Arguments(Extractor.Arguments):
                 @property
                 def args(self) -> NameDictList:
@@ -53,6 +54,24 @@ class URL(Representation):
                             ]
                         )
                     ])
+
+            class Execute(Extractor.Execute):
+                async def implementation(self, i = {}) -> None:
+                    url = i.get('url')
+
+                    self.append(self.outer.parent.saver.ContentUnit(
+                        original_name = 'URL',
+                        content = URL.ContentUnit.ContentData(
+                            url = url
+                        ),
+                        source = URL.ContentUnit.Source(
+                            types = "input",
+                            content = "text"
+                        )
+                    ))
+
+        class Download(Act):
+            submodule_value = "internal"
 
             class Execute(Extractor.Execute):
                 async def implementation(self, i = {}) -> None:

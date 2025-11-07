@@ -25,25 +25,21 @@ class App(Object, Hookable, Section):
     Storage: Any = None
     DbConnection: Any = None
     DownloadManager: Any = None
+    ExecutablesTable: Any = None
 
     _globals: Any = None
-    executables: Any = None
     argv: dict = None
 
-    class ExecutablesTable(Section):
-        @property
-        def section_name(self) -> list:
-            return ["App", "Executables"]
-
-        def __init__(self, outer):
-            from .Index.PluginsList import PluginsList
-
-            self.executable_index = Increment()
-            self.list = PluginsList()
-            self.list.load()
-            self.calls = []
-
     class Globals(Section):
+        class ExecutablesTable(Section):
+            def __init__(self):
+                from .Index.PluginsList import PluginsList
+
+                self.executable_index = Increment()
+                self.list = PluginsList()
+                self.list.load()
+                self.calls = []
+
         def initConfig(self, outer):
             from Plugins.App.Config import Config
 
@@ -101,15 +97,17 @@ class App(Object, Hookable, Section):
                 connection_timeout = outer.Config.get("media.download_manager.connection_timeout"),
             )
 
+        def initExecutablesTable(self, outer):
+            outer.ExecutablesTable = self.ExecutablesTable()
+
         def __init__(self, outer):
             section_name = ["App", "Globals"]
 
+            self.initExecutablesTable(outer)
             self.initConfig(outer)
             self.initEnv(outer)
             self.initLogger(outer)
 
-            # you can't use self.log there
-            # cuz of recursion :(
             outer.Logger.log("Init app, loading globals", section = section_name)
 
             self.initStorage(outer)
@@ -124,12 +122,11 @@ class App(Object, Hookable, Section):
             return ["progress"]
 
     def _constructor(self):
+        self.argv = self._parse_argv()
         self.cwd = Path(os.getcwd())
         self.src = self.cwd.parent
         self.loop = asyncio.get_event_loop()
-        self.executables = self.ExecutablesTable(self)
         self._globals = self.Globals(self)
-        self.argv = self._parse_argv()
 
     def _parse_argv(self):
         # didn't changed since sep.2024

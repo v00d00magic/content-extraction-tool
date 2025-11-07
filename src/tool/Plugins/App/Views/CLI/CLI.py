@@ -1,22 +1,20 @@
 from Plugins.App.Executables.Queue.RunQueue import RunQueue
 from Plugins.App.Executables.Queue.RunQueueItem import RunQueueItem
 from colorama import init as ColoramaInit
-from typing import ClassVar
 from ..View import View
 
 class CLI(View):
-    name: ClassVar[str] = "CLI"
-
-    class Runner(View.Runner):
-        async def wrapper(self, raw_arguments):
+    class Wrapper(View.Wrapper):
+        async def call(self, argv: dict = {}):
             from Plugins.Data.JSON import JSON
 
             ColoramaInit()
 
-            common_input = raw_arguments.get('i')
-            common_args = raw_arguments.copy()
+            print(argv)
+            common_input = argv.get('i')
+            common_args = argv.copy()
             common_args.pop('i')
-            is_silent = raw_arguments.get('silent') == "1"
+            is_silent = argv.get('silent') == "1"
 
             if common_input == None:
                 # I think we should raise there?
@@ -38,7 +36,7 @@ class CLI(View):
                     db = "content"
                 ))
 
-            output = await self.call(queue)
+            output = await self._call(queue)
             if is_silent == False:
                 _json = JSON.use(data = output.getResults(queue.return_from).toDict())
 

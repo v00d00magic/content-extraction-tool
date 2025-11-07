@@ -31,7 +31,7 @@ class Call(Object, Hookable, Section):
 
     def constructor(self):
         super().constructor()
-        self.id = app.executables.executable_index.getIndex()
+        self.id = app.ExecutablesTable.executable_index.getIndex()
 
     class HooksManager(Hookable.HooksManager):
         @property

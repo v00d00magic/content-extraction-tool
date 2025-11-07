@@ -93,7 +93,7 @@ class RunQueueItem(Object):
 
     @property
     def executable_class(self):
-        return app.executables.list.find(self.name)
+        return app.ExecutablesTable.list.find(self.name)
 
 class RunQueueExecuteItem(RunQueueItem):
     type: Literal['executable', 'val'] = Field(default = 'executable')

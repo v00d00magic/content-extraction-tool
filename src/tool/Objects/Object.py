@@ -21,6 +21,10 @@ class Object(BaseModel):
     def mro(cls) -> list:
         return cls.__mro__
 
+    @classproperty
+    def class_name(cls) -> list:
+        return cls.__name__
+
     def init_subclass(cls):
         cls.meta = cls.Meta(cls)
 

@@ -5,25 +5,25 @@ cli = CLI(name="cli")
 
 # Single mode
 '''
-cli.app_wrapper.app.argv = {
+cli.app.app.argv = {
     "i": "Data.Text",
     "text": "^_^",
 }
 '''
 # Getting random number
 '''
-cli.app_wrapper.app.argv = {
+cli.app.app.argv = {
     "i": "Data.Random",
     "min": 0,
     "max": 100000
 }
 '''
 # Random URL
-cli.app_wrapper.app.argv = {
+cli.app.app.argv = {
     "i": json.dumps(
     {
         "return_from": 'join',
-        "repeat": 10,
+        "repeat": 1,
         "pre": [
             {
                 "name": "App.Arguments.Types.IntArgument.IntArgument",
@@ -58,4 +58,4 @@ cli.app_wrapper.app.argv = {
         ]
     })
 }
-cli.loopSelfAndRunExecute()
+cli.app.loop_with_argv()
