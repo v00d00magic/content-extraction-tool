@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Any
 from Objects.Object import Object
 from Objects.Section import Section
 from pathlib import Path
@@ -6,20 +6,20 @@ from pydantic import Field, computed_field
 from enum import Enum
 import importlib
 
-class PluginWrapperEnum(Enum):
+class PluginEnum(Enum):
     module = 1
     submodule = 2
 
     verdict_module = "module"
     verdict_js = "js"
 
-class PluginWrapper(Object, Section):
+class Plugin(Object, Section):
     path: Path = Field(default=None)
     all_parts: list = []
     category_parts: list = []
     stem: str = None
     ext: str = None
-    plugin: Object = None
+    plugin: Any = None
 
     @property
     def section_name(self) -> list:
@@ -47,7 +47,7 @@ class PluginWrapper(Object, Section):
                 continue
 
             # TODO import every class from file
-            items.append(PluginWrapper(path = plugin.relative_to(dirs)))
+            items.append(Plugin(path = plugin.relative_to(dirs)))
 
         return items
 
@@ -68,15 +68,24 @@ class PluginWrapper(Object, Section):
 
         return ".".join(parts)
 
-    def _import(self):
+    # bad code practics
+    def _imports(self) -> list:
         is_end = self.stem == "__init__"
         title = self.stem
         path: str = f'Plugins.' + self.module_name
 
+        modules = []
         module = importlib.import_module(path)
         assert module != None, f"module {path} not found"
 
         common_object = getattr(module, title, None)
         assert common_object != None, f"{path} > {title} not found"
 
-        return common_object
+        modules.append(common_object)
+        self.plugin = common_object
+
+        if hasattr(common_object, "submodules") == True:
+            for item in common_object.submodules.all_submodules:
+                modules.append(Plugin(plugin=item))
+
+        return modules

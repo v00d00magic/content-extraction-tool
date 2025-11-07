@@ -1,6 +1,6 @@
 from Plugins.App.Logger.LogParts.LogKind import LogKind
 from Plugins.Data.NameDictList import NameDictList
-from .PluginWrapper import PluginWrapper
+from .Plugin import Plugin
 from Objects.Section import Section
 from Objects.Object import Object
 from pathlib import Path
@@ -27,16 +27,16 @@ class PluginsList(Object, Section):
 
         counters = PluginsCounter()
         search_dir: Path = app.cwd.joinpath("Plugins")
-        plguins = PluginWrapper.scan(search_dir)
 
-        for item in plguins: # iterating
+        for item in Plugin.scan(search_dir): # iterating
             module = None
             counters.total += 1
 
             try:
-                item.plugin = item._import()
+                plugins = item._imports()
 
-                self.items.append(item)
+                for plugin in plugins:
+                    self.items.append(plugin)
             except AssertionError as e:
                 self.log_error(f"AssertionError when importing {item.name}: {str(e)}, probaly not an executable")
             except Exception as e:

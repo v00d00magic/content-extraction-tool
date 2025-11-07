@@ -16,3 +16,4 @@
 - [x] refactor "Variables"
 - [ ] queue: remove spaghetti code
 - [ ] queue: response format
+- [ ] plugins list: import subclasses
