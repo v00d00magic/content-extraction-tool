@@ -15,9 +15,6 @@ class Config(Object, Configurable):
         default_on_none = True
     )
 
-    def constructor(self):
-        self.checkFile()
-
     @computed_field
     @property
     def file(self) -> Path:
@@ -58,9 +55,27 @@ class Config(Object, Configurable):
     def checkFile(self):
         self.path.mkdir(parents=True,exist_ok=True)
         if self.file.exists() == False:
-            t = open(self.file, 'w', encoding='utf-8')
-            json.dump({}, t)
-            t.close()
+            temp_stream = open(self.file, 'w', encoding='utf-8')
+            default_settings = dict()
+
+            '''for item in self.comparer.compare.toList():
+                _default = item.default
+
+                def _model_dump(_item):
+                    if hasattr(_item, 'model_dump') == True:
+                        return _item.model_dump()
+                    else:
+                        return _item.default
+
+                if type(_default) == list:
+                    default_settings[item.name] = []
+                    for val in _default:
+                        default_settings.get(item.name).append(_model_dump(item))
+                else:
+                    default_settings[item.name] = _model_dump(item)'''
+
+            json.dump(default_settings, temp_stream)
+            temp_stream.close()
 
         self._stream = open(self.file, 'r+', encoding='utf-8')
         try:

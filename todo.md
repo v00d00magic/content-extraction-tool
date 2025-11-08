@@ -18,8 +18,10 @@
 - [ ] queue: response format
 - [x] plugins list: import subclasses
 - [x] remove database hardcode
-- [ ] store storageunits with dbs
+- [x] store storageunits with dbs
+- [ ] add storageunits
 - [ ] every class must be object, hookable, section, configurable
 - [ ] links between units
 - [ ] link types: outer and internal
 - [ ] link second type: thumbnail, revision, content
+- [ ] do not write 'outer' if its null

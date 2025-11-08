@@ -47,7 +47,9 @@ class App(Object, Hookable, Section):
             outer.Config = Config.Config(
                 path = outer.cwd.parent.joinpath("storage").joinpath("config")
             )
-            outer.Config.comparer.compare = outer.settings
+            # dont like it but well
+            outer.Config.comparer.compare = NameDictList.fromDict(outer.settings)
+            outer.Config.checkFile() # workaround
 
         def initEnv(self, outer):
             from Plugins.App.Env import Env

@@ -24,6 +24,14 @@ class NameDictList:
 
         return dicts
 
+    @staticmethod
+    def fromDict(dict: dict):
+        items = list()
+        for key, val in dict.items():
+            items.append(val)
+
+        return NameDictList(items)
+
     def get(self, name: str) -> Any:
         return self.toDict().get(name)
 

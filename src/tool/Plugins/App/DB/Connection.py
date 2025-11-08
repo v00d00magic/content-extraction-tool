@@ -4,7 +4,7 @@ from Objects.Configurable import Configurable
 
 from Objects.ClassProperty import classproperty
 from Plugins.Data.NameDictList import NameDictList
-from .ConnectionConfig import ConnectionConfig
+from .ConnectionItem import ConnectionItem
 from pydantic import Field
 from App import app
 
@@ -41,25 +41,23 @@ class Connection(Object, Section, Configurable):
             ListArgument(
                 name = 'db.connections',
                 default = [
-                    ConnectionConfig(
+                    ConnectionItem(
                         name = 'tmp',
                         protocol = 'sqlite',
-                        content = ':memory:'
+                        data = ':memory:'
                     ),
-                    ConnectionConfig(
+                    ConnectionItem(
                         name = 'content',
                         protocol = 'sqlite',
-                        content = '?cwd?/storage/db/content.db'
                     ),
-                    ConnectionConfig(
+                    ConnectionItem(
                         name = 'instance',
                         protocol = 'sqlite',
-                        content = '?cwd?/storage/db/instance.db'
                     )
                 ],
                 orig = ObjectArgument(
                     name = "connection_item",
-                    object = ConnectionConfig
+                    object = ConnectionItem
                 )
             )
         ])
