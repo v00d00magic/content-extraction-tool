@@ -17,7 +17,9 @@
 - [ ] queue: remove spaghetti code
 - [ ] queue: response format
 - [x] plugins list: import subclasses
-- [ ] remove database hardcode
+- [x] remove database hardcode
 - [ ] store storageunits with dbs
-- [ ] every class must be object
-- [ ] every class must be hookable
+- [ ] every class must be object, hookable, section, configurable
+- [ ] links between units
+- [ ] link types: outer and internal
+- [ ] link second type: thumbnail, revision, content

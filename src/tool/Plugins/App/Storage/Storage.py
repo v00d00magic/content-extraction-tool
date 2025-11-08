@@ -11,7 +11,7 @@ class Storage(Object, Configurable):
     common: Path = Field(default=None)
 
     def register(self):
-        for name in ["config", "db", "storage_units", "temp_storage_units", "exports", "temp_exports", "logs", "binary"]:
+        for name in ["config", "dbs", "exports", "temp_exports", "logs", "binary"]:
             self.items[name] = StorageItem(
                 root = self.common, 
                 dir_name = name

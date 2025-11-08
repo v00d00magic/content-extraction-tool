@@ -2,6 +2,7 @@ from Objects.Object import Object
 from Objects.Increment import Increment
 from Objects.Hookable import Hookable
 from Objects.Section import Section
+from Plugins.Data.NameDictList import NameDictList
 from pathlib import Path
 from typing import Any
 import asyncio, sys
@@ -78,15 +79,10 @@ class App(Object, Hookable, Section):
             outer.Storage.common = Path(text.content.text)
             outer.Storage.register()
 
-        def initDB(self, outer):
+        def initDBs(self, outer):
             from Plugins.App.DB.Connection import Connection
 
-            outer.DbConnection = Connection(
-                temp_db = outer.Config.get("db.temp.connection").getWrapper("temp"),
-                db = outer.Config.get("db.content.connection").getWrapper("content"),
-                instance_db = outer.Config.get("db.instance.connection").getWrapper("instance")
-            )
-            outer.DbConnection.createTables()
+            outer.DbConnection = Connection(dbs = NameDictList(outer.Config.get('db.connections')))
 
         def initDownloadManager(self, outer):
             from Plugins.Web.DownloadManager.DownloadManager import DownloadManager
@@ -111,7 +107,7 @@ class App(Object, Hookable, Section):
             outer.Logger.log("Init app, loading globals", section = section_name)
 
             self.initStorage(outer)
-            self.initDB(outer)
+            self.initDBs(outer)
             self.initDownloadManager(outer)
 
             outer.Logger.log("Loaded globals", section = section_name)

@@ -24,7 +24,7 @@ class Saver(Outer):
                 if kwargs.get('save', None) != None:
                     db_name = kwargs.get('save')
 
-                db = app.DbConnection.getConnectionByName(db_name)
+                db = app.DbConnection.dbs.get(db_name)
 
             out.flush(db)
 

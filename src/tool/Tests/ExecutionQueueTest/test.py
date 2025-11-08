@@ -45,6 +45,7 @@ cli.app.app.argv = {
             {
                 "type": "executable",
                 "name": "Web.URL.URL",
+                "db": "content",
                 "arguments": {
                     "url": {
                         "value": "https://example.com/.jpeg",
