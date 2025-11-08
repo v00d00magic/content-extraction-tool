@@ -22,6 +22,10 @@ class Object(BaseModel):
         return cls.__mro__
 
     @classproperty
+    def class_module(cls) -> str:
+        return cls.__module__
+
+    @classproperty
     def class_name(cls) -> list:
         return cls.__name__
 

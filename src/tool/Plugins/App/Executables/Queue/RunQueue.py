@@ -37,7 +37,7 @@ class RunQueue(Object, Section):
         _i = 0
         variables: dict = {}
         for var in self.pre:
-            plugin = var.executable_class.plugin
+            plugin = var.executable_class.module
             variables[_i] = plugin(*[], **var.arguments)
 
         return variables
@@ -50,21 +50,22 @@ class RunQueue(Object, Section):
         variables = self.parseVariables()
 
         for repeat in range(0, self.repeat):
-            prefix = LogPrefix(name = f'QueueItem|Repeat_{repeat}', id = results.iterator)
-
             for item in self.items:
-                self.log(f"Starting queue item", prefix = prefix)
+                item_id = results.iterator
+                prefix = LogPrefix(name = f'QueueItem|Repeat_{repeat}', id = item_id)
+
+                self.log(f"Starting queue item #{item_id}", prefix = prefix)
 
                 match (item.type):
-                    case _:       
+                    case _:
                         args = RunQueueItemArguments.getArguments(item.arguments, results, variables)
 
                         result = await item.run(args, variables)
-                        results.set(results.iterator, result)
+                        results.set(item_id, result)
 
                         self.log(f"Running executable {item} with {args}", prefix = prefix)
-    
-                self.log(f"Ending queue item", prefix = prefix)
+
+                self.log(f"Queue item #{item_id} has ended", prefix = prefix)
 
                 results.iterator += 1
 

@@ -2,15 +2,10 @@ from Plugins.App.Logger.LogParts.LogKind import LogKind
 from Plugins.Data.NameDictList import NameDictList
 from .Plugin import Plugin
 from Objects.Section import Section
+from typing import List
 from Objects.Object import Object
 from pathlib import Path
 from App import app
-
-class PluginsCounter():
-    total = 0
-    success = 0
-    submodules = 0
-    errors = 0
 
 class PluginsList(Object, Section):
     items: NameDictList = []
@@ -25,28 +20,35 @@ class PluginsList(Object, Section):
     def load(self):
         self.log("Loading plugins list: ")
 
-        counters = PluginsCounter()
+        counters = [0, 0, 0, 0]
         search_dir: Path = app.cwd.joinpath("Plugins")
 
-        for item in Plugin.scan(search_dir): # iterating
-            module = None
-            counters.total += 1
+        for item_path in PluginsList.scan(search_dir): # iterating
+            counters[0] += 1
 
             try:
-                plugins = item._imports()
-
-                for plugin in plugins:
-                    self.items.append(plugin)
+                plugin = Plugin.fromPath(path = item_path)
+                self.items.append(plugin)
             except AssertionError as e:
-                self.log_error(f"AssertionError when importing {item.name}: {str(e)}, probaly not an executable")
+                self.log_error(f"AssertionError when importing {item_path.name}: {str(e)}, probaly not an executable")
             except Exception as e:
-                raise e
-                counters.errors += 1
-                self.log_error(e, exception_prefix=f"Did not imported module {item.name}: ")
+                counters[2] += 1
+                self.log_error(e, exception_prefix=f"Did not imported module {item_path.name}: ")
+                #raise e
 
-        counters.success = len(self.items.items)
+        counters[1] = len(self.items.items)
 
-        self.log(f"Found total {counters.total} objects, {counters.success} successfully, {counters.submodules} submodules, {counters.errors} errors")
+        self.log(f"Found total {counters[0]} objects, {counters[1]} successfully, {counters[0]} submodules, {counters[3]} errors")
+
+    @staticmethod
+    def scan(dirs: Path) -> List[Path]:
+        items: list = []
+
+        for plugin in dirs.rglob('*.py'):
+            if plugin.name in ['', '__pycache__', 'Base.py']:
+                continue
+
+            yield plugin.relative_to(dirs)
 
     def listByClass(self, class_name = None):
         output = []

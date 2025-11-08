@@ -58,8 +58,6 @@ class RunQueueItemArguments():
                     ids = int(item.replace('#', ''))
                     variable = variables[ids]
 
-                    print(variable)
-
                     return variable.current
 
             if type(previous_level) == dict:
@@ -102,7 +100,7 @@ class RunQueueExecuteItem(RunQueueItem):
     def run(self, arguments: ArgumentDict, variables: dict):
         assert self.executable_class != None, f"executable with name {self.name} not found"
 
-        plugin = self.executable_class.plugin
+        plugin = self.executable_class.module
         executable = plugin()
         executable.call = self
 

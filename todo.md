@@ -1,7 +1,7 @@
 - [x] Arguments.ArgumentList to Data.ListDictWithNameProperty
 - [x] Representation: wheel of extract methods
 - [ ] Representation: aftersave classes
-- [ ] Representation: external_submodules
+- [x] Representation: external_submodules
 - [x] Executable: Move `meta` to `Objects.Object`
 - [x] Representation: Do not use return
 - [ ] ~~add "adapter" executable~~
@@ -16,4 +16,8 @@
 - [x] refactor "Variables"
 - [ ] queue: remove spaghetti code
 - [ ] queue: response format
-- [ ] plugins list: import subclasses
+- [x] plugins list: import subclasses
+- [ ] remove database hardcode
+- [ ] store storageunits with dbs
+- [ ] every class must be object
+- [ ] every class must be hookable

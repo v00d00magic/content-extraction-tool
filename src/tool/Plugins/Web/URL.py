@@ -40,6 +40,10 @@ class URL(Representation):
             return name, ext
 
     class Submodules(Representation.Submodules):
+        @property
+        def manual_submodules(self) -> list:
+            return ['ByString', 'Download']
+
         class ByString(Extractor):
             submodule_value = "internal"
 

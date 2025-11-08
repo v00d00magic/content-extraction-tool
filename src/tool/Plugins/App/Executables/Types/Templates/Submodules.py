@@ -5,13 +5,17 @@ class Submodules(Outer):
     usage_external: list = []
 
     @property
-    def all_submodules(self):
+    def all_submodules(self) -> list:
         return self.usage_items + self.usage_external
+
+    @property
+    def manual_submodules(self) -> list:
+        return []
 
     def __init__(self, outer):
         super().__init__(outer)
 
-        for item in dir(self):
+        for item in self.manual_submodules:
             if item in ["external_submodules", "internal_submodules"]:
                 continue
 
@@ -36,7 +40,7 @@ class Submodules(Outer):
         return list_in
 
     def getInternal(self, type_in: list = None):
-        return self._getList(self.internal_submodules, type_in)
+        return self._getList(self.usage_items, type_in)
 
     def getExternal(self, type_in: list = None):
-        return self._getList(self.external_submodules, type_in)
+        return self._getList(self.usage_external, type_in)

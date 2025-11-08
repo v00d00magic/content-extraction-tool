@@ -18,6 +18,8 @@ class Comparer(Object):
         if self.compare == None:
             return self.values
 
+        app.Logger.log(f"comparing {self.compare} and {self.values}", section=["Comparer"])
+
         table = ArgumentDict()
         names = []
         if getattr(self.values, "toNames", None) != None:
