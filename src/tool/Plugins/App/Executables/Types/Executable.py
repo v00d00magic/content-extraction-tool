@@ -1,7 +1,6 @@
 from Objects.Object import Object
 from Objects.Namespace import Namespace
-from Objects.Section import Section
-from .Templates import Arguments, Execute, Saver, Submodules
+from .Templates import Arguments, Execute, Saver
 from typing import Any, ClassVar, Literal, List
 from Plugins.App.Arguments.ApplyArgumentList import ApplyArgumentList
 from Plugins.Data.NameDictList import NameDictList
@@ -22,7 +21,7 @@ class EnvList(Object):
     def constructor(self):
         self.items = NameDictList([])
 
-class Executable(Object, Namespace, Section):
+class Executable(Object, Namespace):
     parent: Object = Field(default = None)
     call: Any = Field(default = None)
 
@@ -56,7 +55,7 @@ class Executable(Object, Namespace, Section):
     class Execute(Execute.Execute):
         pass
 
-    class Submodules(Submodules.Submodules):
+    class Submodules(Object.Submodules):
         pass
 
     class Saver(Saver.Saver):
@@ -77,7 +76,6 @@ class Executable(Object, Namespace, Section):
 
     def init_subclass(cls):
         cls.arguments = cls.Arguments(cls)
-        cls.submodules = cls.Submodules(cls)
 
     def constructor(self):
         self.variables = VariablesList()

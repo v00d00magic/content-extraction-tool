@@ -12,7 +12,7 @@ from Plugins.Data.Text import Text
 
 from pydantic import Field
 
-class App(Object, Hookable, Section):
+class App(Object):
     context_name: str = Field(default = 'none')
     settings: dict = {}
     cwd: str = None

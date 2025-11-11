@@ -1,5 +1,3 @@
-from Plugins.App.Logger.LogParts.LogKind import LogKindEnum
-from Plugins.App.Logger.LogParts.LogPrefix import LogPrefix
 from App import app
 
 class Section:
@@ -9,7 +7,7 @@ class Section:
         return self.meta.name
 
     @property
-    def prefix(self) -> LogPrefix:
+    def prefix(self): # -> LogPrefix
         return None
 
     def log(self, *args, **kwargs):
@@ -28,9 +26,13 @@ class Section:
                 print(args[0])
 
     def log_error(self, *args, **kwargs):
+        from Plugins.App.Logger.LogParts.LogKind import LogKindEnum
+
         kwargs["kind"] = LogKindEnum.error.value
         return self.log(*args, **kwargs)
 
     def log_success(self, *args, **kwargs):
+        from Plugins.App.Logger.LogParts.LogKind import LogKindEnum
+
         kwargs["kind"] = LogKindEnum.success.value
         return self.log(*args, **kwargs)

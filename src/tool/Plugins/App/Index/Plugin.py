@@ -1,6 +1,5 @@
 from typing import List, Any
 from Objects.Object import Object
-from Objects.Section import Section
 from pathlib import Path
 from pydantic import Field, computed_field
 from enum import Enum
@@ -13,7 +12,7 @@ class PluginEnum(Enum):
     verdict_module = "module"
     verdict_js = "js"
 
-class Plugin(Object, Section):
+class Plugin(Object):
     module: Any = None
 
     @property
@@ -55,6 +54,6 @@ class Plugin(Object, Section):
         assert common_object != None, f"{module_name} > {title} not found"
 
         # calling object class_name and checking if this an object
-        self.log(f"Loaded object {common_object.class_name}")
+        self.log(f"Loaded object {common_object.class_module}")
 
         return common_object

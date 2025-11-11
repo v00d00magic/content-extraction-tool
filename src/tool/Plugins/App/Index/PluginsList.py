@@ -1,13 +1,12 @@
 from Plugins.App.Logger.LogParts.LogKind import LogKind
 from Plugins.Data.NameDictList import NameDictList
 from .Plugin import Plugin
-from Objects.Section import Section
 from typing import List
 from Objects.Object import Object
 from pathlib import Path
 from App import app
 
-class PluginsList(Object, Section):
+class PluginsList(Object):
     items: NameDictList = []
 
     def constructor(self):

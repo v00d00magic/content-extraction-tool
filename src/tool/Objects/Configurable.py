@@ -1,10 +1,9 @@
-from Plugins.Data.NameDictList import NameDictList
 from Objects.ClassProperty import classproperty
 from App import app
 
 class Configurable:
     @classproperty
-    def options(cls) -> NameDictList:
+    def options(cls): #  -> NameDictList
         pass
 
     @classmethod

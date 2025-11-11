@@ -1,6 +1,5 @@
 from Objects.Object import Object
 from Objects.Hookable import Hookable
-from Objects.Section import Section
 
 from Plugins.App.Arguments.ArgumentDict import ArgumentDict
 from Plugins.App.Executables.Response.Response import Response
@@ -12,7 +11,7 @@ from pydantic import Field
 from App import app
 
 # TODO dump
-class Call(Object, Hookable, Section):
+class Call(Object):
     id: int = 0
     queue: RunQueue = Field(default = None)
 

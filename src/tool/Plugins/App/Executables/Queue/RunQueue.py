@@ -2,11 +2,10 @@ from Plugins.App.Executables.Queue.RunQueueItem import RunQueueItem, RunQueueIte
 from .RunQueueResults import RunQueueResults
 from Plugins.App.Logger.LogParts.LogPrefix import LogPrefix
 from Objects.Object import Object
-from Objects.Section import Section
 from typing import List
 from pydantic import Field
 
-class RunQueue(Object, Section):
+class RunQueue(Object):
     '''
     Wrapper for RunQueueItem's. It runs items from queue and provides needed arguments
     '''

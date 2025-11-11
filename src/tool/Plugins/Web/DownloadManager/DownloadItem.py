@@ -1,6 +1,5 @@
 from pathlib import Path
 from Objects.Object import Object
-from Objects.Section import Section
 from Plugins.App.Logger.LogParts.LogPrefix import LogPrefix
 from pydantic import Field
 from enum import Enum
@@ -25,7 +24,7 @@ class DownloadManagerItemStatusEnum(Enum):
     started = "started"
     unknown = "unknown"
 
-class DownloadItem(Object, Section):
+class DownloadItem(Object):
     manager: Object = Field(default=None)
     url: str = Field(default=None)
     save_to: Path = Field(default=None)

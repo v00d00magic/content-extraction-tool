@@ -20,8 +20,12 @@
 - [x] remove database hardcode
 - [x] store storageunits with dbs
 - [ ] add storageunits
-- [ ] every class must be object, hookable, section, configurable
+- [x] every class must be object, hookable, section, configurable
+- [ ] do not write 'outer' if its null
+- [ ] pathes like {db}:/{id}/{id2}...
 - [ ] links between units
 - [ ] link types: outer and internal
 - [ ] link second type: thumbnail, revision, content
-- [ ] do not write 'outer' if its null
+- [ ] link get overriding (virtual collections)
+- [ ] call saving
+- [ ] "saved" show the saving source

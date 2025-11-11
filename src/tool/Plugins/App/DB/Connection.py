@@ -1,6 +1,4 @@
 from Objects.Object import Object
-from Objects.Section import Section
-from Objects.Configurable import Configurable
 
 from Objects.ClassProperty import classproperty
 from Plugins.Data.NameDictList import NameDictList
@@ -8,7 +6,7 @@ from .ConnectionItem import ConnectionItem
 from pydantic import Field
 from App import app
 
-class Connection(Object, Section, Configurable):
+class Connection(Object):
     '''
     Wrapper of the peewee databases
     '''

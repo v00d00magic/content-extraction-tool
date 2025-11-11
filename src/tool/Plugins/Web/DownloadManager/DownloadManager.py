@@ -3,7 +3,6 @@ from pydantic import Field, computed_field
 
 from Objects.Hookable import Hookable
 from Objects.Object import Object
-from Objects.Section import Section
 from Objects.Configurable import Configurable
 from Objects.Increment import Increment
 from Objects.ClassProperty import classproperty
@@ -17,7 +16,7 @@ from typing import Type
 import asyncio, aiohttp
 from App import app
 
-class DownloadManager(Object, Section, Hookable, Configurable):
+class DownloadManager(Object, Hookable, Configurable):
     max_concurrent_downloads: int = Field(default = 3)
     max_kbps_speed: int = Field(default = None)
     connection_timeout: int = Field(default = 10)
