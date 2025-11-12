@@ -23,10 +23,6 @@ class Model(BaseModel):
         return cls.__mro__
 
     @classproperty
-    def class_module(cls) -> str:
-        return cls.__module__
-
-    @classproperty
     def class_name(cls) -> list:
         return cls.__name__
 
@@ -99,6 +95,10 @@ class Model(BaseModel):
             _parts = _parts[1:] # cut off "Plugins."
 
             return _parts
+
+        @property
+        def class_module(cls) -> str:
+            return cls.outer.__module__
 
         @property
         def class_name(self):

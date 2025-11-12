@@ -7,16 +7,16 @@ class Section:
         return self.meta.name
 
     @property
-    def prefix(self): # -> LogPrefix
+    def append_prefix(self): # -> LogPrefix
         return None
 
     def log(self, *args, **kwargs):
         kwargs["section"] = self.section_name
         if kwargs.get("sections") != None:
             kwargs["section"] += kwargs.get("sections")
-        
-        if self.prefix != None:
-            kwargs["prefix"] = self.prefix
+
+        if self.append_prefix != None:
+            kwargs["prefix"] = self.append_prefix
 
         try:
             return app.Logger.log(*args, **kwargs)

@@ -29,3 +29,5 @@
 - [ ] link get overriding (virtual collections)
 - [ ] call saving
 - [ ] "saved" show the saving source
+- [ ] make every object writeable
+- [ ] unhardcode "globals"

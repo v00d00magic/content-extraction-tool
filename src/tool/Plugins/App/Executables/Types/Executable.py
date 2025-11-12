@@ -55,9 +55,6 @@ class Executable(Object, Namespace):
     class Execute(Execute.Execute):
         pass
 
-    class Submodules(Object.Submodules):
-        pass
-
     class Saver(Saver.Saver):
         pass
 

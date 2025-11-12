@@ -1,19 +1,39 @@
 from Objects.Outer import Outer
 
 class Submodules(Outer):
-    usage_items: list = []
-    usage_external: list = []
+    items: list = []
+    external: list = []
+
+    # Defined functions
 
     @property
-    def all_submodules(self) -> list:
-        return self.usage_items + self.usage_external
+    def submodules(self) -> dict:
+        return {
+            'items': [],
+            'external': []
+        }
 
     @property
     def manual_submodules(self) -> list:
         return []
 
+    @property
+    def all_submodules(self) -> list:
+        return self.items + self.external
+
     def __init__(self, outer):
         super().__init__(outer)
+
+        # Defined 'items' property will duplicate self to each new loaded Object, so workaround
+        self.items = []
+        self.external = []
+
+        for key, val in self.submodules.items():
+            if key not in ['items', 'external']:
+                continue
+
+            for item in val:
+                getattr(self, key).append(item)
 
         for item in self.manual_submodules:
             if item in ["external_submodules", "internal_submodules"]:
@@ -24,9 +44,9 @@ class Submodules(Outer):
 
             if None not in [val, orig_item]:
                 if orig_item.submodule_value == 'internal':
-                    self.usage_items.append(orig_item)
+                    self.items.append(orig_item)
                 else:
-                    self.usage_external.append(orig_item)
+                    self.external.append(orig_item)
 
     def _getList(self, list_in: list, type_in: list = None) -> list:
         if type_in != None:
@@ -40,7 +60,7 @@ class Submodules(Outer):
         return list_in
 
     def getInternal(self, type_in: list = None):
-        return self._getList(self.usage_items, type_in)
+        return self._getList(self.items, type_in)
 
     def getExternal(self, type_in: list = None):
-        return self._getList(self.usage_external, type_in)
+        return self._getList(self.external, type_in)

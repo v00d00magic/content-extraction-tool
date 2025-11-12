@@ -13,7 +13,7 @@ class PluginEnum(Enum):
     verdict_js = "js"
 
 class Plugin(Object):
-    module: Any = None
+    module: Any = Field(default=None)
 
     @property
     def section_name(self) -> list:
@@ -21,7 +21,7 @@ class Plugin(Object):
 
     @property
     def name(self) -> str:
-        parts = self.module.class_module.split('.')
+        parts = self.module.meta.class_module.split('.')
         class_name = self.module.class_name
 
         return '.'.join(parts[1:] + [class_name])
@@ -43,7 +43,8 @@ class Plugin(Object):
 
         return plugin
 
-    def tryToImportFromModuleName(self, title: str, parts: list[str]):
+    # TODO refactor
+    def tryToImportFromModuleName(self, title: str, parts: List[str]):
         prefix = 'Plugins.'
         module_name = ".".join(parts + [title])
 
@@ -53,7 +54,12 @@ class Plugin(Object):
         common_object = getattr(module, title, None)
         assert common_object != None, f"{module_name} > {title} not found"
 
-        # calling object class_name and checking if this an object
-        self.log(f"Loaded object {common_object.class_module}")
-
         return common_object
+
+    def importSubmodules(self) -> List[Object]:
+        payload_plugins = []
+
+        for submodule in self.module.submodules.all_submodules:
+            payload_plugins.append(Plugin(module = submodule))
+
+        return payload_plugins

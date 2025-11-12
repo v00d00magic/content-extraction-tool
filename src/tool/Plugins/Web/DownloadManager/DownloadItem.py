@@ -107,7 +107,7 @@ class DownloadItem(Object):
                         await asyncio.sleep(expected_time - elapsed_time)
 
     @property
-    def prefix(self) -> LogPrefix:
+    def append_prefix(self) -> LogPrefix:
         return LogPrefix(name = "DownloadItem", id = self.id)
 
     @property

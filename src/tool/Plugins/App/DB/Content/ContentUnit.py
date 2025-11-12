@@ -34,7 +34,7 @@ class ContentUnit(Model):
 
     content: ContentData # if you extend ContentData you should duplicate annotation too
     source: Source = Field(default = None)
-    outer: Outer = Field(default = Outer())
+    outer: Outer = Field(default = None)
     saved: Saved = Field(default = None)
 
     created_at: datetime = Field(default_factory=lambda: datetime.now())

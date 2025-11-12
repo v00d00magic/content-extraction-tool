@@ -27,17 +27,25 @@ class PluginsList(Object):
 
             try:
                 plugin = Plugin.fromPath(path = item_path)
+                # calling object class_name and checking if this an object
+                self.log(f"Loaded object {plugin.module.meta.class_name_str}")
                 self.items.append(plugin)
+
+                for subplugin in plugin.importSubmodules():
+                    counters[2] += 1
+
+                    self.log(f"Loaded object {subplugin.module.meta.class_name_str}")
+                    self.items.append(subplugin)
             except AssertionError as e:
                 self.log_error(f"AssertionError when importing {item_path.name}: {str(e)}, probaly not an executable")
             except Exception as e:
-                counters[2] += 1
+                counters[3] += 1
                 self.log_error(e, exception_prefix=f"Did not imported module {item_path.name}: ")
                 #raise e
 
         counters[1] = len(self.items.items)
 
-        self.log(f"Found total {counters[0]} objects, {counters[1]} successfully, {counters[0]} submodules, {counters[3]} errors")
+        self.log(f"Found total {counters[0]} objects, {counters[1]} successfully, {counters[2]} submodules, {counters[3]} errors")
 
     @staticmethod
     def scan(dirs: Path) -> List[Path]:
