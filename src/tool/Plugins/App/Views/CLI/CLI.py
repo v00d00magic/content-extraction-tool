@@ -10,7 +10,6 @@ class CLI(View):
 
             ColoramaInit()
 
-            print(argv)
             common_input = argv.get('i')
             common_args = argv.copy()
             common_args.pop('i')

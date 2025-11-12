@@ -30,4 +30,5 @@
 - [ ] call saving
 - [ ] "saved" show the saving source
 - [ ] make every object writeable
-- [ ] unhardcode "globals"
+- [x] unhardcode "globals"
+- [ ] globals load priority

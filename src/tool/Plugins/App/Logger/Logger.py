@@ -54,6 +54,19 @@ class Logger(Object, Hookable, Configurable):
 
         self.hooks.register()
 
+    @staticmethod
+    def mount():
+        from App import app
+        from Plugins.App.Logger.LogLimiter import LogLimiter
+
+        app.Config.updateCompare()
+        logger = Logger(
+            skip_file = app.Config.get("logger.output.to_file"),
+            limiter = LogLimiter(skip_categories = app.Config.get("logger.output.filters")),
+        )
+
+        app.mount('Logger', logger)
+
     @classproperty
     def options(cls) -> NameDictList:
         from Plugins.App.Arguments.Types.BooleanArgument import BooleanArgument

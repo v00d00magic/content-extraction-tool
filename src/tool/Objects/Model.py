@@ -15,6 +15,14 @@ class Model(BaseModel):
     def constructor(self):
         pass
 
+    '''
+    @classmethod
+    def mount(cls):
+        Appends object as singletone to current 'app' if implemented
+        commenting is workaround because idk how to check mountability for each class
+        pass
+    '''
+
     def toJson(self):
         return self.model_dump(mode='json')
 

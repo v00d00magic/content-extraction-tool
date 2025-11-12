@@ -6,6 +6,11 @@ class ViewWrapper:
     def __init__(self):
         self._view = None
 
+    def mount(self, name, item):
+        # print(f'set global {name}')
+
+        setattr(self._view.app.app, name, item)
+
     def setView(self, view):
         '''
         Sets the global view and app that can be accessed via

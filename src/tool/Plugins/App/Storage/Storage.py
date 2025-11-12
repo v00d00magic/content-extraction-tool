@@ -20,6 +20,22 @@ class Storage(Object, Configurable):
     def get(self, name):
         return self.items.get(name)
 
+    @staticmethod
+    def mount():
+        from App import app
+        from Plugins.Data.Text import Text
+
+        storage = Storage()
+        text = Text.use(
+            text = app.Config.get('storage.path')
+        )
+        text.replaceCwd()
+
+        storage.common = Path(text.content.text)
+        storage.register()
+
+        app.mount('Storage', storage)
+
     @classproperty
     def options(cls) -> NameDictList:
         from Plugins.App.Arguments.Types.StringArgument import StringArgument

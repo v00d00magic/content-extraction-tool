@@ -23,12 +23,21 @@ class Connection(Object):
             if item.name in ['content', 'tmp', 'instance']:
                 need_names.append(item.name)
 
-            self.log(message = f'Loading DB with id {item.name}')
+            self.log(f'Loading DB with id {item.name}')
 
             item.db = item.connect()
             item.create_tables([ContentUnitRelation, ContentUnit])
 
         assert len(need_names) > 2, 'one of the dbs is absent: content, tmp, instance'
+
+    @staticmethod
+    def mount():
+        from App import app
+
+        app.Config.updateCompare()
+        connection = Connection(dbs = NameDictList(app.Config.get('db.connections')))
+
+        app.mount('DbConnection', connection)
 
     @classproperty
     def options(cls) -> NameDictList:

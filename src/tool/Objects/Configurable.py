@@ -8,6 +8,8 @@ class Configurable:
 
     @classmethod
     def applyToGlobalSettings(cls):
+        # print(f'applying {cls.meta.class_name} options')
+
         options = cls.options
         if options == None:
             return

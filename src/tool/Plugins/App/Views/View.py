@@ -73,6 +73,7 @@ class View(Object, Configurable):
     def initializeApp(self):
         self.app = self.CommonApp(self)
         self.app.app._constructor()
+        self.app.app.loadPlugins()
 
     def initializeCaller(self):
         self.caller = self.Caller(self)

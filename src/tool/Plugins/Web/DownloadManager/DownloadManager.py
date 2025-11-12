@@ -38,6 +38,19 @@ class DownloadManager(Object, Hookable, Configurable):
 
         self.inited = True
 
+    @staticmethod
+    def mount():
+        from App import app
+        from Plugins.Web.DownloadManager.DownloadManager import DownloadManager
+
+        manager = DownloadManager(
+            max_concurrent_downloads = app.Config.get("media.download_manager.max_concurrent_downloads"),
+            max_kbps_speed = app.Config.get("media.download_manager.max_kbps_speed"),
+            connection_timeout = app.Config.get("media.download_manager.connection_timeout"),
+        )
+
+        app.mount('DownloadManager', manager)
+
     async def add(self, item: DownloadItem) -> aiohttp.ClientResponse:
         if self.inited == False:
             self._constructor()

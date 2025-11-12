@@ -20,6 +20,26 @@ class Config(Object, Configurable):
     def file(self) -> Path:
         return self.path.joinpath(self.name)
 
+    @staticmethod
+    def mount():
+        from App import app
+
+        configs = Config(
+            path = app.cwd.parent.joinpath("storage").joinpath("config")
+        )
+        # dont like it but well
+        configs.checkFile()
+        configs.updateCompare()
+        app.mount('Config', configs)
+
+    def updateCompare(self):
+        '''
+        WORKAROUND. updates settings from app globals
+        '''
+        from App import app
+
+        self.comparer.compare = NameDictList.fromDict(app.settings)
+
     def __del__(self):
         try:
             self._stream.close()
@@ -83,20 +103,19 @@ class Config(Object, Configurable):
         except json.JSONDecodeError as __exc:
             self._stream.write("{}")
 
-    def updateFile(self):
+    def updateFile(self) -> None:
         self._stream.seek(0)
 
         json.dump(self.comparer.dict(), self._stream, indent=4)
 
         self._stream.truncate()
 
-    def reset(self):
+    def reset(self) -> None:
+        '''
+        Clears all the settings
+        '''
         self._stream.seek(0)
         self._stream.write("{}")
         self._stream.truncate()
 
         self.comparer.values = {}
-
-    def isItemHidden(self, name):
-        for item in self.hidden_items:
-            return item.startswith(name)
