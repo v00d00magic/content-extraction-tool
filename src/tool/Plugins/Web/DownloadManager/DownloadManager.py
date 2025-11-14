@@ -43,6 +43,8 @@ class DownloadManager(Object, Hookable, Configurable):
         from App import app
         from Plugins.Web.DownloadManager.DownloadManager import DownloadManager
 
+        app.Config.updateCompare()
+
         manager = DownloadManager(
             max_concurrent_downloads = app.Config.get("media.download_manager.max_concurrent_downloads"),
             max_kbps_speed = app.Config.get("media.download_manager.max_kbps_speed"),

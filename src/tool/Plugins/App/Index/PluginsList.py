@@ -1,7 +1,7 @@
 from Plugins.App.Logger.LogParts.LogKind import LogKind
 from Plugins.Data.NameDictList import NameDictList
 from .Plugin import Plugin
-from typing import List
+from typing import Generator
 from Objects.Object import Object
 from pathlib import Path
 from App import app
@@ -52,23 +52,18 @@ class PluginsList(Object):
         self.log(f"Found total {counters[0]} objects, {counters[1]} successfully, {counters[2]} submodules, {counters[3]} errors")
 
     @staticmethod
-    def scan(dirs: Path) -> List[Path]:
-        items: list = []
+    def scan(dirs: Path) -> Generator[Path]:
+        items: list = list()
         files = dirs.rglob('*.py')
-        files = list(files)
-        priority: list = ['App\Config\Config.py', 'App\Logger\Logger.py', 'App\Env\Env.py', 'App\Storage\Storage.py', 'App\DbConnection\DbConnection.py', 'Web\DownloadManager\DownloadManager']
-        n = len(files)
-        current_path = app.cwd.joinpath("Plugins")
+        priority_names: list = ['App\\Config\\Config.py', 'App\\Logger\\Logger.py', 'App\\Env\\Env.py', 'App\\Storage\\Storage.py', 'App\\DB\\Connection.py', 'Web\\DownloadManager\\DownloadManager.py']
+        priority = [dirs.joinpath(p) for p in priority_names]
 
-        for i in range(n):
-            min_idx = i
-            for j in range(i+1, n):
-                _name = files[j].relative_to(current_path)
-                if _name in priority and priority.index(_name) < priority.index(files[min_idx]):
-                    min_idx = j
-            files[i], files[min_idx] = files[min_idx], files[i]
-
+        # two loops. TODO rewrite
         for plugin in files:
+            if plugin not in priority:
+                items.append(plugin)
+
+        for plugin in priority + items:
             if plugin.name in ['', '__pycache__', 'Base.py']:
                 continue
 

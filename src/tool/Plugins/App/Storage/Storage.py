@@ -25,6 +25,8 @@ class Storage(Object, Configurable):
         from App import app
         from Plugins.Data.Text import Text
 
+        app.Config.updateCompare()
+
         storage = Storage()
         text = Text.use(
             text = app.Config.get('storage.path')
