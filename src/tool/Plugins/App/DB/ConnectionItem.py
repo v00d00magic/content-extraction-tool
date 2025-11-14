@@ -1,11 +1,11 @@
 from peewee import SqliteDatabase, MySQLDatabase, PostgresqlDatabase, DatabaseProxy, Database
 from Objects.Object import Object
-from Plugins.Data.Text import Text
 from pathlib import Path
 from pydantic import Field
 from typing import Any
 from enum import Enum
 from App import app
+# from Plugins.Data.Text import Text
 
 class ConnectionEnum(Enum):
     sqlite = "sqlite"
@@ -18,9 +18,11 @@ class ConnectionItem(Object):
     data: str = Field(default=None)
     directory: str = Field(default='?cwd?/storage/common_storage')
 
-    db: Any = None # Database
+    db: str = None # Database
 
     def connect(self) -> Database:
+        from Plugins.Data.Text import Text
+
         db = None
 
         match(self.protocol.value):
@@ -41,6 +43,8 @@ class ConnectionItem(Object):
         return db
 
     def getStorage(self) -> Path:
+        from Plugins.Data.Text import Text
+
         if self.directory == None:
             return app.Storage.get('common_storage').dir()
 

@@ -14,35 +14,39 @@ from App import app
 import re
 
 class Text(Representation):
-    class ContentUnit(Representation.ContentUnit):
-        class ContentData(Representation.ContentUnit.ContentData):
-            text: str
+    @classmethod
+    def define_data(cls):
+        class NewContent(Representation.ContentUnit):
+            class Data(Representation.ContentUnit.Data):
+                text: str
 
-        content: ContentData
+            content: Data
 
-        def NTFSNormalizer(self):
-            safe_filename = re.sub(r'[\\/*?:"<>| ]', '_', self.content.text)
-            safe_filename = re.sub(r'_+', '_', safe_filename)
-            safe_filename = safe_filename.strip('_')
-            if not safe_filename:
-                safe_filename = "unnamed"
+            def NTFSNormalizer(self):
+                safe_filename = re.sub(r'[\\/*?:"<>| ]', '_', self.content.text)
+                safe_filename = re.sub(r'_+', '_', safe_filename)
+                safe_filename = safe_filename.strip('_')
+                if not safe_filename:
+                    safe_filename = "unnamed"
 
-            self.content.text = safe_filename
+                self.content.text = safe_filename
 
-        def cut(self, length: int = 100, multipoint: bool = True) -> str:
-            newString = self.content.text[:length]
-            if multipoint == False:
-                return newString
+            def cut(self, length: int = 100, multipoint: bool = True) -> str:
+                newString = self.content.text[:length]
+                if multipoint == False:
+                    return newString
 
-            output = newString + ("..." if self.data != newString else "")
+                output = newString + ("..." if self.data != newString else "")
 
-            self.content.text = output
+                self.content.text = output
 
-        def replaceCwd(self) -> str:
-            self.replaceCwdStrWith(str(app.src))
+            def replaceCwd(self) -> str:
+                self.replaceCwdStrWith(str(app.src))
 
-        def replaceCwdStrWith(self, withs: str) -> str:
-            self.content.text = self.content.text.replace("?cwd?", withs)
+            def replaceCwdStrWith(self, withs: str) -> str:
+                self.content.text = self.content.text.replace("?cwd?", withs)
+
+        return NewContent
 
     class Submodules(Representation.Submodules):
         class ByText(Extractor):
@@ -70,7 +74,7 @@ class Text(Representation):
                     name = text[0:i.get('title_cut')]
                     item = Text.ContentUnit(
                         original_name = name,
-                        content = Text.ContentUnit.ContentData(
+                        content = Text.ContentUnit.Data(
                             text = text
                         ),
                         source = Text.ContentUnit.Source(
@@ -78,9 +82,10 @@ class Text(Representation):
                             content = "text"
                         )
                     )
+                    item.flush(self.outer.call.get_db())
 
                     self.append(item)
 
     @classmethod
     def _callFromCode(cls, text: str) -> ContentUnit:
-        return cls.ContentUnit(content = cls.ContentUnit.ContentData(text = text))
+        return cls.ContentUnit(content = cls.ContentUnit.Data(text = text))

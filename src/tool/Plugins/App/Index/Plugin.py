@@ -50,6 +50,7 @@ class Plugin(Object):
         common_object = getattr(module, title, None)
         assert common_object != None, f"{module_name} > {title} not found"
         assert hasattr(common_object, 'meta'), f"{module_name} does not extends Object"
+        # or, better, 'issubclass(common_object, Object)' ? dont rememba
 
         if hasattr(common_object, 'mount'):
             common_object.mount()

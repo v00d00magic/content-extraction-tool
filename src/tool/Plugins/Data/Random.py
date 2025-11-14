@@ -5,6 +5,7 @@ from Plugins.App.Arguments.ApplyArgumentList import ApplyArgumentList
 from Plugins.App.Arguments.Types.IntArgument import IntArgument
 from Plugins.App.Arguments.Assertions.NotNoneAssertion import NotNoneAssertion
 
+from App import app
 from .Number import Number
 import random
 import secrets
@@ -33,18 +34,19 @@ class Random(Extractor):
     class Execute(Extractor.Execute):
         async def implementation(self, i = {}) -> None:
             num: int = random.randint(i.get('min'), i.get('max'))
-            # I don't like it. I think it can be simplified? TODO
-            num_rep = Number(
+            nums = Number(
                 call = self.outer.call
             )
-
-            self.append(num_rep.saver.ContentUnit(
+            item = nums.ContentUnit(
                 original_name = str(num),
-                content = Number.ContentUnit.ContentData(
+                content = Number.ContentUnit.Data(
                     number = num
                 ),
                 source = Number.ContentUnit.Source(
                     types = "input",
                     content = "random"
                 )
-            ))
+            )
+            item.flush(self.outer.call.get_db())
+
+            self.append(item)

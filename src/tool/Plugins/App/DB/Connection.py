@@ -60,6 +60,18 @@ class Connection(Object):
                     ConnectionItem(
                         name = 'instance',
                         protocol = 'sqlite',
+                    ),
+                    ConnectionItem(
+                        name = 'logs',
+                        protocol = 'sqlite',
+                    ),
+                    ConnectionItem(
+                        name = 'bin',
+                        protocol = 'sqlite',
+                    ),
+                    ConnectionItem(
+                        name = 'exports',
+                        protocol = 'sqlite',
                     )
                 ],
                 orig = ObjectArgument(

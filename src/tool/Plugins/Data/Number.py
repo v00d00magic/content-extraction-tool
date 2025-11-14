@@ -3,5 +3,12 @@ from Plugins.App.Arguments.ApplyArgumentList import ApplyArgumentList
 from Plugins.App.Arguments.Types.IntArgument import IntArgument
 
 class Number(Representation):
-    class ContentUnit(Representation.ContentUnit):
-        number: list | dict = None
+    @classmethod
+    def define_data(cls):
+        class NewContent(Representation.ContentUnit):
+            class Data(Representation.ContentUnit.Data):
+                number: int = None
+
+            content: Data
+
+        return NewContent

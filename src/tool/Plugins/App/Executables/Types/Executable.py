@@ -1,6 +1,6 @@
 from Objects.Object import Object
 from Objects.Namespace import Namespace
-from .Templates import Arguments, Execute, Saver
+from .Templates import Arguments, Execute
 from typing import Any, ClassVar, Literal, List
 from Plugins.App.Arguments.ApplyArgumentList import ApplyArgumentList
 from Plugins.Data.NameDictList import NameDictList
@@ -23,16 +23,13 @@ class EnvList(Object):
 
 class Executable(Object, Namespace):
     parent: Object = Field(default = None)
-    call: Any = Field(default = None)
+    call: Any = Field(default = None) # means RunQueueExecuteItem
+    # TODO rename
 
     submodule_value: ClassVar[Literal['internal', 'external']] = None
     self_name: ClassVar[str] = "None"
 
-    meta: ClassVar[Any] = Field(default = None)
-    submodules: ClassVar[Any] = Field(default = None)
     execute: Any = Field(default = None)
-    saver: Any = Field(default = None)
-
     variables: VariablesList = None
     env_variables: EnvList = None
 
@@ -55,9 +52,6 @@ class Executable(Object, Namespace):
     class Execute(Execute.Execute):
         pass
 
-    class Saver(Saver.Saver):
-        pass
-
     class Variables():
         items: ApplyArgumentList = ApplyArgumentList([])
 
@@ -70,6 +64,22 @@ class Executable(Object, Namespace):
 
     def _callFromCode(self):
         pass
+
+    @classmethod
+    def define_data(cls):
+        '''
+        TODO it should be in every object
+        '''
+        from Plugins.App.DB.Content.ContentUnit import ContentUnit
+
+        class NewSaved(ContentUnit.Saved):
+            name: str = cls.meta.name_str,
+            method: str = cls.meta.name_str,
+
+        class NewContent(ContentUnit):
+            saved: NewSaved = Field(default = None)
+
+        return NewContent
 
     def init_subclass(cls):
         cls.arguments = cls.Arguments(cls)
@@ -93,6 +103,7 @@ class Executable(Object, Namespace):
 
         self.execute = self.Execute(self)
 
+    '''
     @property
     def section_name(self) -> list:
         current_class = self.__class__.__mro__[0]
@@ -100,3 +111,4 @@ class Executable(Object, Namespace):
         name_parts = name_module.split('.')
 
         return ["Executables", *name_parts]
+    '''

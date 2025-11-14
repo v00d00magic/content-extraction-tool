@@ -29,7 +29,14 @@
 - [ ] link get overriding (virtual collections)
 - [ ] call saving
 - [ ] "saved" show the saving source
-- [ ] make every object writeable
+- [x] make every object writeable
 - [x] unhardcode "globals"
 - [x] globals load priority
 - [ ] outer; duration
+- [x] allow to define ContentUnit type from function
+- [ ] _callFromCode -> rename to something good 
+- [ ] define_data -> rename to something good
+- [ ] define source types
+- [ ] external dbs for bin, exports, logs
+- [ ] refactor queue
+- [ ] outer.call setting

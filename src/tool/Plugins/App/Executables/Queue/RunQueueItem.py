@@ -97,6 +97,9 @@ class RunQueueExecuteItem(RunQueueItem):
     type: Literal['executable', 'val'] = Field(default = 'executable')
     db: Literal['tmp', 'instance', 'content'] = Field(default = 'tmp')
 
+    def get_db(self):
+        return app.DbConnection.dbs.get(self.db)
+
     def run(self, arguments: ArgumentDict, variables: dict):
         assert self.executable_class != None, f"executable with name {self.name} not found"
 

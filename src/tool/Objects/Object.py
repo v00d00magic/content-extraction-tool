@@ -3,6 +3,7 @@ from .Model import Model
 from .Hookable import Hookable
 from .Section import Section
 from .Configurable import Configurable
+from .Writable import Writable
 
-class Object(Model, Hookable, Section, Configurable):
+class Object(Model, Hookable, Section, Configurable, Writable):
     pass
