@@ -16,10 +16,6 @@ class Plugin(Object):
     module: Any = Field(default=None)
 
     @property
-    def section_name(self) -> list:
-        return ["Plugins", "Initialization", "Object"]
-
-    @property
     def name(self) -> str:
         parts = self.module.meta.class_module.split('.')
         class_name = self.module.class_name

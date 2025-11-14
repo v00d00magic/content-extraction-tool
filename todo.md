@@ -21,7 +21,7 @@
 - [x] store storageunits with dbs
 - [ ] add storageunits
 - [x] every class must be object, hookable, section, configurable
-- [ ] do not write 'outer' if its null
+- [x] do not write 'outer' if its null
 - [ ] pathes like {db}:/{id}/{id2}...
 - [ ] links between units
 - [ ] link types: outer and internal
@@ -31,4 +31,5 @@
 - [ ] "saved" show the saving source
 - [ ] make every object writeable
 - [x] unhardcode "globals"
-- [ ] globals load priority
+- [x] globals load priority
+- [ ] outer; duration

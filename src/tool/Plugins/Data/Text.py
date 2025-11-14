@@ -68,7 +68,7 @@ class Text(Representation):
                 async def implementation(self, i = {}) -> None:
                     text = i.get('text')
                     name = text[0:i.get('title_cut')]
-                    self.append(self.outer.parent.saver.ContentUnit(
+                    item = Text.ContentUnit(
                         original_name = name,
                         content = Text.ContentUnit.ContentData(
                             text = text
@@ -77,7 +77,9 @@ class Text(Representation):
                             types = "input",
                             content = "text"
                         )
-                    ))
+                    )
+
+                    self.append(item)
 
     @classmethod
     def _callFromCode(cls, text: str) -> ContentUnit:

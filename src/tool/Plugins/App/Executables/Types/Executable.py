@@ -92,7 +92,6 @@ class Executable(Object, Namespace):
                     self.env_variables.append(variable)
 
         self.execute = self.Execute(self)
-        self.saver = self.Saver(self)
 
     @property
     def section_name(self) -> list:

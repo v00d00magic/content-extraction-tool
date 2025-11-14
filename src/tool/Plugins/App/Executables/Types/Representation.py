@@ -1,33 +1,20 @@
 from .Executable import Executable
 from Plugins.App.Executables.Response.Response import Response
 from Plugins.Data.NameDictList import NameDictList
-from Plugins.App.DB.Content.ContainsContentUnit import ContainsContentUnit
 from Plugins.App.Arguments.Comparer import Comparer
-from Plugins.App.Arguments.Objects.ValuesArgument import ValuesArgument
 from Plugins.App.Arguments.Types.StringArgument import StringArgument
 from typing import ClassVar
 
-class Representation(Executable, ContainsContentUnit):
+class Representation(Executable):
     self_name: ClassVar[str] = "Representation"
 
     class Arguments(Executable.Arguments):
         @property
         def args(self) -> NameDictList:
             lists = NameDictList(items = [
-                ValuesArgument(
+                StringArgument(
                     name = 'save',
-                    default = 'tmp',
-                    values = [
-                        StringArgument(
-                            name = 'tmp'
-                        ),
-                        StringArgument(
-                            name = 'content'
-                        ),
-                        StringArgument(
-                            name = 'instance'
-                        )
-                    ]
+                    default = 'tmp'
                 )
             ])
 

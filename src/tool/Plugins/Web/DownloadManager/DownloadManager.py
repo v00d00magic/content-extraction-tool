@@ -74,10 +74,6 @@ class DownloadManager(Object, Hookable, Configurable):
 
         return headers.model_dump(by_alias = True)
 
-    @property
-    def section_name(self) -> list:
-        return ["DownloadManager"]
-
     @classproperty
     def options(cls) -> NameDictList:
         from Plugins.App.Arguments.Types.StringArgument import StringArgument

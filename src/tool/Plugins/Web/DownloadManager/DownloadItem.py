@@ -109,7 +109,3 @@ class DownloadItem(Object):
     @property
     def append_prefix(self) -> LogPrefix:
         return LogPrefix(name = "DownloadItem", id = self.id)
-
-    @property
-    def section_name(self) -> list:
-        return ["DownloadManager", "Item"]

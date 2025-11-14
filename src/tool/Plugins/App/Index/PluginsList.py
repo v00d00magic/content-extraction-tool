@@ -12,10 +12,6 @@ class PluginsList(Object):
     def constructor(self):
         self.items = NameDictList(items = [])
 
-    @property
-    def section_name(self) -> list:
-        return ["Plugins", "Initialization"]
-
     def load(self):
         self.log("Loading plugins list: ")
 

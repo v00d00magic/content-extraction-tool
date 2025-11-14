@@ -24,10 +24,6 @@ class Call(Object):
     async def run(self):
         return await self.queue.run()
 
-    @property
-    def section_name(self) -> list:
-        return ["Executables", "ExecutableCall"]
-
     def constructor(self):
         super().constructor()
         self.id = app.ExecutablesTable.executable_index.getIndex()
